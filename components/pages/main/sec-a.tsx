@@ -7,13 +7,13 @@ import { useAudio } from "@/context/audio.context"
 import { preload } from "@/lib/preload"
 import { Sparks } from "@/components/ui/sparks"
 
-const LOGO_URL = "https://drive.google.com/file/d/1yogsLIANOFKKBw4fs8ZUicJ6loY94k5C/view?usp=drive_link"
-const BACKGROUND_URL = "https://drive.google.com/file/d/1LfJKkBe7FFbe6ZHWirHq7bWkrqkPYMuU/view?usp=drive_link"
+const LOGO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/logo.png"
+const BACKGROUND_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/college-draw.png"
 const COLLEGE_NAME = "GOVERNMENT ENGINEERING COLLEGE"
 const LOCATION = "WAYANAD"
 const TAGLINE = "GECW  /  KERALA"
 const ESTABLISHED_YEAR = "EST. 1999"
-const BG_AUDIO_URL = "https://drive.google.com/file/d/1em3iIMlShK_Z2jT2ykUDPPa64yoktnLa/view?usp=drive_link"
+const BG_AUDIO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/intro.mp3"
 
 export interface SecAProps extends React.HTMLAttributes<HTMLElement> { }
 
