@@ -45,7 +45,7 @@ export function SecA({ className, ...props }: SecAProps) {
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
           <div className="absolute inset-0 w-full h-full">
             <DriveImage
-              src={BACKGROUND_URL}
+              src={preload(BACKGROUND_URL)}
               alt="Government Engineering College Wayanad Campus Background"
               fill
               priority
@@ -67,7 +67,7 @@ export function SecA({ className, ...props }: SecAProps) {
         <div className="relative z-10 flex flex-col items-center text-center px-6">
           <div className="w-24 sm:w-28 md:w-36 lg:w-40 h-auto mb-8 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] relative aspect-square">
             <DriveImage
-              src={LOGO_URL}
+              src={preload(LOGO_URL)}
               alt="Government Engineering College Wayanad (GECW) Official Emblem Logo"
               itemProp="logo"
               fill

@@ -109,6 +109,7 @@ export interface YouTubePlayerProps
   playsInline?: boolean
   showFloatingMute?: boolean
   cropYouTubeHeader?: boolean
+  hideControls?: boolean
   statusLabel?: string
   onReady?: (event: YTPlayerEvent) => void
   onStateChange?: (event: YTPlayerEvent) => void
@@ -264,6 +265,7 @@ export function YouTubePlayer({
   playsInline = true,
   showFloatingMute = true,
   cropYouTubeHeader = true,
+  hideControls = false,
   statusLabel,
   onReady,
   onStateChange,
@@ -298,6 +300,17 @@ export function YouTubePlayer({
   const [showControls, setShowControls] = React.useState(true)
   const [isHovered, setIsHovered] = React.useState(false)
   const [hasStarted, setHasStarted] = React.useState(false)
+
+  React.useEffect(() => {
+    if (playerRef.current) {
+      if (muted) {
+        playerRef.current.mute()
+      } else {
+        playerRef.current.unMute()
+        playerRef.current.setVolume(100)
+      }
+    }
+  }, [muted])
   const [hoverTime, setHoverTime] = React.useState<number | null>(null)
   const [hoverPos, setHoverPos] = React.useState<number | null>(null)
   const [currentQuality, setCurrentQuality] = React.useState(
@@ -402,7 +415,9 @@ export function YouTubePlayer({
               event.target.mute()
               setIsMuted(true)
             } else {
-              setIsMuted(event.target.isMuted())
+              event.target.unMute()
+              event.target.setVolume(100)
+              setIsMuted(false)
             }
             setVolume(event.target.getVolume())
             setDuration(event.target.getDuration())
@@ -412,6 +427,12 @@ export function YouTubePlayer({
                 const targetQ = mapQuality(callbacksRef.current.initialQuality)
                 event.target.setPlaybackQuality(targetQ)
                 setCurrentQuality(targetQ)
+              } catch {}
+            }
+
+            if (autoPlay) {
+              try {
+                event.target.playVideo()
               } catch {}
             }
 
@@ -440,6 +461,12 @@ export function YouTubePlayer({
               } else if (event.data === window.YT.PlayerState.BUFFERING) {
                 setIsBuffering(true)
               } else if (event.data === window.YT.PlayerState.ENDED) {
+                if (loop) {
+                  try {
+                    event.target.seekTo(0)
+                    event.target.playVideo()
+                  } catch {}
+                }
                 setIsPlaying(false)
                 setIsBuffering(false)
                 setIsEnded(true)
@@ -658,11 +685,13 @@ export function YouTubePlayer({
             </div>
           )}
 
-          <div
-            onClick={togglePlay}
-            onDoubleClick={toggleFullscreen}
-            className="absolute inset-0 z-10 cursor-pointer bg-transparent"
-          />
+          {!hideControls && (
+            <div
+              onClick={togglePlay}
+              onDoubleClick={toggleFullscreen}
+              className="absolute inset-0 z-10 cursor-pointer bg-transparent"
+            />
+          )}
 
           {isBuffering && (
             <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
@@ -670,7 +699,7 @@ export function YouTubePlayer({
             </div>
           )}
 
-          {!hasStarted && !isPlaying && (
+          {!hideControls && !hasStarted && !isPlaying && (
             <div
               onClick={togglePlay}
               className="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer bg-black/30 backdrop-blur-[1px] transition-all hover:bg-black/20"
@@ -688,14 +717,15 @@ export function YouTubePlayer({
             </div>
           )}
 
-          <div
-            className={cn(
-              "absolute inset-x-0 bottom-0 z-30 flex flex-col gap-2 bg-gradient-to-t from-black/95 via-black/60 to-transparent px-3 pb-3 pt-10 transition-all duration-300 sm:px-4",
-              showControls || !isPlaying || isHovered || showSettingsMenu
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-2 pointer-events-none"
-            )}
-          >
+          {!hideControls && (
+            <div
+              className={cn(
+                "absolute inset-x-0 bottom-0 z-30 flex flex-col gap-2 bg-gradient-to-t from-black/95 via-black/60 to-transparent px-3 pb-3 pt-10 transition-all duration-300 sm:px-4",
+                showControls || !isPlaying || isHovered || showSettingsMenu
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-2 pointer-events-none"
+              )}
+            >
             <div
               ref={progressBarRef}
               onClick={handleSeek}
@@ -842,6 +872,7 @@ export function YouTubePlayer({
               </div>
             </div>
           </div>
+          )}
         </div>
       </div>
 

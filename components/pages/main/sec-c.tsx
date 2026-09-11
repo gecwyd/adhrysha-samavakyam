@@ -1,10 +1,10 @@
 "use client"
 
-import * as React from "react"
 import { motion, useScroll, useTransform, useSpring } from "framer-motion"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { useAudio } from "@/context/audio.context"
 import { resolveAsset } from "@/lib/asset-registry"
+import { preload } from "@/lib/preload"
 
 interface DignitaryItem {
   id: string
@@ -19,7 +19,7 @@ const DIGNITARIES: DignitaryItem[] = [
   {
     id: "vds",
     name: "Shri. V. D. Satheesan",
-    title: "Leader of Opposition, Kerala",
+    title: "Chief Minister, Kerala",
     message: "Technical education empowers our youth to innovate and lead. The vibrant energy and creative spirit of Government Engineering College Wayanad are truly commendable.",
     image: resolveAsset("vds.webp"),
     initials: "VDS",
@@ -80,12 +80,21 @@ function DignitaryRow({
     damping: 24
   })
 
-  const padTop = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
-  const padLeft = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
-  const padBottom = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
-  const padRight = useTransform(smooth, [0, 0.2], ["2rem", "0rem"])
-  const imgHeight = useTransform(smooth, [0, 0.2], ["58vh", "100vh"])
-  const imgRadius = useTransform(smooth, [0, 0.2], ["20px", "0px"])
+  const isFirst = index === 0
+
+  const animatedPadTop = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
+  const animatedPadLeft = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
+  const animatedPadBottom = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
+  const animatedPadRight = useTransform(smooth, [0, 0.2], ["2rem", "0rem"])
+  const animatedImgHeight = useTransform(smooth, [0, 0.2], ["58vh", "100vh"])
+  const animatedImgRadius = useTransform(smooth, [0, 0.2], ["20px", "0px"])
+
+  const padTop = isFirst ? animatedPadTop : "0rem"
+  const padLeft = isFirst ? animatedPadLeft : "0rem"
+  const padBottom = isFirst ? animatedPadBottom : "0rem"
+  const padRight = isFirst ? animatedPadRight : "0rem"
+  const imgHeight = isFirst ? animatedImgHeight : "100%"
+  const imgRadius = isFirst ? animatedImgRadius : "0px"
   const imgFilter = useTransform(
     smooth,
     [0, 0.2],
@@ -157,21 +166,6 @@ function DignitaryRow({
                 </span>
               </div>
             )}
-
-            <div className="absolute top-4 left-4 md:top-6 md:left-6 bg-black/70 backdrop-blur-md px-3 py-1.5 border border-white/10 text-white flex items-center gap-2.5 z-30">
-              <span className="font-mono text-[9px] md:text-[10px] tracking-widest uppercase">
-                0{index + 1} / 0{total}
-              </span>
-              <motion.div
-                style={{ opacity: readyBadgeOpacity }}
-                className="flex items-center gap-1.5 pl-2 border-l border-white/20"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="font-mono text-[8px] md:text-[9px] tracking-widest uppercase text-emerald-300">
-                  READY
-                </span>
-              </motion.div>
-            </div>
           </motion.div>
         </motion.div>
 
@@ -188,9 +182,6 @@ function DignitaryRow({
             }}
             className="relative flex flex-col max-w-2xl"
           >
-            <div className="absolute -top-10 -left-6 md:-top-16 md:-left-10 text-7xl md:text-9xl font-serif text-black/10 select-none pointer-events-none leading-none">
-              &ldquo;
-            </div>
 
             <blockquote className="text-lg md:text-2xl lg:text-3xl font-serif text-black/90 leading-snug md:leading-relaxed relative z-10 tracking-tight">
               {item.message}
@@ -220,6 +211,13 @@ function DignitaryRow({
 
 export function SecC() {
   const { playAudio } = useAudio()
+
+  useEffect(() => {
+    DIGNITARIES.forEach((item) => {
+      preload(item.image, "image")
+    })
+    preload("https://www.transparenttextures.com/patterns/cubes.png", "image")
+  }, [])
 
   return (
     <section

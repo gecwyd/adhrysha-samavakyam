@@ -1,6 +1,7 @@
 import { SecA } from "@/components/pages/main/sec-a";
 import { SecB } from "@/components/pages/main/sec-b";
 import { SecC } from "@/components/pages/main/sec-c";
+import { SecD } from "@/components/pages/main/sec-d";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       <SecA />
       <SecB />
       <SecC />
+      <SecD />
     </main>
   );
 }
