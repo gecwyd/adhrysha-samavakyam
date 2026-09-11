@@ -33,6 +33,14 @@ const DIGNITARIES: DignitaryItem[] = [
     initials: "PG",
   },
   {
+    id: "usha",
+    name: "Smt. Usha Vijayan",
+    title: "MLA, Mananthavady",
+    message: "Education and creative expression are the foundations of true progress. It is inspiring to see the students of Government Engineering College Wayanad channeling their talents into this wonderful magazine.",
+    image: resolveAsset("usha.webp"),
+    initials: "UV",
+  },
+  {
     id: "he_minister",
     name: "Shri. Roji M. John",
     title: "Minister for Higher Education, Kerala",
