@@ -1,0 +1,198 @@
+"use client"
+
+import * as React from "react"
+
+export type PreloadStatus = "pending" | "loading" | "loaded" | "error"
+
+export interface PreloadItem {
+  id: string
+  url: string
+  type: "youtube" | "drive-image" | "image" | "script" | "other"
+  status: PreloadStatus
+}
+
+export interface PreloadStoreState {
+  items: Map<string, PreloadItem>
+  isComplete: boolean
+  progress: number
+  total: number
+  loaded: number
+}
+
+type Subscriber = (state: PreloadStoreState) => void
+
+class PreloadStore {
+  private items = new Map<string, PreloadItem>()
+  private subscribers = new Set<Subscriber>()
+  private cache = new Set<string>()
+
+  subscribe(callback: Subscriber) {
+    this.subscribers.add(callback)
+    return () => {
+      this.subscribers.delete(callback)
+    }
+  }
+
+  private notify() {
+    const state = this.getState()
+    this.subscribers.forEach((cb) => cb(state))
+  }
+
+  getState(): PreloadStoreState {
+    const itemsArr = Array.from(this.items.values())
+    const total = itemsArr.length
+    const loaded = itemsArr.filter((i) => i.status === "loaded" || i.status === "error").length
+    const isComplete = total > 0 && total === loaded
+    const progress = total === 0 ? 100 : Math.round((loaded / total) * 100)
+
+    return {
+      items: this.items,
+      isComplete,
+      progress,
+      total,
+      loaded,
+    }
+  }
+
+  add(url: string) {
+    if (!url || typeof window === "undefined") return
+    if (this.items.has(url)) return
+
+    const type = this.determineType(url)
+    this.items.set(url, { id: url, url, type, status: "pending" })
+    this.notify()
+    this.startPreload(url, type)
+  }
+
+  private determineType(url: string): PreloadItem["type"] {
+    if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube"
+    if (url.includes("drive.google.com")) return "drive-image"
+    if (/\.(jpeg|jpg|gif|png|webp|avif|svg)(\?.*)?$/i.test(url)) return "image"
+    return "other"
+  }
+
+  private async startPreload(url: string, type: PreloadItem["type"]) {
+    const item = this.items.get(url)
+    if (!item) return
+    
+    item.status = "loading"
+    this.notify()
+
+    try {
+      if (type === "youtube") {
+        await this.preloadYouTube(url)
+      } else if (type === "drive-image") {
+        await this.preloadDriveImage(url)
+      } else if (type === "image") {
+        await this.preloadImage(url)
+      } else {
+        await this.preloadOther(url)
+      }
+      item.status = "loaded"
+    } catch (err) {
+      item.status = "error"
+    }
+    
+    this.items.set(url, { ...item })
+    this.notify()
+  }
+
+  private extractYouTubeId(url: string): string | null {
+    const match = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+?&v=))([a-zA-Z0-9_-]{11})/)
+    return match ? match[1] : null
+  }
+
+  private extractDriveFileId(url: string): string | null {
+    const fileDMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)
+    if (fileDMatch) return fileDMatch[1]
+    const idParamMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/)
+    if (idParamMatch) return idParamMatch[1]
+    const dMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/)
+    if (dMatch) return dMatch[1]
+    return null
+  }
+
+  private preloadYouTube(url: string): Promise<void> {
+    return new Promise((resolve) => {
+      let resolvedCount = 0
+      const totalToResolve = 2 // Iframe API + Thumbnail
+
+      const checkDone = () => {
+        resolvedCount++
+        if (resolvedCount >= totalToResolve) resolve()
+      }
+
+      // Preload Iframe API
+      if (!document.getElementById("youtube-iframe-api-preload")) {
+        const script = document.createElement("script")
+        script.id = "youtube-iframe-api-preload"
+        script.src = "https://www.youtube.com/iframe_api"
+        script.async = true
+        script.onload = checkDone
+        script.onerror = checkDone
+        document.head.appendChild(script)
+      } else {
+        checkDone()
+      }
+
+      // Preload Thumbnail
+      const videoId = this.extractYouTubeId(url)
+      if (videoId) {
+        const thumbUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+        this.preloadImage(thumbUrl).finally(checkDone)
+      } else {
+        checkDone()
+      }
+    })
+  }
+
+  private preloadDriveImage(url: string): Promise<void> {
+    const fileId = this.extractDriveFileId(url)
+    if (fileId) {
+      const thumbUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`
+      return this.preloadImage(thumbUrl)
+    }
+    return Promise.resolve()
+  }
+
+  private preloadImage(url: string): Promise<void> {
+    if (this.cache.has(url)) return Promise.resolve()
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => {
+        this.cache.add(url)
+        resolve()
+      }
+      img.onerror = reject
+      img.src = url
+    })
+  }
+
+  private preloadOther(url: string): Promise<void> {
+    if (this.cache.has(url)) return Promise.resolve()
+    return fetch(url, { mode: "no-cors", cache: "force-cache" })
+      .then(() => {
+        this.cache.add(url)
+      })
+      .catch(() => {})
+  }
+}
+
+const preloadStore = new PreloadStore()
+
+export function preload(url: string): string {
+  if (typeof window !== "undefined") {
+    preloadStore.add(url)
+  }
+  return url
+}
+
+export function usePreloadStore() {
+  const [state, setState] = React.useState<PreloadStoreState>(preloadStore.getState())
+
+  React.useEffect(() => {
+    return preloadStore.subscribe(setState)
+  }, [])
+
+  return state
+}
