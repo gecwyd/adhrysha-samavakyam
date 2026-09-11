@@ -1,13 +1,14 @@
 "use client"
 
 import * as React from "react"
+import { getDriveAudioUrl } from "@/components/ui/drive-image"
 
 export type PreloadStatus = "pending" | "loading" | "loaded" | "error"
 
 export interface PreloadItem {
   id: string
   url: string
-  type: "youtube" | "drive-image" | "image" | "script" | "other"
+  type: "youtube" | "drive-image" | "image" | "audio" | "script" | "other"
   status: PreloadStatus
 }
 
@@ -20,6 +21,8 @@ export interface PreloadStoreState {
 }
 
 type Subscriber = (state: PreloadStoreState) => void
+
+export const audioBlobCache = new Map<string, string>()
 
 class PreloadStore {
   private items = new Map<string, PreloadItem>()
@@ -54,17 +57,18 @@ class PreloadStore {
     }
   }
 
-  add(url: string) {
+  add(url: string, explicitType?: PreloadItem["type"]) {
     if (!url || typeof window === "undefined") return
     if (this.items.has(url)) return
 
-    const type = this.determineType(url)
+    const type = explicitType || this.determineType(url)
     this.items.set(url, { id: url, url, type, status: "pending" })
     this.notify()
     this.startPreload(url, type)
   }
 
   private determineType(url: string): PreloadItem["type"] {
+    if (/\.(mp3|wav|ogg|m4a|aac|flac)(\?.*)?$/i.test(url) || url.startsWith("/audio/")) return "audio"
     if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube"
     if (url.includes("drive.google.com")) return "drive-image"
     if (/\.(jpeg|jpg|gif|png|webp|avif|svg)(\?.*)?$/i.test(url)) return "image"
@@ -82,9 +86,11 @@ class PreloadStore {
       if (type === "youtube") {
         await this.preloadYouTube(url)
       } else if (type === "drive-image") {
-        await this.preloadDriveImage(url)
+        await this.preloadDrive(url)
       } else if (type === "image") {
         await this.preloadImage(url)
+      } else if (type === "audio") {
+        await this.preloadAudio(url)
       } else {
         await this.preloadOther(url)
       }
@@ -146,13 +152,16 @@ class PreloadStore {
     })
   }
 
-  private preloadDriveImage(url: string): Promise<void> {
+  private async preloadDrive(url: string): Promise<void> {
     const fileId = this.extractDriveFileId(url)
-    if (fileId) {
-      const thumbUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`
-      return this.preloadImage(thumbUrl)
+    if (!fileId) return Promise.resolve()
+
+    const thumbUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`
+    try {
+      await this.preloadImage(thumbUrl)
+    } catch {
+      await this.preloadAudio(url)
     }
-    return Promise.resolve()
   }
 
   private preloadImage(url: string): Promise<void> {
@@ -168,6 +177,44 @@ class PreloadStore {
     })
   }
 
+  private async preloadAudio(url: string): Promise<void> {
+    const streamUrl = getDriveAudioUrl(url)
+    if (this.cache.has(streamUrl) || this.cache.has(url)) return Promise.resolve()
+
+    try {
+      const res = await fetch(streamUrl, { mode: "cors" })
+      if (res.ok) {
+        const blob = await res.blob()
+        const objectUrl = URL.createObjectURL(blob)
+        this.cache.add(streamUrl)
+        this.cache.add(url)
+        audioBlobCache.set(streamUrl, objectUrl)
+        audioBlobCache.set(url, objectUrl)
+        return
+      }
+    } catch {
+    }
+
+    return new Promise((resolve) => {
+      const audio = new Audio()
+      audio.crossOrigin = "anonymous"
+      audio.preload = "auto"
+      const onDone = () => {
+        this.cache.add(streamUrl)
+        this.cache.add(url)
+        audio.removeEventListener("canplay", onDone)
+        audio.removeEventListener("canplaythrough", onDone)
+        audio.removeEventListener("error", onDone)
+        resolve()
+      }
+      audio.addEventListener("canplay", onDone, { once: true })
+      audio.addEventListener("canplaythrough", onDone, { once: true })
+      audio.addEventListener("error", onDone, { once: true })
+      audio.src = streamUrl
+      audio.load()
+    })
+  }
+
   private preloadOther(url: string): Promise<void> {
     if (this.cache.has(url)) return Promise.resolve()
     return fetch(url, { mode: "no-cors", cache: "force-cache" })
@@ -180,9 +227,9 @@ class PreloadStore {
 
 const preloadStore = new PreloadStore()
 
-export function preload(url: string): string {
+export function preload(url: string, type?: PreloadItem["type"]): string {
   if (typeof window !== "undefined") {
-    preloadStore.add(url)
+    preloadStore.add(url, type)
   }
   return url
 }

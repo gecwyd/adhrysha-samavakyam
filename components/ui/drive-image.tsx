@@ -37,6 +37,13 @@ export function getDriveThumbnailUrl(
   return `https://drive.google.com/thumbnail?id=${fileId}&sz=${sizeParam}`
 }
 
+export function getDriveAudioUrl(urlOrId?: string): string {
+  if (!urlOrId) return ""
+  const fileId = extractDriveFileId(urlOrId)
+  if (!fileId) return urlOrId
+  return `https://drive.usercontent.google.com/download?id=${fileId}&export=download`
+}
+
 export interface DriveImageProps
   extends Omit<ImageProps, "src" | "width" | "height"> {
   src?: string
