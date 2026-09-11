@@ -6,7 +6,7 @@ import { useRef } from "react"
 import { DriveImage } from "@/components/ui/drive-image"
 import { cn } from "@/lib/utils"
 
-const UNION_LOGO_URL = "https://drive.google.com/file/d/1srgp0diTtcGgjNEpuIwVfkq8vomUMHDY/view?usp=drive_link"
+const UNION_LOGO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/union-logo.webp"
 
 export interface SecBProps extends React.HTMLAttributes<HTMLElement> {}
 

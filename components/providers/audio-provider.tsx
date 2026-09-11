@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { getDriveAudioUrl } from "@/components/ui/drive-image"
-import { audioBlobCache } from "@/lib/preload"
 
 interface AudioPlayOptions {
   volume?: number
@@ -110,13 +109,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const playbg = React.useCallback((url: string, options?: AudioPlayOptions) => {
     if (!url || typeof window === "undefined") return
 
-    const directUrl = getDriveAudioUrl(url)
-    const resolvedUrl = audioBlobCache.get(url) || audioBlobCache.get(directUrl) || directUrl
+    const resolvedUrl = getDriveAudioUrl(url)
     const targetVol = options?.volume !== undefined ? options.volume : volumeRef.current
     const loop = options?.loop !== undefined ? options.loop : true
     const fadeDuration = options?.fadeDuration !== undefined ? options.fadeDuration : 1200
 
-    if ((activeUrlRef.current === url || activeUrlRef.current === directUrl || activeUrlRef.current === resolvedUrl) && activeAudioRef.current && !activeAudioRef.current.error) {
+    if ((activeUrlRef.current === url || activeUrlRef.current === resolvedUrl) && activeAudioRef.current && !activeAudioRef.current.error) {
       const currentAudio = activeAudioRef.current
       if (!currentAudio.paused) {
         return
@@ -146,7 +144,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setIsLoaded(false)
 
     const newAudio = new Audio(resolvedUrl)
-    newAudio.crossOrigin = "anonymous"
     newAudio.preload = "auto"
     newAudio.loop = loop
     newAudio.volume = 0
@@ -178,10 +175,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     newAudio.addEventListener("error", onError, { once: true })
 
     const startPlayback = () => {
-      const cachedBlob = audioBlobCache.get(url) || audioBlobCache.get(directUrl)
-      if (cachedBlob && newAudio.src !== cachedBlob && newAudio.currentTime === 0) {
-        newAudio.src = cachedBlob
-      }
       newAudio.play().then(() => {
         setIsPlaying(true)
         fadeAudio(newAudio, newAudio.volume, targetVol, fadeDuration)
@@ -241,14 +234,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const unlockAudio = React.useCallback(() => {
-    if (activeAudioRef.current && activeUrlRef.current) {
-      const directUrl = getDriveAudioUrl(activeUrlRef.current)
-      const cachedBlob = audioBlobCache.get(activeUrlRef.current) || audioBlobCache.get(directUrl)
-      if (cachedBlob && activeAudioRef.current.src !== cachedBlob && activeAudioRef.current.currentTime === 0) {
-        activeAudioRef.current.src = cachedBlob
-        activeAudioRef.current.load()
-      }
-    }
     if (pendingPlayRef.current) {
       const fn = pendingPlayRef.current
       pendingPlayRef.current = null

@@ -22,8 +22,6 @@ export interface PreloadStoreState {
 
 type Subscriber = (state: PreloadStoreState) => void
 
-export const audioBlobCache = new Map<string, string>()
-
 class PreloadStore {
   private items = new Map<string, PreloadItem>()
   private subscribers = new Set<Subscriber>()
@@ -177,27 +175,12 @@ class PreloadStore {
     })
   }
 
-  private async preloadAudio(url: string): Promise<void> {
+  private preloadAudio(url: string): Promise<void> {
     const streamUrl = getDriveAudioUrl(url)
     if (this.cache.has(streamUrl) || this.cache.has(url)) return Promise.resolve()
 
-    try {
-      const res = await fetch(streamUrl, { mode: "cors" })
-      if (res.ok) {
-        const blob = await res.blob()
-        const objectUrl = URL.createObjectURL(blob)
-        this.cache.add(streamUrl)
-        this.cache.add(url)
-        audioBlobCache.set(streamUrl, objectUrl)
-        audioBlobCache.set(url, objectUrl)
-        return
-      }
-    } catch {
-    }
-
     return new Promise((resolve) => {
       const audio = new Audio()
-      audio.crossOrigin = "anonymous"
       audio.preload = "auto"
       const onDone = () => {
         this.cache.add(streamUrl)
