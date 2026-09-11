@@ -109,6 +109,11 @@ export function DriveImage({
         onError?.(e)
       }}
       className={cn(className)}
+      style={{
+        width: "auto",
+        height: "auto",
+        ...props.style,
+      }}
       {...props}
     />
   )

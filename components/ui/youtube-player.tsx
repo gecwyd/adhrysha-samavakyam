@@ -115,6 +115,7 @@ export interface YouTubePlayerProps
   onEnd?: (event: YTPlayerEvent) => void
   onPlay?: (event: YTPlayerEvent) => void
   onPause?: (event: YTPlayerEvent) => void
+  priority?: boolean
   playerVars?: YTPlayerVars
 }
 
@@ -269,6 +270,7 @@ export function YouTubePlayer({
   onEnd,
   onPlay,
   onPause,
+  priority = true,
   playerVars,
   className,
   style,
@@ -647,6 +649,7 @@ export function YouTubePlayer({
                 alt="Video thumbnail"
                 referrerPolicy="no-referrer"
                 fill
+                priority={priority}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onError={() => setThumbnailError(true)}
                 className="object-cover transition-transform duration-700 hover:scale-105"
