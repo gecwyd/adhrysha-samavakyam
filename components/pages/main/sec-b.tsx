@@ -20,20 +20,27 @@ export function SecB({ className, ...props }: SecBProps) {
 
     const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 20 })
 
-    const logoY = useTransform(smoothProgress, [0, 0.3, 0.65], ["10vh", "10vh", "0vh"])
-    const logoScale = useTransform(smoothProgress, [0, 0.3, 0.65], [1.18, 1.18, 1])
-    const logoOpacity = useTransform(smoothProgress, [0, 0.08], [0.4, 1])
+    const letterSpacing = useTransform(smoothProgress, [0.15, 0.45], ["0.35em", "-0.04em"])
+    const textBlur = useTransform(smoothProgress, [0.15, 0.4], ["blur(20px)", "blur(0px)"])
+    const rotateX = useTransform(smoothProgress, [0.15, 0.45], [75, 0])
+    const textY = useTransform(smoothProgress, [0.15, 0.45], [240, 0])
+    const titleScale = useTransform(smoothProgress, [0.15, 0.45, 0.85, 1], [1.1, 1, 1, 0.95])
+    const titleOpacity = useTransform(smoothProgress, [0.12, 0.28], [0, 1])
 
-    const textY = useTransform(smoothProgress, [0.3, 0.65], [100, 0])
-    const textOpacity = useTransform(smoothProgress, [0.3, 0.55], [0, 1])
-    const textScale = useTransform(smoothProgress, [0.3, 0.65], [0.92, 1])
-    const letterSpacing = useTransform(smoothProgress, [0.3, 0.65], ["0.1em", "-0.03em"])
+    const logoY = useTransform(smoothProgress, [0, 0.25, 0.55], ["8vh", "8vh", "0vh"])
+    const logoScale = useTransform(smoothProgress, [0, 0.25, 0.55], [1.18, 1.18, 1])
+    const logoOpacity = useTransform(smoothProgress, [0, 0.12], [0.35, 1])
 
-    const unionY = useTransform(smoothProgress, [0.38, 0.68], [40, 0])
-    const unionOpacity = useTransform(smoothProgress, [0.38, 0.62], [0, 1])
+    const subtitleY = useTransform(smoothProgress, [0.25, 0.52], [70, 0])
+    const subtitleOpacity = useTransform(smoothProgress, [0.25, 0.45], [0, 1])
 
-    const indicatorOpacity = useTransform(smoothProgress, [0, 0.2, 0.7, 0.9], [0.8, 1, 1, 0])
-    const indicatorLineY = useTransform(smoothProgress, [0, 0.5], ["-100%", "100%"])
+    const ghostY = useTransform(smoothProgress, [0.15, 0.48], [360, 0])
+    const ghostOpacity = useTransform(smoothProgress, [0.15, 0.35, 0.85], [0, 0.16, 0.16])
+    const ghostRotateX = useTransform(smoothProgress, [0.15, 0.45], [50, 0])
+
+    const imgScale = useTransform(smoothProgress, [0, 1], [1.35, 1])
+    const imgRotate = useTransform(smoothProgress, [0, 1], [-4, 4])
+    const imgOpacity = useTransform(smoothProgress, [0, 0.25, 0.85], [0, 0.2, 0.2])
 
     return (
         <section
@@ -46,14 +53,31 @@ export function SecB({ className, ...props }: SecBProps) {
             {...props}
         >
             <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4">
-                <div className="flex flex-col items-center justify-center relative z-20 select-none">
+                <motion.div
+                    style={{
+                        opacity: imgOpacity,
+                        scale: imgScale,
+                        rotate: imgRotate
+                    }}
+                    className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-[#d9d4c7]/30 mix-blend-overlay z-10" />
+                    <img
+                        src={UNION_LOGO_URL}
+                        alt="College Union Logo Background"
+                        className="w-[85vw] max-w-[750px] h-auto object-contain opacity-30 grayscale contrast-[1.2] blur-[2px] mix-blend-multiply"
+                        onError={(e) => { e.currentTarget.style.display = "none" }}
+                    />
+                </motion.div>
+
+                <div className="w-full max-w-[100rem] flex flex-col items-center text-center relative z-20 px-4">
                     <motion.div
                         style={{
                             y: logoY,
                             scale: logoScale,
                             opacity: logoOpacity
                         }}
-                        className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 drop-shadow-xl z-20"
+                        className="relative w-40 h-40 sm:w-52 sm:h-52 md:w-60 md:h-60 lg:w-68 lg:h-68 drop-shadow-xl z-30 mb-2 sm:mb-4"
                     >
                         <DriveImage
                             src={UNION_LOGO_URL}
@@ -66,49 +90,51 @@ export function SecB({ className, ...props }: SecBProps) {
                     </motion.div>
 
                     <motion.div
-                        style={{
-                            y: textY,
-                            opacity: textOpacity,
-                            scale: textScale
-                        }}
-                        className="flex flex-col items-center text-center mt-6 sm:mt-10 md:mt-14 z-10"
+                        style={{ opacity: titleOpacity, scale: titleScale }}
+                        className="w-full flex flex-col items-center"
                     >
-                        <motion.h1
-                            style={{ letterSpacing }}
-                            className="text-[14vw] sm:text-[12vw] md:text-[8rem] lg:text-[10rem] xl:text-[11.5rem] font-heading font-black leading-[0.8] uppercase text-black tracking-tight"
-                        >
-                            SATHVA
-                        </motion.h1>
+                        <div className="relative w-full flex justify-center py-2" style={{ perspective: "1500px" }}>
+                            <motion.h1
+                                style={{
+                                    y: ghostY,
+                                    rotateX: ghostRotateX,
+                                    opacity: ghostOpacity,
+                                    transformOrigin: "bottom center",
+                                    filter: "blur(14px)",
+                                    letterSpacing
+                                }}
+                                className="absolute inset-0 flex justify-center text-[20vw] sm:text-[16vw] md:text-[11rem] lg:text-[14rem] xl:text-[16rem] font-heading font-black leading-[0.75] uppercase text-black z-10 pointer-events-none select-none"
+                                aria-hidden="true"
+                            >
+                                SATHVA
+                            </motion.h1>
 
-                        <motion.div
-                            style={{
-                                y: unionY,
-                                opacity: unionOpacity
-                            }}
-                            className="mt-3 sm:mt-4 md:mt-6 overflow-hidden flex items-center justify-center"
-                        >
-                            <h2 className="font-heading font-bold uppercase text-sm sm:text-lg md:text-3xl lg:text-4xl tracking-[0.4em] md:tracking-[0.6em] text-black/85 pl-[0.4em] md:pl-[0.6em]">
-                                COLLEGE UNION
-                            </h2>
-                        </motion.div>
+                            <motion.h1
+                                style={{
+                                    y: textY,
+                                    letterSpacing,
+                                    filter: textBlur,
+                                    rotateX,
+                                    transformOrigin: "bottom center"
+                                }}
+                                className="text-[20vw] sm:text-[16vw] md:text-[11rem] lg:text-[14rem] xl:text-[16rem] font-heading font-black leading-[0.75] uppercase text-black z-20 select-none"
+                            >
+                                SATHVA
+                            </motion.h1>
+                        </div>
+
+                        <div className="overflow-hidden mt-3 sm:mt-5 md:mt-6">
+                            <motion.div
+                                style={{ y: subtitleY, opacity: subtitleOpacity }}
+                                className="flex items-center justify-center"
+                            >
+                                <h2 className="font-heading font-bold uppercase text-sm sm:text-xl md:text-3xl lg:text-4xl tracking-[0.4em] md:tracking-[0.6em] text-black/90 pl-[0.4em] md:pl-[0.6em]">
+                                    COLLEGE UNION
+                                </h2>
+                            </motion.div>
+                        </div>
                     </motion.div>
                 </div>
-
-                <motion.div
-                    style={{ opacity: indicatorOpacity }}
-                    className="absolute bottom-8 sm:bottom-10 flex flex-col items-center gap-3 z-30 pointer-events-none"
-                >
-                    <span className="font-mono text-[9px] tracking-[0.35em] uppercase opacity-40 text-black">Scroll</span>
-                    <div className="h-[40px] w-px bg-black/20 overflow-hidden relative">
-                        <motion.div
-                            style={{
-                                height: "100%",
-                                y: indicatorLineY
-                            }}
-                            className="w-full bg-black absolute inset-0"
-                        />
-                    </div>
-                </motion.div>
             </div>
         </section>
     )

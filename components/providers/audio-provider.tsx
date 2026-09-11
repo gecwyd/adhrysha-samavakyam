@@ -12,6 +12,7 @@ interface AudioPlayOptions {
 interface AudioContextValue {
   playbg: (url: string, options?: AudioPlayOptions) => void
   playBg: (url: string, options?: AudioPlayOptions) => void
+  playAudio: (url: string, options?: any) => void
   pauseBg: (fadeDuration?: number) => void
   stopBg: (fadeDuration?: number) => void
   currentTrack: string | null
@@ -106,13 +107,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     fadeAnimationRef.current = requestAnimationFrame(step)
   }, [cancelFades])
 
-  const playbg = React.useCallback((url: string, options?: AudioPlayOptions) => {
+  const playbg = React.useCallback((url: string, options?: AudioPlayOptions | number) => {
     if (!url || typeof window === "undefined") return
 
     const resolvedUrl = getDriveAudioUrl(url)
-    const targetVol = options?.volume !== undefined ? options.volume : volumeRef.current
-    const loop = options?.loop !== undefined ? options.loop : true
-    const fadeDuration = options?.fadeDuration !== undefined ? options.fadeDuration : 1200
+    const opts = typeof options === "number" ? { fadeDuration: options > 50 ? options : options * 1000 } : options
+    const targetVol = opts?.volume !== undefined ? opts.volume : volumeRef.current
+    const loop = opts?.loop !== undefined ? opts.loop : true
+    const fadeDuration = opts?.fadeDuration !== undefined ? opts.fadeDuration : 1200
 
     if ((activeUrlRef.current === url || activeUrlRef.current === resolvedUrl) && activeAudioRef.current && !activeAudioRef.current.error) {
       const currentAudio = activeAudioRef.current
@@ -256,6 +258,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       value={{
         playbg,
         playBg: playbg,
+        playAudio: playbg,
         pauseBg,
         stopBg,
         currentTrack,
