@@ -1,6 +1,6 @@
 const ASSET_MAP: Record<string, string> = {
-  "indro.mp3": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/intro.mp3",
-  "intro.mp3": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/intro.mp3",
+  "indro.mp3": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/intro-v2.mp3",
+  "intro.mp3": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/intro-v2.mp3",
   "vds.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/vds.webp",
   "priyanka.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/priyanka.webp",
   "mla.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/usha.webp",
@@ -11,7 +11,7 @@ const ASSET_MAP: Record<string, string> = {
   "logo.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/logo.webp",
   "roji.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/roji.webp",
   "siddique.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/siddique.webp",
-  "bg-piano.mp3": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/bg-piano.mp3",
+  "bg-piano.mp3": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/bg-piano-v2.mp3",
   "miss-minute-intro.webm": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/miss-minute-intro.webm",
 }
 

@@ -13,7 +13,7 @@ const COLLEGE_NAME = "GOVERNMENT ENGINEERING COLLEGE"
 const LOCATION = "WAYANAD"
 const TAGLINE = "GECW  /  KERALA"
 const ESTABLISHED_YEAR = "EST. 1999"
-const BG_AUDIO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/intro.mp3"
+const BG_AUDIO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/intro-v2.mp3"
 
 export interface SecAProps extends React.HTMLAttributes<HTMLElement> { }
 

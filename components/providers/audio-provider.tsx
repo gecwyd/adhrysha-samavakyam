@@ -36,14 +36,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [isTransitioning, setIsTransitioning] = React.useState<boolean>(false)
   const [isMuted, setIsMuted] = React.useState<boolean>(false)
-  const [volume, setVolumeState] = React.useState<number>(0.7)
+  const [volume, setVolumeState] = React.useState<number>(0.35)
 
   const activeAudioRef = React.useRef<HTMLAudioElement | null>(null)
   const activeUrlRef = React.useRef<string | null>(null)
   const activeAudiosRef = React.useRef<Set<HTMLAudioElement>>(new Set())
   const activeFadesRef = React.useRef<Map<HTMLAudioElement, number>>(new Map())
   const pendingPlayRef = React.useRef<(() => void) | null>(null)
-  const volumeRef = React.useRef<number>(0.7)
+  const volumeRef = React.useRef<number>(0.35)
   const isMutedRef = React.useRef<boolean>(false)
   const isIntentionallyPausedRef = React.useRef<boolean>(false)
 

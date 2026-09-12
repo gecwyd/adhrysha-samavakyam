@@ -82,12 +82,12 @@ function DignitaryRow({
 
   const isFirst = index === 0
 
-  const animatedPadTop = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
-  const animatedPadLeft = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
-  const animatedPadBottom = useTransform(smooth, [0, 0.2], ["3.5rem", "0rem"])
-  const animatedPadRight = useTransform(smooth, [0, 0.2], ["2rem", "0rem"])
-  const animatedImgHeight = useTransform(smooth, [0, 0.2], ["58vh", "100vh"])
-  const animatedImgRadius = useTransform(smooth, [0, 0.2], ["20px", "0px"])
+  const animatedPadTop = useTransform(smooth, [0, 0.2], ["2.5rem", "0rem"])
+  const animatedPadLeft = useTransform(smooth, [0, 0.2], ["2.5rem", "0rem"])
+  const animatedPadBottom = useTransform(smooth, [0, 0.2], ["2.5rem", "0rem"])
+  const animatedPadRight = useTransform(smooth, [0, 0.2], ["1.5rem", "0rem"])
+  const animatedImgHeight = useTransform(smooth, [0, 0.2], ["85%", "100%"])
+  const animatedImgRadius = useTransform(smooth, [0, 0.2], ["24px", "0px"])
 
   const padTop = isFirst ? animatedPadTop : "0rem"
   const padLeft = isFirst ? animatedPadLeft : "0rem"
@@ -100,7 +100,7 @@ function DignitaryRow({
     [0, 0.2],
     ["grayscale(100%) contrast(1.15)", "grayscale(0%) contrast(1.05)"]
   )
-  const imgScale = useTransform(smooth, [0, 0.2, 0.85, 1], [1.08, 1, 1, 1.03])
+  const imgScale = useTransform(smooth, [0, 0.2, 0.85, 1], [1.1, 1, 1, 1.05])
 
   const textOpacity = useTransform(smooth, [0.08, 0.22], [0, 1])
   const textY = useTransform(smooth, [0.08, 0.22], [40, 0])
@@ -136,7 +136,7 @@ function DignitaryRow({
             paddingBottom: padBottom,
             paddingRight: padRight
           }}
-          className="w-full md:w-5/12 lg:w-[46vw] h-[45vh] md:h-full flex flex-col justify-start items-start shrink-0 relative z-20"
+          className="w-full md:w-5/12 lg:w-[46vw] h-[42vh] md:h-full flex flex-col justify-start items-start shrink-0 relative z-20"
         >
           <motion.div
             style={{
@@ -169,8 +169,9 @@ function DignitaryRow({
           </motion.div>
         </motion.div>
 
-        <div className="w-full md:w-7/12 lg:w-[54vw] h-[55vh] md:h-full flex flex-col justify-center px-6 md:px-14 lg:px-20 relative z-10 overflow-hidden">
-          <div className="hidden md:flex items-center mb-6 lg:mb-10 text-black/60 font-mono text-xs tracking-[0.3em] uppercase">
+        <div className="w-full md:w-7/12 lg:w-[54vw] flex-1 md:h-full flex flex-col justify-start md:justify-center pt-4 sm:pt-8 md:pt-0 px-6 sm:px-10 md:px-14 lg:px-20 relative z-10 overflow-hidden">
+          <div className="flex items-center gap-2 text-black/50 font-mono text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-6 lg:mb-10">
+            <span className="w-1.5 h-1.5 rounded-full bg-black/40 hidden sm:block" />
             <span>Voices of Support</span>
           </div>
 
@@ -182,8 +183,10 @@ function DignitaryRow({
             }}
             className="relative flex flex-col max-w-2xl"
           >
-
-            <blockquote className="text-lg md:text-2xl lg:text-3xl font-serif text-black/90 leading-snug md:leading-relaxed relative z-10 tracking-tight">
+            <span className="font-serif text-[60px] sm:text-[120px] text-black/10 select-none absolute -top-6 sm:-top-16 -left-2 sm:-left-8 pointer-events-none leading-none z-0">
+              “
+            </span>
+            <blockquote className="text-base sm:text-lg md:text-2xl lg:text-3xl font-serif text-black/90 leading-snug md:leading-relaxed relative z-10 tracking-tight">
               {item.message}
             </blockquote>
 
@@ -194,11 +197,11 @@ function DignitaryRow({
               />
             </div>
 
-            <div>
-              <h3 className="text-xl md:text-3xl lg:text-4xl font-heading uppercase tracking-wider text-black">
+            <div className="relative z-10">
+              <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading uppercase tracking-wider text-black">
                 {item.name}
               </h3>
-              <p className="text-[11px] md:text-xs font-mono uppercase tracking-[0.25em] text-black/60 mt-1">
+              <p className="text-[10px] sm:text-[11px] md:text-xs font-mono uppercase tracking-[0.25em] text-black/60 mt-1 font-semibold">
                 {item.title}
               </p>
             </div>

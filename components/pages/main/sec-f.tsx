@@ -53,7 +53,7 @@ export function SecF({ className, ...props }: SecFProps) {
             if (isVideoPlaying) {
                 pauseBg?.(300)
             } else {
-                playbg?.(resolveAsset("bg-piano.mp3"), { loop: true })
+                playbg?.(resolveAsset("bg-piano.mp3"), { loop: true, volume: 0.35 })
             }
         }
     }, [isInView, isVideoPlaying, playbg, pauseBg])
