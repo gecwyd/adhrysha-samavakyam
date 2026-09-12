@@ -64,10 +64,14 @@ export interface YTPlayerInstance {
   getPlaybackQuality: () => string
   getAvailableQualityLevels: () => string[]
   loadVideoById: (
-    videoId: string | { videoId: string; startSeconds?: number; endSeconds?: number }
+    videoId:
+      | string
+      | { videoId: string; startSeconds?: number; endSeconds?: number; suggestedQuality?: string }
   ) => void
   cueVideoById: (
-    videoId: string | { videoId: string; startSeconds?: number; endSeconds?: number }
+    videoId:
+      | string
+      | { videoId: string; startSeconds?: number; endSeconds?: number; suggestedQuality?: string }
   ) => void
   destroy: () => void
 }
@@ -594,6 +598,14 @@ export function YouTubePlayer({
     if (!playerRef.current) return
     try {
       playerRef.current.setPlaybackQuality(qVal)
+      const currentPos = playerRef.current.getCurrentTime() || 0
+      if (rawVideoId) {
+        playerRef.current.loadVideoById({
+          videoId: rawVideoId,
+          startSeconds: currentPos,
+          suggestedQuality: qVal
+        })
+      }
     } catch {}
     resetHideTimer()
   }
@@ -660,7 +672,7 @@ export function YouTubePlayer({
             className={cn(
               "pointer-events-none absolute inset-0 [&>iframe]:h-full [&>iframe]:w-full",
               cropYouTubeHeader
-                ? "-top-[14%] -left-[3%] h-[128%] w-[106%]"
+                ? "-top-[25%] -left-[10%] h-[150%] w-[120%] sm:-top-[14%] sm:-left-[3%] sm:h-[128%] sm:w-[106%]"
                 : "h-full w-full"
             )}
           />
