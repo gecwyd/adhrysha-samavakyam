@@ -8,7 +8,7 @@ export type PreloadStatus = "pending" | "loading" | "loaded" | "error"
 export interface PreloadItem {
   id: string
   url: string
-  type: "youtube" | "drive-image" | "image" | "audio" | "script" | "other"
+  type: "youtube" | "drive-image" | "image" | "audio" | "script" | "video" | "other"
   status: PreloadStatus
 }
 
@@ -70,6 +70,7 @@ class PreloadStore {
     if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube"
     if (url.includes("drive.google.com")) return "drive-image"
     if (/\.(jpeg|jpg|gif|png|webp|avif|svg)(\?.*)?$/i.test(url)) return "image"
+    if (/\.(mp4|webm|mov)(\?.*)?$/i.test(url)) return "video"
     return "other"
   }
 
@@ -89,6 +90,8 @@ class PreloadStore {
         await this.preloadImage(url)
       } else if (type === "audio") {
         await this.preloadAudio(url)
+      } else if (type === "video") {
+        await this.preloadVideo(url)
       } else {
         await this.preloadOther(url)
       }
@@ -195,6 +198,27 @@ class PreloadStore {
       audio.addEventListener("error", onDone, { once: true })
       audio.src = streamUrl
       audio.load()
+    })
+  }
+
+  private preloadVideo(url: string): Promise<void> {
+    if (this.cache.has(url)) return Promise.resolve()
+
+    return new Promise((resolve) => {
+      const video = document.createElement("video")
+      video.preload = "auto"
+      const onDone = () => {
+        this.cache.add(url)
+        video.removeEventListener("canplay", onDone)
+        video.removeEventListener("canplaythrough", onDone)
+        video.removeEventListener("error", onDone)
+        resolve()
+      }
+      video.addEventListener("canplay", onDone, { once: true })
+      video.addEventListener("canplaythrough", onDone, { once: true })
+      video.addEventListener("error", onDone, { once: true })
+      video.src = url
+      video.load()
     })
   }
 

@@ -48,9 +48,8 @@ export function SecD() {
           playerRef.current.mute()
         } catch {}
       }
-      playbg?.(resolveAsset("intro.mp3"), { loop: true })
     }
-  }, [isInView, isUserMuted, pauseBg, playbg])
+  }, [isInView, isUserMuted, pauseBg])
 
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 24 })
 

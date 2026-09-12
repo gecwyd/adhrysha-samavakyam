@@ -3,6 +3,8 @@ import { SecB } from "@/components/pages/main/sec-b";
 import { SecC } from "@/components/pages/main/sec-c";
 import { SecD } from "@/components/pages/main/sec-d";
 import { SecE } from "@/components/pages/main/sec-e";
+import { SecF } from "@/components/pages/main/sec-f";
+import { SecG } from "@/components/pages/main/sec-g";
 
 export default function Home() {
   return (
@@ -12,6 +14,7 @@ export default function Home() {
       <SecC />
       <SecD />
       <SecE />
+      <SecG />
     </main>
   );
 }

@@ -33,9 +33,9 @@ const UNION_CREW = [
     { name: "Dr. Brijmohan K", role: "Staff Advisor" }
 ]
 
-export type SecEProps = React.HTMLAttributes<HTMLElement>
+export type SecFProps = React.HTMLAttributes<HTMLElement>
 
-export function SecE({ className, ...props }: SecEProps) {
+export function SecF({ className, ...props }: SecFProps) {
     const { pauseBg, playbg } = useAudio()
     const containerRef = useRef<HTMLElement>(null)
     const hasEnteredRef = useRef(false)
@@ -89,14 +89,14 @@ export function SecE({ className, ...props }: SecEProps) {
     return (
         <section
             ref={containerRef}
-            id="sec-e"
+            id="sec-f"
             className={cn("relative h-[250vh] w-full bg-[#050505] text-[#d9d4c7] z-20", className)}
             {...props}
         >
             <div className="sticky top-0 h-screen w-full flex flex-col justify-between items-center overflow-hidden bg-[#050505] px-4 sm:px-8 py-5 sm:py-7 select-none">
                 <motion.div
-                    style={{ scale: bgGlowScale, opacity: bgGlowOpacity, willChange: "transform, opacity" }}
-                    className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(217,212,199,0.15)_0%,_transparent_60%)] md:blur-3xl"
+                    style={{ scale: bgGlowScale, opacity: bgGlowOpacity }}
+                    className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(217,212,199,0.22)_0%,_rgba(217,212,199,0.05)_40%,_transparent_75%)] blur-3xl"
                 />
 
                 <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,#d9d4c7_1px,transparent_1px),linear-gradient(to_bottom,#d9d4c7_1px,transparent_1px)] bg-[size:4rem_4rem]" />
@@ -140,8 +140,8 @@ export function SecE({ className, ...props }: SecEProps) {
                     </motion.div>
 
                     <motion.div
-                        style={{ opacity: miniHudOpacity, y: miniHudY, willChange: "transform, opacity" }}
-                        className="absolute top-2 flex items-center gap-3 px-4 sm:px-6 py-1.5 rounded-full border border-[#d9d4c7]/20 bg-[#050505] md:bg-[#050505]/80 md:backdrop-blur-md shadow-lg"
+                        style={{ opacity: miniHudOpacity, y: miniHudY }}
+                        className="absolute top-2 flex items-center gap-3 px-4 sm:px-6 py-1.5 rounded-full border border-[#d9d4c7]/20 bg-[#050505]/80 backdrop-blur-md shadow-lg"
                     >
                         <Film className="w-3.5 h-3.5 text-[#d9d4c7]/70" />
                         <span className="font-mono text-[9px] sm:text-[11px] tracking-[0.25em] uppercase font-bold text-[#d9d4c7]">
@@ -159,11 +159,11 @@ export function SecE({ className, ...props }: SecEProps) {
                     className="relative w-full max-w-4xl lg:max-w-5xl z-20 my-auto"
                 >
                     <motion.div
-                        style={{ opacity: videoGlowOpacity, willChange: "opacity" }}
-                        className="absolute -inset-2 bg-gradient-to-r from-[#d9d4c7]/15 via-[#d9d4c7]/25 to-[#d9d4c7]/15 rounded-2xl md:blur-xl blur-lg pointer-events-none"
+                        style={{ opacity: videoGlowOpacity }}
+                        className="absolute -inset-2 bg-gradient-to-r from-[#d9d4c7]/15 via-[#d9d4c7]/25 to-[#d9d4c7]/15 rounded-2xl blur-xl pointer-events-none"
                     />
 
-                    <div className="relative aspect-video w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#050505] md:bg-black/95 border border-[#d9d4c7]/20 shadow-[0_10px_40px_rgba(0,0,0,0.8)] md:shadow-[0_20px_70px_rgba(0,0,0,0.9)] md:backdrop-blur-xl">
+                    <div className="relative aspect-video w-full rounded-xl sm:rounded-2xl overflow-hidden bg-black/95 border border-[#d9d4c7]/20 shadow-[0_20px_70px_rgba(0,0,0,0.9)] backdrop-blur-xl">
                         <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-[#d9d4c7]/40 pointer-events-none z-30" />
                         <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-[#d9d4c7]/40 pointer-events-none z-30" />
                         <div className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-[#d9d4c7]/40 pointer-events-none z-30" />
@@ -197,14 +197,13 @@ export function SecE({ className, ...props }: SecEProps) {
                     style={{ opacity: creditsOpacity, y: creditsY }}
                     className="relative w-full max-w-6xl flex flex-col items-center gap-3 sm:gap-4 z-20"
                 >
-                    <div className="w-full relative overflow-hidden py-2.5 sm:py-3 border-y border-[#d9d4c7]/15 bg-[#050505] md:bg-[#d9d4c7]/[0.03] md:backdrop-blur-md">
+                    <div className="w-full relative overflow-hidden py-2.5 sm:py-3 border-y border-[#d9d4c7]/15 bg-[#d9d4c7]/[0.03] backdrop-blur-md">
                         <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none" />
                         <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none" />
 
                         <motion.div
                             animate={{ x: ["0%", "-50%"] }}
                             transition={{ ease: "linear", duration: 36, repeat: Infinity }}
-                            style={{ willChange: "transform" }}
                             className="flex items-center gap-10 sm:gap-16 w-max px-6"
                         >
                             {[...UNION_CREW, ...UNION_CREW].map((member, idx) => (
@@ -245,5 +244,5 @@ export function SecE({ className, ...props }: SecEProps) {
     )
 }
 
-export const SecG = SecE
-export default SecE
+export const SecG = SecF
+export default SecF

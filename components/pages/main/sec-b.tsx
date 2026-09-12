@@ -1,11 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring, useInView, MotionValue } from "framer-motion"
 import { useRef } from "react"
 import { DriveImage } from "@/components/ui/drive-image"
 import { cn } from "@/lib/utils"
 import { preload } from "@/lib/preload"
+import { useAudio } from "@/context/audio.context"
+import { resolveAsset } from "@/lib/asset-registry"
 
 const UNION_LOGO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/union-logo.webp"
 const LETTERS = ["S", "A", "T", "H", "V", "A"]
@@ -84,6 +86,14 @@ export interface SecBProps extends React.HTMLAttributes<HTMLElement> { }
 
 export function SecB({ className, ...props }: SecBProps) {
     const containerRef = useRef<HTMLElement>(null)
+    const { playbg } = useAudio()
+    const isInView = useInView(containerRef, { amount: 0.2 })
+
+    React.useEffect(() => {
+        if (isInView) {
+            playbg?.(resolveAsset("intro.mp3"), { loop: true })
+        }
+    }, [isInView, playbg])
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
