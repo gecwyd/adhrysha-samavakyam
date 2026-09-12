@@ -43,11 +43,10 @@ export function SecE({ className, ...props }: SecEProps) {
     useEffect(() => {
         if (isInView) {
             hasEnteredRef.current = true
-            pauseBg?.(300)
         } else if (hasEnteredRef.current) {
             playbg?.(resolveAsset("intro.mp3"), { loop: true })
         }
-    }, [isInView, pauseBg, playbg])
+    }, [isInView, playbg])
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -110,16 +109,20 @@ export function SecE({ className, ...props }: SecEProps) {
                                     url={UNION_VIDEO_URL}
                                     showFloatingMute={false}
                                     className="w-full h-full object-cover"
+                                    onPlay={() => pauseBg?.(300)}
+                                    onPause={() => playbg?.(resolveAsset("intro.mp3"), { loop: true })}
+                                    onEnd={() => playbg?.(resolveAsset("intro.mp3"), { loop: true })}
                                 />
                             ) : (
                                 <video
                                     src={resolveAsset(UNION_VIDEO_URL)}
                                     className="w-full h-full object-cover"
                                     controls
-                                    autoPlay
-                                    muted
                                     playsInline
                                     onContextMenu={(e) => e.preventDefault()}
+                                    onPlay={() => pauseBg?.(300)}
+                                    onPause={() => playbg?.(resolveAsset("intro.mp3"), { loop: true })}
+                                    onEnded={() => playbg?.(resolveAsset("intro.mp3"), { loop: true })}
                                 />
                             )}
                         </div>
