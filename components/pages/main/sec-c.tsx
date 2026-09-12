@@ -136,7 +136,7 @@ function DignitaryRow({
             paddingBottom: padBottom,
             paddingRight: padRight
           }}
-          className="w-full md:w-5/12 lg:w-[46vw] h-[42vh] md:h-full flex flex-col justify-start items-start shrink-0 relative z-20"
+          className="absolute inset-0 md:relative md:w-5/12 lg:w-[46vw] h-screen md:h-full flex flex-col justify-start items-start shrink-0 z-0 md:z-20"
         >
           <motion.div
             style={{
@@ -154,7 +154,7 @@ function DignitaryRow({
                   filter: imgFilter
                 }}
                 onError={() => setImgError(true)}
-                className="w-full h-full object-cover object-top transition-all duration-300"
+                className="w-full h-full object-cover object-top md:object-center transition-all duration-300"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-neutral-800 via-neutral-900 to-black flex flex-col items-center justify-center p-8 text-neutral-300">
@@ -166,11 +166,13 @@ function DignitaryRow({
                 </span>
               </div>
             )}
+
+            <div className="absolute inset-0 bg-gradient-to-t from-[#d9d4c7] via-[#d9d4c7]/80 to-transparent md:hidden pointer-events-none" />
           </motion.div>
         </motion.div>
 
-        <div className="w-full md:w-7/12 lg:w-[54vw] flex-1 md:h-full flex flex-col justify-start md:justify-center pt-4 sm:pt-8 md:pt-0 px-6 sm:px-10 md:px-14 lg:px-20 relative z-10 overflow-hidden">
-          <div className="flex items-center gap-2 text-black/50 font-mono text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-6 lg:mb-10">
+        <div className="absolute inset-x-0 bottom-0 md:relative w-full md:w-7/12 lg:w-[54vw] md:h-full flex flex-col justify-end md:justify-center pb-12 sm:pb-16 md:pb-0 px-6 sm:px-10 md:px-14 lg:px-20 z-10 overflow-hidden pointer-events-none md:pointer-events-auto">
+          <div className="flex items-center gap-2 text-black/50 font-mono text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-4 sm:mb-6 lg:mb-10">
             <span className="w-1.5 h-1.5 rounded-full bg-black/40 hidden sm:block" />
             <span>Voices of Support</span>
           </div>
@@ -183,10 +185,10 @@ function DignitaryRow({
             }}
             className="relative flex flex-col max-w-2xl"
           >
-            <span className="font-serif text-[60px] sm:text-[120px] text-black/10 select-none absolute -top-6 sm:-top-16 -left-2 sm:-left-8 pointer-events-none leading-none z-0">
+            <span className="font-serif text-[70px] sm:text-[120px] text-black/10 select-none absolute -top-8 sm:-top-16 -left-2 sm:-left-8 pointer-events-none leading-none z-0">
               “
             </span>
-            <blockquote className="text-base sm:text-lg md:text-2xl lg:text-3xl font-serif text-black/90 leading-snug md:leading-relaxed relative z-10 tracking-tight">
+            <blockquote className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-serif text-black/90 leading-tight md:leading-relaxed relative z-10 tracking-tight">
               {item.message}
             </blockquote>
 
@@ -198,10 +200,10 @@ function DignitaryRow({
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading uppercase tracking-wider text-black">
+              <h3 className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl font-heading uppercase tracking-wider text-black leading-none mb-1">
                 {item.name}
               </h3>
-              <p className="text-[10px] sm:text-[11px] md:text-xs font-mono uppercase tracking-[0.25em] text-black/60 mt-1 font-semibold">
+              <p className="text-xs sm:text-sm md:text-xs font-mono uppercase tracking-[0.2em] text-black/60 mt-1.5 font-bold">
                 {item.title}
               </p>
             </div>
