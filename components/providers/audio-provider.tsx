@@ -2,11 +2,18 @@
 
 import * as React from "react"
 import { getDriveAudioUrl } from "@/components/ui/drive-image"
+import {
+  extractYouTubeId,
+  loadYouTubeIframeApi,
+  type YTPlayerInstance,
+} from "@/components/ui/youtube-player"
 
 interface AudioPlayOptions {
   volume?: number
   loop?: boolean
   fadeDuration?: number
+  startSeconds?: number
+  seek?: number
 }
 
 interface AudioContextValue {
@@ -39,6 +46,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [volume, setVolumeState] = React.useState<number>(0.35)
 
   const activeAudioRef = React.useRef<HTMLAudioElement | null>(null)
+  const activeYouTubeRef = React.useRef<YTPlayerInstance | null>(null)
+  const activeYouTubeIdRef = React.useRef<string | null>(null)
+  const youtubeContainerRef = React.useRef<HTMLDivElement | null>(null)
+  const youtubeSetupRef = React.useRef<Promise<YTPlayerInstance> | null>(null)
+  const youtubeFadeRef = React.useRef<number | null>(null)
+  const youtubeOptionsRef = React.useRef({ loop: true, volume: 0.35, fadeDuration: 800 })
   const activeUrlRef = React.useRef<string | null>(null)
   const activeAudiosRef = React.useRef<Set<HTMLAudioElement>>(new Set())
   const activeFadesRef = React.useRef<Map<HTMLAudioElement, number>>(new Map())
@@ -83,7 +96,133 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const cancelAllFades = React.useCallback(() => {
     activeFadesRef.current.forEach((animId) => cancelAnimationFrame(animId))
     activeFadesRef.current.clear()
+    if (youtubeFadeRef.current !== null) {
+      cancelAnimationFrame(youtubeFadeRef.current)
+      youtubeFadeRef.current = null
+    }
   }, [])
+
+  const destroyYouTubePlayer = React.useCallback(() => {
+    if (activeYouTubeRef.current) {
+      try {
+        activeYouTubeRef.current.stopVideo()
+        activeYouTubeRef.current.destroy()
+      } catch {}
+    }
+    activeYouTubeRef.current = null
+    activeYouTubeIdRef.current = null
+    youtubeSetupRef.current = null
+    if (youtubeContainerRef.current) {
+      youtubeContainerRef.current.innerHTML = ""
+    }
+  }, [])
+
+  const fadeYouTube = React.useCallback((
+    player: YTPlayerInstance,
+    from: number,
+    to: number,
+    durationMs: number,
+    onComplete?: () => void,
+  ) => {
+    if (youtubeFadeRef.current !== null) {
+      cancelAnimationFrame(youtubeFadeRef.current)
+      youtubeFadeRef.current = null
+    }
+
+    const startVolume = Math.max(0, Math.min(1, from))
+    const targetVolume = Math.max(0, Math.min(1, to))
+    if (durationMs <= 0) {
+      player.setVolume(Math.round(targetVolume * 100))
+      setIsTransitioning(false)
+      onComplete?.()
+      return
+    }
+
+    const start = performance.now()
+    setIsTransitioning(true)
+    const step = (now: number) => {
+      const progress = Math.min(1, Math.max(0, (now - start) / durationMs))
+      const nextVolume = startVolume + (targetVolume - startVolume) * progress
+      try {
+        player.setVolume(Math.round((isMutedRef.current ? 0 : nextVolume) * 100))
+      } catch {}
+
+      if (progress < 1) {
+        youtubeFadeRef.current = requestAnimationFrame(step)
+      } else {
+        youtubeFadeRef.current = null
+        setIsTransitioning(false)
+        onComplete?.()
+      }
+    }
+    youtubeFadeRef.current = requestAnimationFrame(step)
+  }, [])
+
+  const createYouTubePlayer = React.useCallback((videoId: string, loop: boolean, startSeconds?: number) => {
+    if (!youtubeContainerRef.current) {
+      return Promise.reject(new Error("YouTube background player is not mounted"))
+    }
+
+    if (activeYouTubeRef.current && activeYouTubeIdRef.current === videoId) {
+      return Promise.resolve(activeYouTubeRef.current)
+    }
+
+    destroyYouTubePlayer()
+    const mountElement = document.createElement("div")
+    youtubeContainerRef.current.appendChild(mountElement)
+
+    const setup = loadYouTubeIframeApi().then((YT) => new Promise<YTPlayerInstance>((resolve) => {
+      const player = new YT.Player(mountElement, {
+        width: "1",
+        height: "1",
+        videoId,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          rel: 0,
+          iv_load_policy: 3,
+          loop: loop ? 1 : 0,
+          playlist: loop ? videoId : undefined,
+          playsinline: 1,
+          start: startSeconds !== undefined ? Math.round(startSeconds) : undefined,
+        },
+        events: {
+          onReady: (event) => {
+            if (activeYouTubeIdRef.current === videoId) {
+              activeYouTubeRef.current = event.target
+              setIsLoading(false)
+              setIsLoaded(true)
+            }
+            resolve(event.target)
+          },
+          onStateChange: (event) => {
+            if (activeYouTubeRef.current !== event.target) return
+            if (window.YT?.PlayerState) {
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                pendingPlayRef.current = null
+                setIsPlaying(true)
+                setIsLoading(false)
+                setIsLoaded(true)
+              } else if (
+                event.data === window.YT.PlayerState.PAUSED ||
+                event.data === window.YT.PlayerState.ENDED
+              ) {
+                setIsPlaying(false)
+              }
+            }
+          },
+        },
+      })
+      activeYouTubeRef.current = player
+      activeYouTubeIdRef.current = videoId
+    }))
+
+    youtubeSetupRef.current = setup
+    return setup
+  }, [destroyYouTubePlayer])
 
   const fadeAudio = React.useCallback((
     audio: HTMLAudioElement,
@@ -129,13 +268,73 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (!url || typeof window === "undefined") return
 
     const resolvedUrl = getDriveAudioUrl(url)
+    const youtubeId = extractYouTubeId(url)
     const opts = typeof options === "number" ? { fadeDuration: options > 50 ? options : options * 1000 } : options
     const targetVol = opts?.volume !== undefined ? opts.volume : volumeRef.current
     const loop = opts?.loop !== undefined ? opts.loop : true
     const fadeDuration = opts?.fadeDuration !== undefined ? opts.fadeDuration : 800
+    const startSeconds = opts?.startSeconds ?? opts?.seek
+
+    youtubeOptionsRef.current = { loop, volume: targetVol, fadeDuration }
 
     isIntentionallyPausedRef.current = false
     pendingPlayRef.current = null
+
+    if (youtubeId) {
+      const previousAudio = activeAudioRef.current
+      if (previousAudio) {
+        cancelAudioFade(previousAudio)
+        previousAudio.pause()
+        activeAudiosRef.current.delete(previousAudio)
+        activeAudioRef.current = null
+      }
+
+      const isSameYouTubeTrack = activeUrlRef.current === url && Boolean(activeYouTubeRef.current)
+      const isNewTrack = !isSameYouTubeTrack
+      if (!isSameYouTubeTrack) {
+        destroyYouTubePlayer()
+        setIsLoading(true)
+        setIsLoaded(false)
+        setCurrentTrack(url)
+        activeUrlRef.current = url
+      }
+
+      const startYouTube = () => {
+        const player = activeYouTubeRef.current
+        if (!player || activeUrlRef.current !== url) return
+        try {
+          if (isNewTrack && startSeconds !== undefined) {
+            player.seekTo(startSeconds, true)
+          }
+          if (isMutedRef.current) player.mute()
+          else {
+            player.unMute()
+            player.setVolume(Math.round(targetVol * 100))
+          }
+          player.playVideo()
+          fadeYouTube(player, isMutedRef.current ? 0 : player.getVolume() / 100, targetVol, fadeDuration)
+        } catch {
+          pendingPlayRef.current = startYouTube
+        }
+      }
+
+      if (activeYouTubeRef.current && isSameYouTubeTrack) {
+        startYouTube()
+      } else {
+        pendingPlayRef.current = startYouTube
+        createYouTubePlayer(youtubeId, loop, startSeconds).then(() => {
+          if (!isIntentionallyPausedRef.current) startYouTube()
+        }).catch(() => {
+          setIsLoading(false)
+          setIsTransitioning(false)
+        })
+      }
+      return
+    }
+
+    if (activeYouTubeRef.current || activeYouTubeIdRef.current) {
+      destroyYouTubePlayer()
+    }
 
     if ((activeUrlRef.current === url || activeUrlRef.current === resolvedUrl) && activeAudioRef.current && !activeAudioRef.current.error) {
       const currentAudio = activeAudioRef.current
@@ -181,6 +380,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     newAudio.preload = "auto"
     newAudio.loop = loop
     newAudio.volume = 0
+    if (startSeconds !== undefined) {
+      newAudio.currentTime = startSeconds
+    }
     activeAudioRef.current = newAudio
     activeUrlRef.current = url
     activeAudiosRef.current.add(newAudio)
@@ -242,8 +444,17 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         })
       }
     })
+    if (activeYouTubeRef.current) {
+      const player = activeYouTubeRef.current
+      const currentVolume = isMutedRef.current ? 0 : player.getVolume() / 100
+      if (fadeDuration <= 0) {
+        player.pauseVideo()
+      } else {
+        fadeYouTube(player, currentVolume, 0, fadeDuration, () => player.pauseVideo())
+      }
+    }
     setIsPlaying(false)
-  }, [cancelAllFades, fadeAudio])
+  }, [cancelAllFades, fadeAudio, fadeYouTube])
 
   const stopBg = React.useCallback((fadeDuration: number = 0) => {
     isIntentionallyPausedRef.current = true
@@ -263,6 +474,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         })
       }
     })
+    destroyYouTubePlayer()
     activeAudiosRef.current.clear()
     activeAudioRef.current = null
     activeUrlRef.current = null
@@ -271,13 +483,20 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setIsLoaded(false)
     setIsLoading(false)
     setIsTransitioning(false)
-  }, [cancelAllFades, fadeAudio])
+  }, [cancelAllFades, destroyYouTubePlayer, fadeAudio])
 
   const toggleMute = React.useCallback(() => {
     setIsMuted((prev) => {
       const next = !prev
       if (activeAudioRef.current) {
         activeAudioRef.current.volume = next ? 0 : volumeRef.current
+      }
+      if (activeYouTubeRef.current) {
+        if (next) activeYouTubeRef.current.mute()
+        else {
+          activeYouTubeRef.current.unMute()
+          activeYouTubeRef.current.setVolume(Math.round(volumeRef.current * 100))
+        }
       }
       return next
     })
@@ -289,6 +508,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (activeAudioRef.current && !isMutedRef.current) {
       activeAudioRef.current.volume = clamped
     }
+    if (activeYouTubeRef.current && !isMutedRef.current) {
+      activeYouTubeRef.current.setVolume(Math.round(clamped * 100))
+    }
   }, [])
 
   const unlockAudio = React.useCallback(() => {
@@ -296,6 +518,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       const fn = pendingPlayRef.current
       pendingPlayRef.current = null
       fn()
+    } else if (activeYouTubeRef.current) {
+      isIntentionallyPausedRef.current = false
+      const player = activeYouTubeRef.current
+      try {
+        if (isMutedRef.current) player.mute()
+        else {
+          player.unMute()
+          player.setVolume(Math.round(volumeRef.current * 100))
+        }
+        player.playVideo()
+        setIsPlaying(true)
+      } catch {}
     } else if (activeAudioRef.current) {
       const audio = activeAudioRef.current
       isIntentionallyPausedRef.current = false
@@ -309,6 +543,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [fadeAudio])
+
+  React.useEffect(() => {
+    return () => {
+      cancelAllFades()
+      destroyYouTubePlayer()
+    }
+  }, [cancelAllFades, destroyYouTubePlayer])
 
   return (
     <AudioContext.Provider
@@ -331,6 +572,20 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
+      <div
+        ref={youtubeContainerRef}
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+          opacity: 0,
+          pointerEvents: "none",
+          left: -1,
+          top: -1,
+        }}
+      />
     </AudioContext.Provider>
   )
 }

@@ -13,6 +13,7 @@ interface DignitaryItem {
   message: string
   image: string
   initials: string
+  category?: string
 }
 
 const DIGNITARIES: DignitaryItem[] = [
@@ -33,14 +34,6 @@ const DIGNITARIES: DignitaryItem[] = [
     initials: "PG",
   },
   {
-    id: "usha",
-    name: "Smt. Usha Vijayan",
-    title: "MLA, Mananthavady",
-    message: "Education and creative expression are the foundations of true progress. It is inspiring to see the students of Government Engineering College Wayanad channeling their talents into this wonderful magazine.",
-    image: resolveAsset("usha.webp"),
-    initials: "UV",
-  },
-  {
     id: "he_minister",
     name: "Shri. Roji M. John",
     title: "Minister for Higher Education, Kerala",
@@ -55,6 +48,41 @@ const DIGNITARIES: DignitaryItem[] = [
     message: "It brings great pride to see the technical excellence of our students taking a creative form. This initiative is a testament to the vibrant community at GECW.",
     image: resolveAsset("siddique.webp"),
     initials: "TS",
+  },
+  {
+    id: "usha",
+    name: "Smt. Usha Vijayan",
+    title: "MLA, Mananthavady",
+    message: "Education and creative expression are the foundations of true progress. It is inspiring to see the students of Government Engineering College Wayanad channeling their talents into this wonderful magazine.",
+    image: resolveAsset("usha.webp"),
+    initials: "UV",
+  },
+  {
+    id: "principal",
+    name: "Dr. V. R. Rajeev",
+    title: "Principal, GEC Wayanad",
+    category: "Principal's Note",
+    message: "True education extends beyond classrooms and laboratories into boundless imagination. This magazine stands as a powerful mirror to our students' intellect, artistic voice, and academic excellence.",
+    image: resolveAsset("rajeev.webp"),
+    initials: "VRR",
+  },
+  {
+    id: "staff_advisor",
+    name: "Dr. Brijmohan K",
+    title: "Staff Advisor, Sathva College Union",
+    category: "Staff Advisor's Note",
+    message: "Guiding this creative pursuit has been an enriching experience. The depth of expression, critical thought, and passion poured into this magazine reflect the vibrant spirit of our students.",
+    image: resolveAsset("brijmohan.webp"),
+    initials: "BK",
+  },
+  {
+    id: "editor",
+    name: "Adhil Muhammed K",
+    title: "Magazine Editor, Sathva College Union",
+    category: "Editor's Note",
+    message: "This magazine is a canvas of our collective stories, unyielding voices, and shared dreams. It stands as a testament to the creative resilience and vibrant spirit of every student at GEC Wayanad.",
+    image: resolveAsset("adhil.webp"),
+    initials: "AMK",
   }
 ]
 
@@ -143,7 +171,7 @@ function DignitaryRow({
               height: imgHeight,
               borderRadius: imgRadius
             }}
-            className="w-full relative overflow-hidden bg-neutral-900 shadow-2xl transition-shadow flex items-center justify-center"
+            className="w-full relative overflow-hidden bg-white shadow-2xl transition-shadow flex items-center justify-center"
           >
             {!imgError ? (
               <motion.img
@@ -154,7 +182,7 @@ function DignitaryRow({
                   filter: imgFilter
                 }}
                 onError={() => setImgError(true)}
-                className="w-full h-full object-cover object-top md:object-center transition-all duration-300"
+                className="w-full h-full object-cover object-top transition-all duration-300"
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-neutral-800 via-neutral-900 to-black flex flex-col items-center justify-center p-8 text-neutral-300">
@@ -172,9 +200,9 @@ function DignitaryRow({
         </motion.div>
 
         <div className="absolute inset-x-0 bottom-0 md:relative w-full md:w-7/12 lg:w-[54vw] md:h-full flex flex-col justify-end md:justify-center pb-24 sm:pb-28 md:pb-0 px-6 sm:px-10 md:px-14 lg:px-20 z-10 overflow-hidden pointer-events-none md:pointer-events-auto">
-          <div className="flex items-center gap-2 text-black/50 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase mb-4 sm:mb-6 lg:mb-10">
+          <div className="flex items-center gap-2 text-black/50 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase mb-3 sm:mb-4 md:mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-black/40 hidden sm:block" />
-            <span>Voices of Support</span>
+            <span>{item.category || "Voices of Support"}</span>
           </div>
 
           <motion.div
@@ -185,9 +213,6 @@ function DignitaryRow({
             }}
             className="relative flex flex-col max-w-2xl"
           >
-            <span className="font-serif text-[70px] sm:text-[120px] text-black/10 select-none absolute -top-8 sm:-top-16 -left-2 sm:-left-8 pointer-events-none leading-none z-0">
-              “
-            </span>
             <blockquote className="text-2xl sm:text-3xl md:text-2xl lg:text-3xl font-serif text-black/90 leading-tight md:leading-relaxed relative z-10 tracking-tight">
               {item.message}
             </blockquote>

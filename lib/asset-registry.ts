@@ -13,6 +13,10 @@ const ASSET_MAP: Record<string, string> = {
   "siddique.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/siddique.webp",
   "bg-piano.mp3": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/bg-piano-v2.mp3",
   "miss-minute-intro.webm": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/miss-minute-intro.webm",
+  "adhil.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/adhil.webp",
+  "rajeev.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/rajeev.webp",
+  "brijmohan.webp": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/brijmohan.webp",
+  "time-dilation-bg.png": "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/time-dilation-bg.png",
 }
 
 export function resolveAsset(path: string): string {

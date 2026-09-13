@@ -1,0 +1,47 @@
+.miss-minute{position:relative;will-change:transform;flex:none;isolation:isolate}
+.mm-art{display:block;width:100%;overflow:visible;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.facing-left .mm-art{transform:scaleX(-1)}
+.mm-character{transform-origin:160px 270px;animation:mm-idle 4s cubic-bezier(.45,0,.55,1) infinite;will-change:transform}
+.mm-arm-left{transform-origin:69px 171px}
+.mm-arm-right{transform-origin:251px 169px}
+.mm-arm{transition:transform .45s cubic-bezier(.22,1.5,.5,1);will-change:transform}
+.mm-pose-arm{will-change:transform,opacity}
+.mm-pose-wave{transform-origin:72px 172px}
+.mm-pose-point,.mm-pose-thumbsUp{transform-origin:251px 169px}
+.mm-leg-left{transform-origin:127px 249px}
+.mm-leg-right{transform-origin:190px 250px}
+.mm-leg,.mm-shoe,.mm-shadow,.mm-pupils{will-change:transform,opacity}
+.mm-eyes{transform-origin:160px 150px;animation:mm-blink 6s infinite}
+.mm-mouth{transform-origin:160px 198px;transform:scale(.96,.24);will-change:transform}
+.mm-face{transform-origin:160px 170px;will-change:transform,opacity}
+.mm-caption{position:absolute;bottom:98%;left:50%;transform:translateX(-50%);width:260px;text-align:center;z-index:2;pointer-events:none}
+.mm-caption span{display:inline-block;background:#fff9eb;border:1px solid #d5b78b;border-radius:14px;padding:13px 17px;color:#593d27;font-size:14px;line-height:1.5;box-shadow:0 5px 20px #57361312;max-height:130px;overflow:auto;pointer-events:auto}
+.gesture-handsOnHips:not(.walking) .mm-arm-left{transform:rotate(-38deg)}
+.gesture-handsOnHips:not(.walking) .mm-arm-right{transform:rotate(38deg)}
+.gesture-celebrate:not(.walking) .mm-arm-left{transform:rotate(155deg)}
+.gesture-celebrate:not(.walking) .mm-arm-right{transform:rotate(-155deg)}
+.walking .mm-character{animation:none}
+.walking .mm-art{filter:drop-shadow(0 5px 3px #8a5d2d0d)}
+.moving .mm-character{transform:rotate(-5deg)}
+.mm-expression-curious .mm-pupils{transform:translateX(4px)}
+.mm-expression-mischievous .mm-pupils{transform:translate(3px,-2px)}
+.mm-expression-surprised .mm-pupils{transform:scale(.82);transform-origin:center}
+.mm-mouth{transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+
+.speed-control{display:flex;justify-content:space-between;align-items:center;color:#8e8575;font-size:10px;margin:6px 0 2px}
+.speed-control output{color:#b46c40;font-weight:650}
+.speed-range{width:100%;height:18px;accent-color:#bc6b3d;margin:0 0 8px}
+
+@keyframes mm-idle{50%{transform:translateY(-5px) rotate(1deg)}
+}
+@keyframes mm-blink{0%,43%,47%,100%{transform:scaleY(1)}
+45%{transform:scaleY(.08)}
+}
+@keyframes mm-talk{0%,100%{transform:scale(1,1)}
+25%{transform:scale(.88,.42)}
+50%{transform:scale(1.08,1.22)}
+75%{transform:scale(.94,.65)}
+}
+@media(prefers-reduced-motion:reduce){.miss-minute *{animation:none!important;transition:none!important}
+}
+

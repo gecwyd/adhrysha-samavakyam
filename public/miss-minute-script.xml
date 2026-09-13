@@ -1,0 +1,61 @@
+<a action="expression" name="happy" />
+<a action="gesture" name="wave" />
+<s time="0.76s">Hi y'all,</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="idle" />
+<s time="1.46s">my name is Miss Minutes,</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="handsOnHips" />
+<s time="1.92s">and welcome to the web magazine,</s>
+<a action="expression" name="curious" />
+<a action="gesture" name="idle" />
+<s time="0.98s">presented by</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="point" />
+<s time="1.52s">Sathva College Union.</s>
+<s time="0.08s"></s>
+<a action="expression" name="happy" />
+<a action="gesture" name="thumbsUp" />
+<s time="1.2s">I'm here to guide you</s>
+<a action="expression" name="determined" />
+<a action="gesture" name="idle" />
+<s time="1.56s">through everything we've put together:</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="point" />
+<s time="1.08s">stories,</s>
+<a action="expression" name="curious" />
+<a action="gesture" name="idle" />
+<s time="1.04s">events,</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="thumbsUp" />
+<s time="1.24s">achievements,</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="idle" />
+<s time="1.14s">memories,</s>
+<a action="expression" name="mischievous" />
+<a action="gesture" name="idle" />
+<s time="1.38s">and maybe</s>
+<a action="expression" name="surprised" />
+<a action="gesture" name="point" />
+<s time="1.66s">a few surprises.</s>
+<s time="0.32s"></s>
+<a action="expression" name="happy" />
+<a action="gesture" name="handsOnHips" />
+<s time="2s">So, take a look around,</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="idle" />
+<s time="1.1s">I'll be right here</s>
+<a action="expression" name="happy" />
+<a action="gesture" name="thumbsUp" />
+<s time="1s">if you need me.</s>
+<s time="0.28s"></s>
+<a action="expression" name="determined" />
+<a action="gesture" name="idle" />
+<s time="1.12s">Now then,</s>
+<a action="expression" name="determined" />
+<a action="gesture" name="celebrate" />
+<s time="1.68s">let's get started!</s>
+<s time="0.12s"></s>
+<a action="expression" name="happy" />
+<a action="gesture" name="wave" />
+<s time="1.6s">Have fun exploring!</s>

@@ -126,7 +126,7 @@ export interface YouTubePlayerProps
 
 let ytApiPromise: Promise<YTNamespace> | null = null
 
-function loadYouTubeIframeApi(): Promise<YTNamespace> {
+export function loadYouTubeIframeApi(): Promise<YTNamespace> {
   if (typeof window === "undefined") {
     return Promise.reject(new Error("Window is not defined"))
   }
@@ -157,7 +157,9 @@ function loadYouTubeIframeApi(): Promise<YTNamespace> {
         }
       }
 
-      const existingScript = document.getElementById("youtube-iframe-api")
+      const existingScript =
+        document.getElementById("youtube-iframe-api") ||
+        document.getElementById("youtube-iframe-api-preload")
       if (!existingScript) {
         const tag = document.createElement("script")
         tag.id = "youtube-iframe-api"
