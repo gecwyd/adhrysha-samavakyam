@@ -14,6 +14,7 @@ import { Manam } from "@/components/pages/main/manam";
 import { ShedBeProud } from "@/components/pages/main/shed-be-proud";
 import { Theyyam } from "@/components/pages/main/theyyam";
 import { RuiningRumours } from "@/components/pages/main/ruining-rumours";
+import { Thamodwaram } from "@/components/pages/main/thamodwaram";
 
 export default function Home() {
   return (
@@ -22,8 +23,8 @@ export default function Home() {
       <SecB />
       <SecC />
       {/* <SecD /> */}
-      <SecE />
-      <SecG />
+      {/* <SecE /> */}
+      {/* <SecG /> */}
       <TimeDilation />
       <ClockEssay />
       <TickTickTick />
@@ -33,6 +34,7 @@ export default function Home() {
       <ShedBeProud />
       <Theyyam />
       <RuiningRumours />
+      <Thamodwaram />
     </main>
   );
 }

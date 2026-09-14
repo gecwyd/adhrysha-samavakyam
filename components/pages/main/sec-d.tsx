@@ -26,7 +26,7 @@ export function SecD() {
     offset: ["start start", "end end"]
   })
 
-  const isInView = useInView(sectionRef, { amount: 0.15 })
+  const isInView = useInView(sectionRef, { amount: "some", margin: "150px 0px" })
   const isMuted = !isInView || isUserMuted
 
   useEffect(() => {

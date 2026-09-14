@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, useInView } from "framer-motion";
 import { useAudio } from "@/context/audio.context";
 import { resolveAsset } from "@/lib/asset-registry";
+import { preload } from "@/lib/preload";
 
 export function travelerYears(speedFraction: number, earthYears = 10) {
   return earthYears * Math.sqrt(1 - speedFraction * speedFraction);
@@ -13,13 +14,21 @@ const TIME_DILATION_BG = "https://youtu.be/m3zvVGJrTP8?si=4n9m6nylINfXnXh6"
 
 export function TimeDilation() {
   const containerRef = useRef<HTMLElement>(null);
-  const { playbg } = useAudio();
+  const { playbg, prebufferbg } = useAudio();
 
-  const isInView = useInView(containerRef, { amount: 0.15 });
+  useEffect(() => {
+    prebufferbg(TIME_DILATION_BG);
+  }, [prebufferbg]);
+
+  useEffect(() => {
+    preload(TIME_DILATION_BG, "youtube");
+  }, []);
+
+  const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" });
 
   useEffect(() => {
     if (isInView) {
-      playbg(TIME_DILATION_BG, { loop: true, volume: 0.3, startSeconds: 10 });
+      playbg(TIME_DILATION_BG, { loop: true, volume: 0.3 });
     }
   }, [isInView, playbg]);
 
@@ -54,7 +63,7 @@ export function TimeDilation() {
   const travellerX = useTransform(speedFraction, [0, 0.999], [0, 60]);
   const travellerScale = useTransform(speedFraction, [0, 0.999], [1, 1.2]);
   const travellerFilter = useTransform(speedFraction, [0, 0.9, 0.999], ["blur(0px)", "blur(0px)", "blur(4px)"]);
-  
+
   const dividerOpacity = useTransform(speedFraction, [0, 0.15], [1, 0]);
 
   const barWidth = useTransform(speedFraction, [0, 0.999], ["0%", "100%"]);
@@ -118,8 +127,8 @@ export function TimeDilation() {
               </p>
             </motion.div>
 
-            <motion.div 
-              style={{ opacity: dividerOpacity }} 
+            <motion.div
+              style={{ opacity: dividerOpacity }}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-serif text-3xl sm:text-4xl text-[#d9d4c7]/20 italic pointer-events-none"
             >
               vs
@@ -145,7 +154,7 @@ export function TimeDilation() {
                 className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#a84e2a]/20 via-[#a84e2a] to-[#ff8c61] shadow-[0_0_10px_rgba(168,78,42,0.5)]"
               />
             </div>
-            
+
             <div className="flex flex-col items-center gap-2">
               <p className="font-mono text-[9px] sm:text-[10px] tracking-[0.22em] uppercase text-[#d9d4c7]/50">
                 Speed &mdash; <span className="text-[#d9d4c7] font-bold">{speedDisplay}%</span> of light

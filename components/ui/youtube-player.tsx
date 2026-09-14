@@ -145,6 +145,12 @@ export function loadYouTubeIframeApi(): Promise<YTNamespace> {
 
       if (checkYT()) return
 
+      const intervalId = setInterval(() => {
+        if (checkYT()) {
+          clearInterval(intervalId)
+        }
+      }, 50)
+
       const previousOnReady = window.onYouTubeIframeAPIReady
       window.onYouTubeIframeAPIReady = () => {
         if (previousOnReady) {
@@ -152,7 +158,8 @@ export function loadYouTubeIframeApi(): Promise<YTNamespace> {
             previousOnReady()
           } catch {}
         }
-        if (window.YT) {
+        if (window.YT && window.YT.Player) {
+          clearInterval(intervalId)
           resolve(window.YT)
         }
       }
@@ -164,6 +171,7 @@ export function loadYouTubeIframeApi(): Promise<YTNamespace> {
         const tag = document.createElement("script")
         tag.id = "youtube-iframe-api"
         tag.src = "https://www.youtube.com/iframe_api"
+        tag.async = true
         const firstScriptTag = document.getElementsByTagName("script")[0]
         if (firstScriptTag && firstScriptTag.parentNode) {
           firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)

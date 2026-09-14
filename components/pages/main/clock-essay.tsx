@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, useSpring, useInView } from "framer-mo
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useAudio } from "@/context/audio.context";
+import { preload } from "@/lib/preload";
 
 const TIME_DILATION_BG = "https://youtu.be/m3zvVGJrTP8?si=4n9m6nylINfXnXh6";
 
@@ -33,8 +34,14 @@ const QUOTES = [
 
 export function ClockEssay() {
   const containerRef = useRef<HTMLElement>(null);
-  const { playbg } = useAudio();
-  const isInView = useInView(containerRef, { amount: 0.15 });
+  const { playbg, prebufferbg } = useAudio();
+
+  useEffect(() => {
+    prebufferbg(TIME_DILATION_BG);
+    preload(TIME_DILATION_BG, "youtube");
+  }, [prebufferbg]);
+
+  const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" });
 
   useEffect(() => {
     if (isInView) {

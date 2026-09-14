@@ -37,7 +37,7 @@ export function SecG({ className, ...props }: SecGProps) {
         preload(MISS_MINUTES_VIDEO_URL, "video")
     }, [])
 
-    const isInView = useInView(containerRef, { amount: 0.15 })
+    const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" })
 
     useEffect(() => {
         if (isInView) {

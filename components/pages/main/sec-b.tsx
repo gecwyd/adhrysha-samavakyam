@@ -87,7 +87,7 @@ export interface SecBProps extends React.HTMLAttributes<HTMLElement> { }
 export function SecB({ className, ...props }: SecBProps) {
     const containerRef = useRef<HTMLElement>(null)
     const { playbg } = useAudio()
-    const isInView = useInView(containerRef, { amount: 0.2 })
+    const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" })
 
     React.useEffect(() => {
         if (isInView) {

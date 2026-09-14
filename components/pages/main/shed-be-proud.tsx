@@ -47,7 +47,6 @@ const POEM_LINES = [
 function ScrollLine({ text }: { text: string }) {
   const ref = useRef<HTMLDivElement>(null);
   
-  // The line fades in as it enters the middle third of the screen
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 75%", "center 45%"]
@@ -56,10 +55,6 @@ function ScrollLine({ text }: { text: string }) {
   const opacity = useTransform(scrollYProgress, [0, 1], [0.1, 1]);
   const filter = useTransform(scrollYProgress, [0, 1], ["blur(4px)", "blur(0px)"]);
   const y = useTransform(scrollYProgress, [0, 1], [15, 0]);
-
-  if (!text) {
-    return <div className="h-10 sm:h-16 md:h-20" aria-hidden="true" />;
-  }
 
   return (
     <motion.div
@@ -79,7 +74,6 @@ export function ShedBeProud() {
       aria-labelledby="shed-be-proud-title"
       className="relative w-full bg-[#1b1915] text-[#e6e0d3]"
     >
-      {/* Fixed Background Watermark */}
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pointer-events-none select-none z-0 px-6">
         <div className="flex items-center gap-4 sm:gap-6 mb-8 opacity-20">
           <div className="w-12 sm:w-20 h-[1px] bg-[#d99065]" />
@@ -95,14 +89,15 @@ export function ShedBeProud() {
         </h2>
       </div>
 
-      {/* Scrolling Content */}
       <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-10 lg:px-16 pt-[80vh] pb-32">
-        
-        {/* The Poem */}
         <div className="flex flex-col">
-          {POEM_LINES.map((line, i) => (
-            <ScrollLine key={i} text={line} />
-          ))}
+          {POEM_LINES.map((line, i) =>
+            !line ? (
+              <div key={i} className="h-10 sm:h-16 md:h-20" aria-hidden="true" />
+            ) : (
+              <ScrollLine key={i} text={line} />
+            )
+          )}
         </div>
 
         {/* The Author Lockup */}

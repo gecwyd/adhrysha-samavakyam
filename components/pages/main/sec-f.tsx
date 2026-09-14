@@ -45,7 +45,7 @@ export function SecF({ className, ...props }: SecFProps) {
         preload(UNION_VIDEO_URL, "youtube")
     }, [])
 
-    const isInView = useInView(containerRef, { amount: 0.15 })
+    const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" })
 
     useEffect(() => {
         if (isInView) {

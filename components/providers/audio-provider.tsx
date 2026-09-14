@@ -20,6 +20,7 @@ interface AudioContextValue {
   playbg: (url: string, options?: AudioPlayOptions | number) => void
   playBg: (url: string, options?: AudioPlayOptions | number) => void
   playAudio: (url: string, options?: any) => void
+  prebufferbg: (url: string) => void
   pauseBg: (fadeDuration?: number) => void
   stopBg: (fadeDuration?: number) => void
   currentTrack: string | null
@@ -53,6 +54,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const youtubeFadeRef = React.useRef<number | null>(null)
   const youtubeOptionsRef = React.useRef({ loop: true, volume: 0.35, fadeDuration: 800 })
   const activeUrlRef = React.useRef<string | null>(null)
+  const prebufferContainerRef = React.useRef<HTMLDivElement | null>(null)
+  const prebufferPlayerRef = React.useRef<YTPlayerInstance | null>(null)
+  const prebufferVideoIdRef = React.useRef<string | null>(null)
+  const prebufferSetupRef = React.useRef<Promise<YTPlayerInstance> | null>(null)
   const activeAudiosRef = React.useRef<Set<HTMLAudioElement>>(new Set())
   const activeFadesRef = React.useRef<Map<HTMLAudioElement, number>>(new Map())
   const pendingPlayRef = React.useRef<(() => void) | null>(null)
@@ -83,6 +88,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("keydown", handleFirstInteraction)
       window.removeEventListener("scroll", handleFirstInteraction)
     }
+  }, [])
+
+  React.useEffect(() => {
+    loadYouTubeIframeApi().catch(() => {})
   }, [])
 
   const cancelAudioFade = React.useCallback((audio: HTMLAudioElement) => {
@@ -158,6 +167,64 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     youtubeFadeRef.current = requestAnimationFrame(step)
   }, [])
 
+  const prebufferbg = React.useCallback((url: string) => {
+    if (!url || typeof window === "undefined") return
+    const videoId = extractYouTubeId(url)
+    if (!videoId) return
+    if (activeYouTubeIdRef.current === videoId && activeYouTubeRef.current) return
+    if (prebufferVideoIdRef.current === videoId) return
+    if (!prebufferContainerRef.current) return
+
+    if (prebufferPlayerRef.current) {
+      try {
+        prebufferPlayerRef.current.stopVideo()
+        prebufferPlayerRef.current.destroy()
+      } catch {}
+      prebufferPlayerRef.current = null
+    }
+    prebufferVideoIdRef.current = videoId
+
+    const mountElement = document.createElement("div")
+    prebufferContainerRef.current.appendChild(mountElement)
+
+    const setup = loadYouTubeIframeApi().then((YT) => new Promise<YTPlayerInstance>((resolve) => {
+      const player = new YT.Player(mountElement, {
+        width: "1",
+        height: "1",
+        videoId,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          rel: 0,
+          iv_load_policy: 3,
+          loop: 1,
+          playlist: videoId,
+          playsinline: 1,
+          mute: 1,
+        },
+        events: {
+          onReady: (event) => {
+            prebufferPlayerRef.current = event.target
+            event.target.mute()
+            event.target.setVolume(0)
+            try {
+              event.target.playVideo()
+            } catch {}
+            resolve(event.target)
+          },
+        },
+      })
+      prebufferPlayerRef.current = player
+    }))
+    prebufferSetupRef.current = setup
+    setup.catch(() => {
+      prebufferVideoIdRef.current = null
+    })
+  }, [])
+
   const createYouTubePlayer = React.useCallback((videoId: string, loop: boolean, startSeconds?: number) => {
     if (!youtubeContainerRef.current) {
       return Promise.reject(new Error("YouTube background player is not mounted"))
@@ -177,7 +244,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         height: "1",
         videoId,
         playerVars: {
-          autoplay: 0,
+          autoplay: 1,
           controls: 0,
           disablekb: 1,
           fs: 0,
@@ -191,10 +258,20 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         },
         events: {
           onReady: (event) => {
-            if (activeYouTubeIdRef.current === videoId) {
-              activeYouTubeRef.current = event.target
-              setIsLoading(false)
-              setIsLoaded(true)
+            activeYouTubeRef.current = event.target
+            activeYouTubeIdRef.current = videoId
+            setIsLoading(false)
+            setIsLoaded(true)
+            if (!isIntentionallyPausedRef.current) {
+              if (isMutedRef.current) {
+                event.target.mute()
+              } else {
+                event.target.unMute()
+                event.target.setVolume(Math.round(youtubeOptionsRef.current.volume * 100))
+              }
+              try {
+                event.target.playVideo()
+              } catch {}
             }
             resolve(event.target)
           },
@@ -292,7 +369,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       const isSameYouTubeTrack = activeUrlRef.current === url && Boolean(activeYouTubeRef.current)
       const isNewTrack = !isSameYouTubeTrack
       if (!isSameYouTubeTrack) {
-        destroyYouTubePlayer()
         setIsLoading(true)
         setIsLoaded(false)
         setCurrentTrack(url)
@@ -303,22 +379,62 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         const player = activeYouTubeRef.current
         if (!player || activeUrlRef.current !== url) return
         try {
-          if (isNewTrack && startSeconds !== undefined) {
-            player.seekTo(startSeconds, true)
+          if (isNewTrack) {
+            if (activeYouTubeIdRef.current !== youtubeId) {
+              activeYouTubeIdRef.current = youtubeId
+              player.loadVideoById({
+                videoId: youtubeId,
+                startSeconds: startSeconds !== undefined ? Math.round(startSeconds) : 0,
+              })
+            } else if (startSeconds !== undefined) {
+              player.seekTo(startSeconds, true)
+            }
           }
-          if (isMutedRef.current) player.mute()
-          else {
+          if (isMutedRef.current) {
+            player.mute()
+          } else {
             player.unMute()
             player.setVolume(Math.round(targetVol * 100))
           }
           player.playVideo()
-          fadeYouTube(player, isMutedRef.current ? 0 : player.getVolume() / 100, targetVol, fadeDuration)
+          fadeYouTube(player, isMutedRef.current ? 0 : player.getVolume() / 100, targetVol, Math.min(300, fadeDuration))
         } catch {
           pendingPlayRef.current = startYouTube
         }
       }
 
-      if (activeYouTubeRef.current && isSameYouTubeTrack) {
+      const promotePrebuffer = () => {
+        if (
+          prebufferVideoIdRef.current === youtubeId &&
+          prebufferPlayerRef.current &&
+          !activeYouTubeRef.current
+        ) {
+          const promoted = prebufferPlayerRef.current
+          prebufferPlayerRef.current = null
+          prebufferVideoIdRef.current = null
+          prebufferSetupRef.current = null
+          if (prebufferContainerRef.current) {
+            prebufferContainerRef.current.innerHTML = ""
+          }
+          if (youtubeContainerRef.current) {
+            try {
+              const iframe = (promoted as any).getIframe?.() as HTMLElement | undefined
+              if (iframe && iframe.parentElement !== youtubeContainerRef.current) {
+                youtubeContainerRef.current.appendChild(iframe)
+              }
+            } catch {}
+          }
+          activeYouTubeRef.current = promoted
+          activeYouTubeIdRef.current = youtubeId
+          youtubeSetupRef.current = Promise.resolve(promoted)
+          return true
+        }
+        return false
+      }
+
+      if (activeYouTubeRef.current) {
+        startYouTube()
+      } else if (promotePrebuffer()) {
         startYouTube()
       } else {
         pendingPlayRef.current = startYouTube
@@ -557,6 +673,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         playbg,
         playBg: playbg,
         playAudio: playbg,
+        prebufferbg,
         pauseBg,
         stopBg,
         currentTrack,
@@ -584,6 +701,20 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           pointerEvents: "none",
           left: -1,
           top: -1,
+        }}
+      />
+      <div
+        ref={prebufferContainerRef}
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+          opacity: 0,
+          pointerEvents: "none",
+          left: -2,
+          top: -2,
         }}
       />
     </AudioContext.Provider>

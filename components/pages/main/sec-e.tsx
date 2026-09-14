@@ -50,7 +50,7 @@ export function SecE({ className, ...props }: SecEProps) {
         return () => window.removeEventListener("resize", check)
     }, [])
 
-    const isInView = useInView(containerRef, { amount: 0.15 })
+    const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" })
 
     useEffect(() => {
         if (isInView) {
