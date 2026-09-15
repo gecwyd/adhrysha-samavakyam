@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { resolveAsset } from "@/lib/asset-registry";
 
 const POEM_LINES = [
   "Sometimes",
@@ -100,15 +101,15 @@ export function ShedBeProud() {
           )}
         </div>
 
-        {/* The Author Lockup */}
         <div className="mt-40 md:mt-56 flex justify-center pb-20">
           <div className="flex flex-col items-center text-center">
             <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-full grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all duration-700 border border-[#e6e0d3]/10 mb-6 sm:mb-8 shadow-xl">
               <Image 
-                src="/nivedya.png" 
+                src={resolveAsset("nivedya.png")} 
                 alt="Author portrait of Nivedya" 
                 fill 
                 sizes="144px" 
+                unoptimized
                 className="object-cover" 
               />
             </div>
@@ -125,7 +126,6 @@ export function ShedBeProud() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="relative z-10 w-full border-t border-[#e6e0d3]/5 bg-[#1b1915]/50 backdrop-blur-md">
         <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.14em] text-[#e6e0d3]/30 sm:flex-row sm:items-center sm:justify-between">
           <span>Author · Nivedya</span>

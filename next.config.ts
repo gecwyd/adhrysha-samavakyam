@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: [
+    "*.trycloudflare.com",
+    "*.loca.lt",
+    "*.ngrok-free.app",
+    "*.ngrok.io",
+    "localhost:*",
+    "127.0.0.1:*",
+  ],
   output: "export",
   images: {
     unoptimized: true,
@@ -24,6 +32,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "**.githubusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "objects.githubusercontent.com",
       },
     ],
   },

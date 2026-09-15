@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { resolveAsset } from "@/lib/asset-registry";
 
 const ARTICLE_PARAGRAPHS = [
   "\"അവനവൻ ആത്മസുഖത്തിനായി ആചരിക്കുന്നവ അപരന് സുഖത്തിനായി വരേണം\" എന്നല്ലെ ഗുരുവചനം! 'ആചാരം' എന്ന വാക്കിൻ്റെ ഉൽപ്പത്തി പരിശോധിച്ചാൽ അതൊരു നിരന്തരയാത്രയെ സൂചിപ്പിക്കുന്നതായി മനസിലാക്കാം. ഒരുപക്ഷെ മനുഷ്യൻ്റെ ജീവിതയാത്രയിൽ വ്യത്യസ്തങ്ങളായ ആചാര അനുഷ്ഠാനങ്ങൾ സ്വാധീനിക്കാറുണ്ട്.",
@@ -19,13 +20,11 @@ const ARTICLE_PARAGRAPHS = [
 function FocusParagraph({ text, index }: { text: string, index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   
-  // Track this paragraph's position relative to the viewport
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 85%", "end 15%"] 
   });
 
-  // Paragraph is fully opaque when in the center of the screen, and dims at the edges
   const opacity = useTransform(
     scrollYProgress,
     [0, 0.35, 0.65, 1],
@@ -45,7 +44,6 @@ function FocusParagraph({ text, index }: { text: string, index: number }) {
       className="relative flex flex-col font-sans text-[20px] sm:text-[24px] md:text-[28px] lg:text-[34px] leading-[1.8] sm:leading-[1.9] text-[#f2dfc4] tracking-tight will-change-[opacity,transform]"
       lang="ml"
     >
-      {/* Decorative paragraph number that fades in along with the text */}
       <span className="font-mono text-[9px] sm:text-[10px] text-[#f0a35e] mb-3 opacity-60 tracking-[0.2em] -ml-2">
         {String(index + 1).padStart(2, '0')} —
       </span>
@@ -63,7 +61,6 @@ export function Theyyam() {
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 pt-32 pb-16 md:pt-48">
          
-         {/* Title Section */}
          <div className="flex flex-col items-center text-center mb-32 md:mb-48">
            <motion.div 
              initial={{ opacity: 0, scale: 0.9 }}
@@ -103,14 +100,12 @@ export function Theyyam() {
            </motion.h3>
          </div>
 
-         {/* Spotlight Scrolling Essay */}
          <div className="relative w-full max-w-4xl mx-auto flex flex-col gap-16 sm:gap-24 md:gap-32 pb-24 md:pb-40">
             {ARTICLE_PARAGRAPHS.map((paragraph, i) => (
                <FocusParagraph key={i} text={paragraph} index={i} />
             ))}
          </div>
 
-         {/* Centered Editorial Author Block */}
          <motion.div 
            initial={{ opacity: 0, y: 20 }}
            whileInView={{ opacity: 1, y: 0 }}
@@ -121,10 +116,11 @@ export function Theyyam() {
             <div className="flex flex-col items-center text-center">
                <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-full grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all duration-700 border border-[#f2dfc4]/10 shadow-2xl mb-6 sm:mb-8">
                   <Image 
-                    src="/asika-k.png" 
+                    src={resolveAsset("asika-k.png")} 
                     alt="Author portrait of Asika K" 
                     fill 
                     sizes="144px" 
+                    unoptimized
                     className="object-cover" 
                   />
                </div>

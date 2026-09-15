@@ -34,9 +34,21 @@ class PreloadStore {
     }
   }
 
+  private notifyScheduled = false
+
   private notify() {
-    const state = this.getState()
-    this.subscribers.forEach((cb) => cb(state))
+    if (this.notifyScheduled) return
+    this.notifyScheduled = true
+    const schedule = typeof queueMicrotask === "function" ? queueMicrotask : (fn: () => void) => Promise.resolve().then(fn)
+    schedule(() => {
+      this.notifyScheduled = false
+      const state = this.getState()
+      this.subscribers.forEach((cb) => {
+        try {
+          cb(state)
+        } catch {}
+      })
+    })
   }
 
   getState(): PreloadStoreState {

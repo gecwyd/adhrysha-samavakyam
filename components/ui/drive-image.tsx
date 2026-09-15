@@ -44,6 +44,17 @@ export function getDriveAudioUrl(urlOrId?: string): string {
   return `https://drive.usercontent.google.com/download?id=${fileId}&export=download`
 }
 
+export function isGitHubUrl(url?: string): boolean {
+  if (!url) return false
+  return url.includes("github.com") || url.includes("githubusercontent.com")
+}
+
+export function resolveImageSrc(rawInput?: string, chosenSize?: number | string): string {
+  if (!rawInput) return ""
+  if (isGitHubUrl(rawInput)) return rawInput
+  return getDriveThumbnailUrl(rawInput, chosenSize)
+}
+
 export interface DriveImageProps
   extends Omit<ImageProps, "src" | "width" | "height"> {
   src?: string
@@ -75,20 +86,21 @@ export function DriveImage({
 }: DriveImageProps) {
   const rawInput = src || url || link || fileId
   const chosenSize = sz || size || (width ? `w${width}` : "w1600")
-  const driveUrl = getDriveThumbnailUrl(rawInput, chosenSize)
+  const resolvedSrc = resolveImageSrc(rawInput, chosenSize)
   const [hasError, setHasError] = React.useState(false)
 
-  const finalSrc = hasError && fallbackSrc ? fallbackSrc : driveUrl
+  const finalSrc = hasError && fallbackSrc ? fallbackSrc : resolvedSrc
 
   if (!finalSrc) return null
 
   if (fill) {
     return (
       <Image
-        key={driveUrl}
+        key={resolvedSrc}
         src={finalSrc}
         alt={alt}
         fill
+        unoptimized
         referrerPolicy="no-referrer"
         onError={(e) => {
           setHasError(true)
@@ -105,11 +117,12 @@ export function DriveImage({
 
   return (
     <Image
-      key={driveUrl}
+      key={resolvedSrc}
       src={finalSrc}
       alt={alt}
       width={numWidth}
       height={numHeight}
+      unoptimized
       referrerPolicy="no-referrer"
       onError={(e) => {
         setHasError(true)

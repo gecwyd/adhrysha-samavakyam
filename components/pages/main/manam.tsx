@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { resolveAsset } from "@/lib/asset-registry";
 
 const STORY_PARAGRAPHS = [
   "\"ഈ കത്ത് വായിക്കുമ്പോൾ ഞാൻ ജീവിച്ചിരിക്കില്ല. എന്നെ കൊന്നത് ഒരു മനുഷ്യനല്ല. ഒരു യന്ത്രവുമല്ല. എന്റെ ചിന്തിക്കാനുള്ള അവകാശം ഞാൻ സ്വയം നഷ്ടപ്പെടുത്തിയ ദിവസമാണ് ഞാൻ മരിച്ചത്..\"",
@@ -60,7 +61,6 @@ export function Manam() {
          
          <div className="flex flex-col lg:flex-row items-start gap-16 lg:gap-24 pt-20 pb-32">
             
-            {/* Left Column: Sticky Header & Byline */}
             <div className="lg:sticky lg:top-32 lg:w-5/12 flex flex-col shrink-0">
                <motion.div 
                  initial={{ opacity: 0, y: 15 }}
@@ -96,10 +96,11 @@ export function Manam() {
                  <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
                    <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-full grayscale mix-blend-multiply opacity-80 hover:opacity-100 hover:grayscale-0 transition-all duration-500">
                      <Image 
-                       src="/sefana-elizabeth-manam.png" 
+                       src={resolveAsset("sefana-elizabeth-manam.png")} 
                        alt="Author portrait of Sefana Elizabeth" 
                        fill 
                        sizes="96px"
+                       unoptimized
                        className="object-cover" 
                      />
                    </div>
@@ -118,7 +119,6 @@ export function Manam() {
                </motion.div>
             </div>
 
-            {/* Right Column: Scrolling Paragraphs */}
             <div className="lg:w-7/12 flex flex-col gap-12 sm:gap-16 lg:pt-16">
                {STORY_PARAGRAPHS.map((para, i) => (
                   <ScrollParagraph key={i} para={para} index={i} />

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { resolveAsset } from "@/lib/asset-registry";
 
 const DIARY_SENTENCES = [
   "ജീവിതം എന്നെ പേഴ്സണെലി അറിയുന്നുണ്ടെന്ന് എനിക്ക് സംശയമുണ്ട്.",
@@ -69,10 +70,11 @@ export function VersionZero() {
               <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
                 <div className="relative h-24 w-24 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-full grayscale mix-blend-multiply opacity-80">
                   <Image
-                    src="/sefana-elizabeth.png"
+                    src={resolveAsset("sefana-elizabeth.png")}
                     alt="Author portrait of Sefana Elizabeth"
                     fill
                     sizes="128px"
+                    unoptimized
                     className="object-cover"
                   />
                 </div>
@@ -92,7 +94,6 @@ export function VersionZero() {
           </header>
 
           <div className="relative pl-6 md:pl-10">
-             {/* Subtle decorative timeline marker */}
              <div className="absolute left-0 top-2 bottom-2 w-px bg-gradient-to-b from-[#191713]/0 via-[#191713]/15 to-[#191713]/0" />
              
              <p className="font-sans text-[22px] sm:text-[28px] md:text-[34px] lg:text-[40px] leading-[1.6] md:leading-[1.7] tracking-tight text-[#191713]" lang="ml">

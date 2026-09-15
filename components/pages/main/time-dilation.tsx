@@ -52,12 +52,12 @@ export function TimeDilation() {
     setElapsedDisplay(v.toFixed(2));
   });
 
-  const headlineOpacity = useTransform(smooth, [0, 0.25, 0.35], [1, 1, 0]);
-  const headlineY = useTransform(smooth, [0.25, 0.35], [0, -120]);
-  const headlineScale = useTransform(smooth, [0, 0.35], [1, 1.15]);
+  const headlineOpacity = useTransform(smooth, [0, 0.22, 0.3], [1, 1, 0]);
+  const headlineY = useTransform(smooth, [0.22, 0.3], [0, -100]);
+  const headlineScale = useTransform(smooth, [0, 0.3], [1, 1.1]);
 
-  const counterOpacity = useTransform(smooth, [0.35, 0.45, 0.93, 0.98], [0, 1, 1, 0]);
-  const counterY = useTransform(smooth, [0.35, 0.45, 0.93, 0.98], [80, 0, 0, -80]);
+  const counterOpacity = useTransform(smooth, [0.28, 0.38], [0, 1]);
+  const counterY = useTransform(smooth, [0.28, 0.38], [60, 0]);
 
   const earthX = useTransform(speedFraction, [0, 0.999], [0, -60]);
   const travellerX = useTransform(speedFraction, [0, 0.999], [0, 60]);
@@ -67,7 +67,6 @@ export function TimeDilation() {
   const dividerOpacity = useTransform(speedFraction, [0, 0.15], [1, 0]);
 
   const barWidth = useTransform(speedFraction, [0, 0.999], ["0%", "100%"]);
-  const sectionOpacity = useTransform(smooth, [0.95, 1], [1, 0]);
 
   return (
     <section
@@ -76,8 +75,7 @@ export function TimeDilation() {
       aria-labelledby="time-dilation-title"
       className="relative h-[500vh] w-full bg-[#191713] text-[#d9d4c7]"
     >
-      <motion.div
-        style={{ opacity: sectionOpacity }}
+      <div
         className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center"
       >
         <div
@@ -170,7 +168,7 @@ export function TimeDilation() {
           <span>GEC Wayanad · 2025–26</span>
           <span>Idealised constant-speed trip</span>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -138,12 +138,6 @@ export function ClockEssay() {
               <br />
               <span className="text-[#a84e2a]">DOESN&apos;T TELL.</span>
             </h2>
-            <div className="mt-12 flex flex-col items-center gap-3">
-              <span className="font-mono text-[9px] tracking-[0.2em] text-[#191713]/40 uppercase">
-                Scroll to explore
-              </span>
-              <div className="w-px h-10 bg-gradient-to-b from-[#191713]/30 to-transparent" />
-            </div>
           </motion.div>
 
           {/* Quotes */}

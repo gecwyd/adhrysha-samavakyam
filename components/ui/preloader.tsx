@@ -227,8 +227,7 @@ export function Preloader() {
 export function PreloadProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   
-  // Do not show the preloader on the coming soon page (root path)
-  if (pathname === "/") {
+  if (pathname === "/" && process.env.NODE_ENV !== "development") {
     return <>{children}</>
   }
 

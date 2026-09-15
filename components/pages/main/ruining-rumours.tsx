@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import Image from "next/image";
+import { resolveAsset } from "@/lib/asset-registry";
 
 const STORY_PARAGRAPHS = [
   `“Jiya! Jiya! Jiya! Why are you late?” Laya’s voice rose across the classroom as Jiya rushed through the door, slightly out of breath. “I’m only two minutes late,” Jiya replied, placing her bag on the desk. “Two minutes is still late,” Laya said dramatically. “Then tell the clock to slow down.” The girls laughed as Jiya took her seat. Outside the classroom window, the morning sun brightened the school courtyard. Students hurried to their classrooms while teachers prepared for another busy day. For everyone else, it was just another ordinary school morning. For Jiya, it was another day carrying dreams bigger than herself. Jiya was a Plus Two student in a Government Higher Secondary School. She came from a middle-class family where every rupee mattered. Her father worked long hours to support the family, and her mother stitched clothes for neighbours. They were not rich, but they were rich in dreams. Their biggest dream was Jiya. They wanted her to study well, secure a good career, and build a future brighter than their own. Jiya understood those sacrifices. Every morning before school, she packed her lunch and made sure everything at home was settled before leaving for class. She was hardworking, responsible, and focused on her studies. But like many teenagers, she had once carried a small secret in her heart. Back in Class 11, she had developed a small crush on a boy named Afeel. It was innocent. She never confessed. Like many teenagers, she imagined conversations that never happened and stories that never became real. That was all. Eventually, the crush faded. Life moved on. By the time Plus Two began, Afeel had become just a memory. Then came Riyan. Unlike Afeel, Riyan entered her life unexpectedly. One day he borrowed a pen. The next day he borrowed notes. Then he borrowed her calculator. Soon he was borrowing her patience too. “You should return my things one day,” Jiya complained. Riyan laughed. Their friendship grew naturally. They studied together, shared notes, helped each other prepare for exams, argued about silly things, and laughed during lunch breaks. Slowly, friendship turned into more. For the first time, Jiya felt truly understood. Riyan knew about her dreams. He knew how hard she worked, and he admired her for it.`,
@@ -14,15 +15,13 @@ const STORY_PARAGRAPHS = [
 function StoryParagraph({ text, isFirst, index }: { text: string, isFirst?: boolean, index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   
-  // Track reading progress for the interactive side line
   const { scrollYProgress: lineProgress } = useScroll({
     target: ref,
-    offset: ["start center", "end center"] // Draws line as the user reads through the paragraph
+    offset: ["start center", "end center"]
   });
   
   const scaleY = useSpring(lineProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
-  // Scrubbable entry animation for the text
   const { scrollYProgress: entryProgress } = useScroll({
     target: ref,
     offset: ["start 95%", "start 60%"]
@@ -34,16 +33,13 @@ function StoryParagraph({ text, isFirst, index }: { text: string, isFirst?: bool
 
   return (
     <div className="relative pl-10 sm:pl-16">
-      {/* Static Background Track */}
       <div className="absolute top-0 bottom-0 left-0 w-[1px] bg-[#e6e0d3]/10" />
       
-      {/* Dynamic Scrubbable Reading Line */}
       <motion.div 
         style={{ scaleY }} 
         className="absolute top-0 bottom-0 left-0 w-[2px] bg-[#d99065] origin-top z-10" 
       />
       
-      {/* Paragraph Number Node that illuminates as you read */}
       <motion.div 
         style={{ opacity: lineProgress }} 
         className="absolute top-2 -left-[14px] sm:-left-[18px] w-7 h-7 sm:w-9 sm:h-9 bg-[#131211] border border-[#d99065] rounded-full flex items-center justify-center font-mono text-[9px] sm:text-[10px] text-[#d99065] z-20"
@@ -75,7 +71,6 @@ export function RuiningRumours() {
     >
       <div className="mx-auto w-full pt-32 pb-16 md:pt-48 px-6 sm:px-10">
          
-         {/* Minimal Editorial Header */}
          <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-24 md:mb-32">
            <motion.div 
              initial={{ opacity: 0, y: 15 }}
@@ -103,14 +98,12 @@ export function RuiningRumours() {
            </motion.h2>
          </div>
 
-         {/* Core Reading Experience - Single Narrow Column */}
          <div className="relative w-full max-w-[760px] mx-auto flex flex-col gap-12 sm:gap-16 pb-20">
             {STORY_PARAGRAPHS.map((para, i) => (
                <StoryParagraph key={i} text={para} isFirst={i === 0} index={i} />
             ))}
          </div>
 
-         {/* Minimal Author Lockup */}
          <motion.div 
            initial={{ opacity: 0, y: 20 }}
            whileInView={{ opacity: 1, y: 0 }}
@@ -121,10 +114,11 @@ export function RuiningRumours() {
             <div className="flex flex-col items-center text-center border-t border-[#e6e0d3]/10 pt-16 w-full max-w-md">
                <div className="relative h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-full grayscale opacity-80 hover:opacity-100 hover:grayscale-0 transition-all duration-700 border border-[#e6e0d3]/20 mb-6">
                   <Image 
-                    src="/niba-nasrin.png" 
+                    src={resolveAsset("niba-nasrin.png")} 
                     alt="Author portrait of Niba Nasrin" 
                     fill 
                     sizes="96px" 
+                    unoptimized
                     className="object-cover" 
                   />
                </div>

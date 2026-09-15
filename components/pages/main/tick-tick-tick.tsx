@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { resolveAsset } from "@/lib/asset-registry";
 
 const STANZAS = [
   [
@@ -37,7 +38,7 @@ function StanzaBlock({ lines }: { lines: string[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 90%", "center 55%"] // Fades in as it approaches the center
+    offset: ["start 90%", "center 55%"]
   });
 
   const opacity = useTransform(scrollYProgress, [0, 1], [0.15, 1]);
@@ -71,7 +72,6 @@ export function TickTickTick() {
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 pt-32 pb-16 md:pt-48">
          
-         {/* Minimal Header */}
          <div className="flex flex-col items-center text-center mb-24 md:mb-40">
            <motion.div 
              initial={{ opacity: 0, y: 15 }}
@@ -99,14 +99,12 @@ export function TickTickTick() {
            </motion.h2>
          </div>
 
-         {/* Core Reading Experience - Standard Scroll Grid */}
          <div className="relative w-full max-w-4xl mx-auto flex flex-col items-center pb-20">
             {STANZAS.map((stanza, i) => (
                <StanzaBlock key={i} lines={stanza} />
             ))}
          </div>
 
-         {/* Minimal Author Lockup */}
          <motion.div 
            initial={{ opacity: 0, y: 20 }}
            whileInView={{ opacity: 1, y: 0 }}
@@ -117,10 +115,11 @@ export function TickTickTick() {
             <div className="flex flex-col items-center text-center pt-16 w-full max-w-md">
                <div className="relative h-24 w-24 sm:h-32 sm:w-32 overflow-hidden rounded-full grayscale opacity-80 hover:opacity-100 hover:grayscale-0 transition-all duration-700 border border-[#d9d4c7]/20 mb-6 sm:mb-8">
                   <Image 
-                    src="/r-s-sreelakshmi.png" 
+                    src={resolveAsset("avani-manoj.png")} 
                     alt="Author portrait of R S Sreelakshmi" 
                     fill 
                     sizes="128px" 
+                    unoptimized
                     className="object-cover" 
                   />
                </div>

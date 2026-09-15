@@ -1,10 +1,11 @@
 "use client"
 
-import { motion, useScroll, useTransform, useSpring } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
 import { useAudio } from "@/context/audio.context"
 import { resolveAsset } from "@/lib/asset-registry"
 import { preload } from "@/lib/preload"
+import { cn } from "@/lib/utils"
 
 interface DignitaryItem {
   id: string
@@ -20,7 +21,7 @@ const DIGNITARIES: DignitaryItem[] = [
   {
     id: "vds",
     name: "Shri. V. D. Satheesan",
-    title: "Chief Minister, Kerala",
+    title: "Leader of Opposition, Kerala",
     message: "Technical education empowers our youth to innovate and lead. The vibrant energy and creative spirit of Government Engineering College Wayanad are truly commendable.",
     image: resolveAsset("vds.webp"),
     initials: "VDS",
@@ -36,7 +37,7 @@ const DIGNITARIES: DignitaryItem[] = [
   {
     id: "he_minister",
     name: "Shri. Roji M. John",
-    title: "Minister for Higher Education, Kerala",
+    title: "MLA, Angamaly",
     message: "Higher education must inspire curiosity, critical thinking, and innovation. The students of Government Engineering College Wayanad embody this creative pursuit.",
     image: resolveAsset("roji.webp"),
     initials: "RMJ",
@@ -44,7 +45,7 @@ const DIGNITARIES: DignitaryItem[] = [
   {
     id: "krishi_minister",
     name: "Shri. T. Siddique",
-    title: "Minister for Agriculture, Kerala",
+    title: "MLA, Kalpetta",
     message: "It brings great pride to see the technical excellence of our students taking a creative form. This initiative is a testament to the vibrant community at GECW.",
     image: resolveAsset("siddique.webp"),
     initials: "TS",
@@ -86,154 +87,74 @@ const DIGNITARIES: DignitaryItem[] = [
   }
 ]
 
-function DignitaryRow({
-  item,
-  index,
-  total
-}: {
-  item: DignitaryItem
-  index: number
-  total: number
-}) {
-  const rowRef = useRef<HTMLDivElement>(null)
+function DignitaryRow({ item, index }: { item: DignitaryItem; index: number }) {
   const [imgError, setImgError] = useState(false)
 
-  const { scrollYProgress } = useScroll({
-    target: rowRef,
-    offset: ["start start", "end end"]
-  })
-
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 24
-  })
-
-  const isFirst = index === 0
-
-  const animatedPadTop = useTransform(smooth, [0, 0.2], ["2.5rem", "0rem"])
-  const animatedPadLeft = useTransform(smooth, [0, 0.2], ["2.5rem", "0rem"])
-  const animatedPadBottom = useTransform(smooth, [0, 0.2], ["2.5rem", "0rem"])
-  const animatedPadRight = useTransform(smooth, [0, 0.2], ["1.5rem", "0rem"])
-  const animatedImgHeight = useTransform(smooth, [0, 0.2], ["85%", "100%"])
-  const animatedImgRadius = useTransform(smooth, [0, 0.2], ["24px", "0px"])
-
-  const padTop = isFirst ? animatedPadTop : "0rem"
-  const padLeft = isFirst ? animatedPadLeft : "0rem"
-  const padBottom = isFirst ? animatedPadBottom : "0rem"
-  const padRight = isFirst ? animatedPadRight : "0rem"
-  const imgHeight = isFirst ? animatedImgHeight : "100%"
-  const imgRadius = isFirst ? animatedImgRadius : "0px"
-  const imgFilter = useTransform(
-    smooth,
-    [0, 0.2],
-    ["grayscale(100%) contrast(1.15)", "grayscale(0%) contrast(1.05)"]
-  )
-  const imgScale = useTransform(smooth, [0, 0.2, 0.85, 1], [1.1, 1, 1, 1.05])
-
-  const textOpacity = useTransform(smooth, [0.08, 0.22], [0, 1])
-  const textY = useTransform(smooth, [0.08, 0.22], [40, 0])
-  const textScale = useTransform(smooth, [0.08, 0.22], [0.96, 1])
-
-  const readingProgress = useTransform(smooth, [0.2, 0.85], [0, 1])
-  const readyBadgeOpacity = useTransform(smooth, [0.15, 0.22, 0.85, 0.92], [0, 1, 1, 0])
-
-  const rowOpacity = useTransform(smooth, [0.86, 0.98], [1, 0.12])
-  const rowScale = useTransform(smooth, [0.86, 0.98], [1, 0.96])
-
   return (
-    <div
-      ref={rowRef}
-      className="relative h-[280vh] w-full bg-[#d9d4c7] text-black snap-start scroll-mt-0"
-    >
+    <div className="relative w-full min-h-[75vh] md:min-h-[85vh] flex items-center justify-center py-16 sm:py-20 md:py-24 px-6 sm:px-10 md:px-16 lg:px-24 border-b border-black/10 last:border-b-0">
       <motion.div
-        style={{
-          opacity: rowOpacity,
-          scale: rowScale
-        }}
-        className="sticky top-0 h-screen w-full flex flex-col md:flex-row overflow-hidden bg-[#d9d4c7]"
+        initial={{ opacity: 0, y: 35 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        className={cn(
+          "w-full max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 sm:gap-10 md:gap-14 lg:gap-20",
+          index % 2 === 1 && "md:flex-row-reverse"
+        )}
       >
-        <div
-          className="absolute inset-0 opacity-[0.03] mix-blend-multiply pointer-events-none z-0"
-          style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")' }}
-        />
-
         <motion.div
-          style={{
-            paddingTop: padTop,
-            paddingLeft: padLeft,
-            paddingBottom: padBottom,
-            paddingRight: padRight
-          }}
-          className="absolute inset-0 md:relative md:w-5/12 lg:w-[46vw] h-screen md:h-full flex flex-col justify-start items-start shrink-0 z-0 md:z-20"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-sm sm:max-w-md md:max-w-none md:w-5/12 lg:w-[38vw] aspect-[3/4] sm:aspect-[4/5] md:h-[62vh] max-h-[580px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl relative bg-black/5 shrink-0 border border-black/10"
         >
-          <motion.div
-            style={{
-              height: imgHeight,
-              borderRadius: imgRadius
-            }}
-            className="w-full relative overflow-hidden bg-white shadow-2xl transition-shadow flex items-center justify-center"
-          >
-            {!imgError ? (
-              <motion.img
-                src={item.image}
-                alt={item.name}
-                style={{
-                  scale: imgScale,
-                  filter: imgFilter
-                }}
-                onError={() => setImgError(true)}
-                className="w-full h-full object-cover object-top transition-all duration-300"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-neutral-800 via-neutral-900 to-black flex flex-col items-center justify-center p-8 text-neutral-300">
-                <span className="font-heading text-7xl md:text-9xl text-white/20 tracking-widest uppercase select-none">
-                  {item.initials}
-                </span>
-                <span className="text-xs uppercase tracking-[0.3em] font-mono text-neutral-400 mt-4">
-                  {item.name}
-                </span>
-              </div>
-            )}
-
-            <div className="absolute inset-0 bg-gradient-to-t from-[#d9d4c7] via-[#d9d4c7]/80 to-transparent md:hidden pointer-events-none" />
-          </motion.div>
+          {!imgError ? (
+            <img
+              src={item.image}
+              alt={item.name}
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover object-top filter grayscale hover:grayscale-0 transition-all duration-700 ease-out"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-neutral-800 via-neutral-900 to-black flex flex-col items-center justify-center p-8 text-neutral-300">
+              <span className="font-heading text-7xl md:text-8xl text-white/20 tracking-widest uppercase select-none">
+                {item.initials}
+              </span>
+              <span className="text-xs uppercase tracking-[0.3em] font-mono text-neutral-400 mt-4 text-center">
+                {item.name}
+              </span>
+            </div>
+          )}
         </motion.div>
 
-        <div className="absolute inset-x-0 bottom-0 md:relative w-full md:w-7/12 lg:w-[54vw] md:h-full flex flex-col justify-end md:justify-center pb-24 sm:pb-28 md:pb-0 px-6 sm:px-10 md:px-14 lg:px-20 z-10 overflow-hidden pointer-events-none md:pointer-events-auto">
-          <div className="flex items-center gap-2 text-black/50 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase mb-3 sm:mb-4 md:mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-black/40 hidden sm:block" />
-            <span>{item.category || "Voices of Support"}</span>
+        <motion.div
+          initial={{ opacity: 0, x: index % 2 === 1 ? -25 : 25 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="flex-1 flex flex-col justify-center text-left"
+        >
+          <div className="flex items-center gap-2.5 text-black/50 font-mono text-[11px] sm:text-xs tracking-[0.25em] uppercase mb-4 sm:mb-6">
+            <span className="w-2 h-2 rounded-full bg-black/60" />
+            <span className="font-bold">{item.category || "Voices of Support"}</span>
           </div>
 
-          <motion.div
-            style={{
-              opacity: textOpacity,
-              y: textY,
-              scale: textScale
-            }}
-            className="relative flex flex-col max-w-2xl"
-          >
-            <blockquote className="text-2xl sm:text-3xl md:text-2xl lg:text-3xl font-serif text-black/90 leading-tight md:leading-relaxed relative z-10 tracking-tight">
-              {item.message}
-            </blockquote>
+          <blockquote className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-serif text-black/90 leading-relaxed md:leading-relaxed tracking-tight">
+            &ldquo;{item.message}&rdquo;
+          </blockquote>
 
-            <div className="w-full max-w-md h-[2px] bg-black/10 my-4 md:my-6 relative overflow-hidden">
-              <motion.div
-                style={{ scaleX: readingProgress }}
-                className="h-full bg-black/60 origin-left"
-              />
-            </div>
+          <div className="w-16 sm:w-20 h-[2px] bg-black/30 my-6 sm:my-8" />
 
-            <div className="relative z-10">
-              <h3 className="text-4xl sm:text-5xl md:text-3xl lg:text-4xl font-heading uppercase tracking-wider text-black leading-none mb-1">
-                {item.name}
-              </h3>
-              <p className="text-sm sm:text-base md:text-xs font-mono uppercase tracking-[0.2em] text-black/60 mt-1.5 font-bold">
-                {item.title}
-              </p>
-            </div>
-          </motion.div>
-        </div>
+          <div>
+            <h3 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-heading font-black uppercase tracking-wider text-black leading-tight">
+              {item.name}
+            </h3>
+            <p className="text-xs sm:text-sm font-mono uppercase tracking-[0.18em] text-black/60 mt-1.5 font-bold">
+              {item.title}
+            </p>
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   )
@@ -252,17 +173,22 @@ export function SecC() {
   return (
     <section
       id="sec-c"
-      className="relative w-full bg-[#d9d4c7] text-black z-20 snap-y snap-proximity"
+      className="relative w-full bg-[#d9d4c7] text-black z-20 overflow-hidden"
     >
+      <div
+        className="absolute inset-0 opacity-[0.03] mix-blend-multiply pointer-events-none z-0"
+        style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")' }}
+      />
+
       <motion.div
         onViewportEnter={() => playAudio?.(resolveAsset("intro.mp3"), 2)}
+        className="relative z-10 w-full"
       >
         {DIGNITARIES.map((item, index) => (
           <DignitaryRow
             key={item.id}
             item={item}
             index={index}
-            total={DIGNITARIES.length}
           />
         ))}
       </motion.div>
