@@ -1,170 +1,100 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { MissMinutes, useMissMinutes } from "@/components/ui/miss-minutes"
+import { useState } from "react";
+import { SecA } from "@/components/pages/main/sec-a";
+import { SecB } from "@/components/pages/main/sec-b";
+import { SecC } from "@/components/pages/main/sec-c";
+import { SecD } from "@/components/pages/main/sec-d";
+import { SecE } from "@/components/pages/main/sec-e";
+import { SecF } from "@/components/pages/main/sec-f";
+import { SecG } from "@/components/pages/main/sec-g";
+import { TimeDilation } from "@/components/pages/main/time-dilation";
+import { ClockEssay } from "@/components/pages/main/clock-essay";
+import { TickTickTick } from "@/components/pages/main/tick-tick-tick";
+import { VersionZero } from "@/components/pages/main/version-zero";
+import { WritingEraAi } from "@/components/pages/main/writing-era-ai";
+import { Manam } from "@/components/pages/main/manam";
+import { ShedBeProud } from "@/components/pages/main/shed-be-proud";
+import { Theyyam } from "@/components/pages/main/theyyam";
+import { RuiningRumours } from "@/components/pages/main/ruining-rumours";
+import { Thamodwaram } from "@/components/pages/main/thamodwaram";
 
 export default function TestPage() {
-  const { speaking, currentAudioUrl, speak, stopSpeaking } = useMissMinutes()
-  const [audioUrl, setAudioUrl] = React.useState("")
-  const [inputUrl, setInputUrl] = React.useState("")
+  const [password, setPassword] = useState("");
+  const [unlocked, setUnlocked] = useState(false);
+  const [error, setError] = useState(false);
 
-  const handleSpeak = () => {
-    if (!inputUrl.trim()) return
-    speak(inputUrl.trim())
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === "748596") {
+      setUnlocked(true);
+      setError(false);
+    } else {
+      setError(true);
+    }
+  };
 
-  const handleStop = () => {
-    stopSpeaking()
+  if (!unlocked) {
+    return (
+      <main className="w-full min-h-screen flex flex-col items-center justify-center bg-[#d9d4c7] px-4 font-sans text-black">
+        <div className="w-full max-w-sm p-8 bg-[#ebe7dc] border border-black/10 rounded-2xl shadow-xl flex flex-col items-center gap-6">
+          <div className="flex flex-col items-center gap-1 text-center">
+            <h1 className="font-heading text-3xl sm:text-4xl tracking-wider uppercase">
+              Protected Access
+            </h1>
+            <p className="text-xs text-black/60 tracking-widest uppercase font-mono">
+              Enter password to unlock
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+            <input
+              type="password"
+              inputMode="numeric"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (error) setError(false);
+              }}
+              placeholder="••••••"
+              autoFocus
+              className="w-full text-center tracking-[0.3em] font-mono text-xl py-3 px-4 bg-white/80 border border-black/15 rounded-lg outline-none focus:border-black/50 transition-colors"
+            />
+            {error && (
+              <p className="text-red-600 text-xs text-center font-medium">
+                Incorrect password. Please try again.
+              </p>
+            )}
+            <button
+              type="submit"
+              className="w-full py-3 bg-black text-white rounded-lg font-heading tracking-widest text-lg uppercase hover:bg-black/80 transition-colors cursor-pointer"
+            >
+              Unlock
+            </button>
+          </form>
+        </div>
+      </main>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#1a0a00] text-white p-8" style={{ fontFamily: "'Georgia', serif" }}>
-      {/* TVA Background pattern */}
-      <div
-        className="fixed inset-0 opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage: `repeating-linear-gradient(45deg, #F07800 0, #F07800 1px, transparent 0, transparent 50%)`,
-          backgroundSize: "24px 24px",
-        }}
-      />
-
-      {/* TVA Badge */}
-      <div className="relative z-10 flex flex-col items-center gap-1 mb-8">
-        <div
-          className="text-[10px] tracking-[0.4em] uppercase font-bold"
-          style={{ color: "#F07800", letterSpacing: "0.5em" }}
-        >
-          Time Variance Authority
-        </div>
-        <div className="h-px w-64" style={{ background: "linear-gradient(90deg, transparent, #F07800, transparent)" }} />
-      </div>
-
-      {/* Miss Minutes Character */}
-      <div className="relative z-10 flex flex-col items-center">
-        <MissMinutes
-          size={300}
-          speaking={speaking}
-          audioUrl={currentAudioUrl}
-          autoSpeak={true}
-          onSpeakEnd={stopSpeaking}
-        />
-
-        {/* Speaking indicator */}
-        <div
-          className="mt-2 flex items-center gap-2 text-sm font-semibold transition-opacity duration-300"
-          style={{ color: "#F07800", opacity: speaking ? 1 : 0 }}
-        >
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#F07800" }} />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ background: "#F07800" }} />
-          </span>
-          Speaking…
-        </div>
-      </div>
-
-      {/* Name plate */}
-      <div className="relative z-10 mt-6 text-center">
-        <h1
-          className="text-4xl font-bold tracking-widest"
-          style={{ color: "#F07800", textShadow: "0 0 40px #F0780060, 0 2px 4px #0008", fontFamily: "'Georgia', serif" }}
-        >
-          Miss Minutes
-        </h1>
-        <p className="mt-1 text-xs tracking-[0.3em] uppercase" style={{ color: "#CC6600" }}>TVA Digital Assistant</p>
-      </div>
-
-      {/* Control Panel */}
-      <div
-        className="relative z-10 mt-10 w-full max-w-lg rounded-2xl p-6 border"
-        style={{
-          background: "linear-gradient(135deg, #2A1000 0%, #1A0800 100%)",
-          borderColor: "#F07800",
-          boxShadow: "0 0 40px #F0780020, inset 0 1px 0 #F0780030",
-        }}
-      >
-        <div
-          className="text-xs uppercase tracking-[0.3em] font-bold mb-4"
-          style={{ color: "#F07800" }}
-        >
-          Audio Feed
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <input
-            id="audio-url-input"
-            type="text"
-            value={inputUrl}
-            onChange={e => setInputUrl(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter") handleSpeak() }}
-            placeholder="Paste an audio URL (mp3, ogg, wav…)"
-            className="w-full rounded-lg px-4 py-3 text-sm outline-none border transition-all"
-            style={{
-              background: "#110600",
-              borderColor: inputUrl ? "#F07800" : "#5A2A00",
-              color: "white",
-              boxShadow: inputUrl ? "0 0 16px #F0780030" : "none",
-            }}
-          />
-
-          <div className="flex gap-3">
-            <button
-              id="speak-btn"
-              onClick={handleSpeak}
-              disabled={!inputUrl.trim() || speaking}
-              className="flex-1 rounded-lg px-4 py-2.5 text-sm font-bold uppercase tracking-widest transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{
-                background: speaking ? "#5A2A00" : "linear-gradient(135deg, #F07800, #C85E00)",
-                color: speaking ? "#AA6600" : "white",
-                boxShadow: !speaking && inputUrl ? "0 4px 24px #F0780050" : "none",
-              }}
-            >
-              {speaking ? "Speaking…" : "▶  Make Her Speak"}
-            </button>
-
-            <button
-              id="stop-btn"
-              onClick={handleStop}
-              disabled={!speaking}
-              className="rounded-lg px-4 py-2.5 text-sm font-bold uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{
-                background: "#2A1000",
-                color: "#F07800",
-                border: "1px solid #F07800",
-              }}
-            >
-              ■ Stop
-            </button>
-          </div>
-        </div>
-
-        {/* Sample URLs */}
-        <div className="mt-5">
-          <div className="text-xs mb-2" style={{ color: "#8A5A30" }}>Quick test samples:</div>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { label: "Beep", url: "https://www.soundjay.com/buttons/sounds/beep-01a.mp3" },
-              { label: "Chime", url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" },
-            ].map((s) => (
-              <button
-                key={s.label}
-                onClick={() => { setInputUrl(s.url) }}
-                className="text-xs px-3 py-1 rounded-full border transition-all hover:brightness-110"
-                style={{
-                  borderColor: "#5A2A00",
-                  color: "#CC8040",
-                  background: "#1A0800",
-                }}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <p className="relative z-10 mt-8 text-xs text-center" style={{ color: "#5A3010" }}>
-        For all time. Always.
-      </p>
-    </div>
-  )
+    <main className="w-full min-h-screen flex flex-col bg-[#d9d4c7]">
+      <SecA />
+      <SecB />
+      <SecC />
+      {/* <SecD /> */}
+      {/* <SecE /> */}
+      {/* <SecG /> */}
+      <TimeDilation />
+      <ClockEssay />
+      <TickTickTick />
+      <VersionZero />
+      <WritingEraAi />
+      <Manam />
+      <ShedBeProud />
+      <Theyyam />
+      <RuiningRumours />
+      <Thamodwaram />
+    </main>
+  );
 }

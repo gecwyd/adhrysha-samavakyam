@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { usePreloadStore } from "@/lib/preload"
 import { useAudio } from "@/context/audio.context"
 import { Volume2, ArrowRight, Headphones } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 export function Preloader() {
   const { isComplete, progress, total, loaded } = usePreloadStore()
@@ -224,6 +225,13 @@ export function Preloader() {
 }
 
 export function PreloadProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  
+  // Do not show the preloader on the coming soon page (root path)
+  if (pathname === "/") {
+    return <>{children}</>
+  }
+
   return (
     <>
       <Preloader />
