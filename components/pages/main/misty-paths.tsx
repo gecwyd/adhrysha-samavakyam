@@ -170,16 +170,6 @@ export function MistyPaths() {
             </div>
           </motion.div>
         </div>
-
-        {/* Footer */}
-        <footer className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-[#e0e7ff]/10 pointer-events-none">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#e0e7ff]/40">
-            GEC Wayanad · 2025-26
-          </div>
-          <div className="font-sans text-[10px] text-[#e0e7ff]/40" lang="ml">
-            മഞ്ഞിറങ്ങിയ വഴികൾ
-          </div>
-        </footer>
       </div>
     </section>
   );

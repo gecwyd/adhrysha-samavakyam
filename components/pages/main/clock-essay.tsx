@@ -58,7 +58,7 @@ export function ClockEssay() {
       aria-labelledby="clock-essay-title"
       className="relative w-full bg-[#0a0806] text-[#e0ddd6] selection:bg-[#c96a45]/30 selection:text-white"
     >
-      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 pt-28 sm:pt-36 pb-32">
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 pt-28 sm:pt-36 pb-12 sm:pb-16">
         <motion.div
           onViewportEnter={handleViewportEnter}
           viewport={{ margin: "-10% 0px -10% 0px" }}
@@ -92,7 +92,7 @@ export function ClockEssay() {
           </motion.h2>
         </motion.div>
 
-        <div className="relative w-full max-w-[1300px] mx-auto lg:grid lg:grid-cols-12 gap-10 lg:gap-20 pb-20">
+        <div className="relative w-full max-w-[1300px] mx-auto lg:grid lg:grid-cols-12 gap-10 lg:gap-20 pb-0">
           <div className="lg:col-span-5 hidden lg:block">
             <div className="sticky top-32 w-full h-[75vh] rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-[1.5s] border border-[#e0ddd6]/10">
               <img
@@ -156,34 +156,7 @@ export function ClockEssay() {
             ))}
           </div>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-          transition={{ duration: 0.8 }}
-          className="mt-20 sm:mt-28 flex justify-center pb-8"
-        >
-          <div className="flex flex-col items-center text-center border-t border-[#e0ddd6]/10 pt-14 w-full max-w-md">
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#c96a45] mb-2 sm:mb-3">
-              Reflection · Inquation
-            </span>
-            <span className="font-sans text-3xl sm:text-4xl tracking-tight text-[#f5f1e8] mb-2 leading-none" lang="ml">
-              ഘടികാരം പറയാത്ത സമയം
-            </span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#e0ddd6]/40">
-              GEC Wayanad
-            </span>
-          </div>
-        </motion.div>
       </div>
-
-      <footer className="w-full border-t border-[#e0ddd6]/10 bg-[#0a0806]">
-        <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.14em] text-[#e0ddd6]/40 sm:flex-row sm:items-center sm:justify-between">
-          <span>GEC Wayanad · 2026–27</span>
-          <span lang="ml">ഘടികാരം പറയാത്ത സമയം</span>
-        </div>
-      </footer>
     </section>
   );
 }

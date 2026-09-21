@@ -1,7 +1,24 @@
-// Trigger rebuild
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { Fragment, useRef, type ReactNode } from "react";
+import Image from "next/image";
+import { Newsreader } from "next/font/google";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import { resolveAsset } from "@/lib/asset-registry";
+
+const serif = Newsreader({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
 
 const POEM_STANZAS = [
   [
@@ -25,188 +42,218 @@ const POEM_STANZAS = [
   ],
 ];
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const PAPER = "#f4f0e8";
+const GREEN = "#17352f";
+const CORAL = "#df674d";
 
-function EchoPortrait() {
+const MEMORY_IMAGES = [
+  {
+    file: "in-their-image-hands.webp",
+    alt: "An older parent’s hand resting over an adult child’s hand on a sunlit wooden table, suggesting inherited gestures and quiet affection.",
+    caption: "What we inherit is rarely spoken.",
+  },
+  {
+    file: "in-their-image-reflection.webp",
+    alt: "An adult daughter seen from behind beside a sunlit window, with a soft reflection suggesting her mother behind her.",
+    caption: "A face can carry a family forward.",
+  },
+] as const;
+
+function Label({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div
-      aria-hidden="true"
-      className="relative mx-auto aspect-[4/5] w-full max-w-[31rem] overflow-hidden rounded-[2rem] border border-[#17352f]/15 bg-[#e7dece] sm:rounded-[2.5rem]"
+    <span className={`font-mono text-[10px] uppercase tracking-[0.28em] ${className}`}>{children}</span>
+  );
+}
+
+/*
+ * Two circles — his laugh, her face — drift together as the poem is read and overlap into one.
+ * `sep` is how far each circle sits from the centre line; `meOpacity` brings in the word for the overlap.
+ */
+function Convergence({ sep, meOpacity }: { sep: MotionValue<number>; meOpacity: MotionValue<number> }) {
+  const leftX = useTransform(sep, (v) => -v);
+  const leftLabelX = useTransform(sep, (v) => -v + 30);
+  const rightLabelX = useTransform(sep, (v) => v - 30);
+
+  return (
+    <svg
+      role="img"
+      aria-label="Two outlined circles slowly overlap; the shared lens between them fills with coral"
+      viewBox="0 0 600 360"
+      className="h-full w-full"
+      fill="none"
     >
-      <div className="absolute inset-5 rounded-[1.4rem] border border-[#17352f]/10 sm:inset-7 sm:rounded-[1.9rem]" />
-      <div className="absolute -right-10 -top-10 size-44 rounded-full bg-[#df674d] sm:size-56" />
-      <div className="absolute right-10 top-12 font-mono text-[8px] uppercase tracking-[0.28em] text-[#17352f]/55 sm:right-14 sm:top-16">
-        Origin / echo
-      </div>
+      <defs>
+        <clipPath id="ti-lens">
+          <motion.circle cx={300} cy={170} r={110} style={{ x: sep }} />
+        </clipPath>
+      </defs>
 
-      <svg
-        viewBox="0 0 480 600"
-        className="absolute inset-0 h-full w-full"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+      <motion.circle cx={300} cy={170} r={110} fill={GREEN} fillOpacity={0.05} stroke={GREEN} strokeWidth={1.5} style={{ x: leftX }} />
+      <motion.circle cx={300} cy={170} r={110} fill={GREEN} fillOpacity={0.05} stroke={GREEN} strokeWidth={1.5} style={{ x: sep }} />
+
+      <g clipPath="url(#ti-lens)">
+        <motion.circle cx={300} cy={170} r={110} fill={CORAL} style={{ x: leftX }} />
+      </g>
+
+      <motion.text
+        x={300}
+        y={338}
+        textAnchor="end"
+        fill={GREEN}
+        fillOpacity={0.6}
+        className="font-mono"
+        fontSize={11}
+        letterSpacing={3}
+        style={{ x: leftLabelX }}
       >
-        <path
-          d="M65 519C94 463 113 416 112 354C111 298 91 260 101 205C112 146 154 101 211 84C259 69 312 79 350 112C389 146 406 198 395 248C384 300 349 320 331 361C315 398 322 448 350 519"
-          stroke="#17352F"
-          strokeWidth="2"
-        />
-        <path
-          d="M115 519C145 472 159 432 156 382C153 337 138 304 146 260C155 212 187 174 231 158C271 144 314 151 346 178C378 205 393 247 386 289C379 332 352 352 337 386C324 417 330 462 357 519"
-          stroke="#17352F"
-          strokeOpacity="0.34"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M161 519C184 483 196 451 193 412C190 377 179 351 185 317C192 280 217 250 252 238C283 227 317 233 342 254C367 275 379 308 373 340C368 373 346 388 335 415C324 439 330 478 352 519"
-          stroke="#DF674D"
-          strokeWidth="3"
-        />
-        <path
-          d="M100 211C150 236 213 233 257 197C291 169 316 125 350 113"
-          stroke="#17352F"
-          strokeOpacity="0.16"
-          strokeWidth="1"
-        />
-        <path
-          d="M146 267C188 286 233 282 269 256C295 237 319 204 346 179"
-          stroke="#17352F"
-          strokeOpacity="0.16"
-          strokeWidth="1"
-        />
-        <path
-          d="M185 320C218 333 251 327 278 307C300 291 318 271 342 254"
-          stroke="#DF674D"
-          strokeOpacity="0.35"
-          strokeWidth="1"
-        />
-      </svg>
+        HIS LAUGH
+      </motion.text>
+      <motion.text
+        x={300}
+        y={338}
+        textAnchor="start"
+        fill={GREEN}
+        fillOpacity={0.6}
+        className="font-mono"
+        fontSize={11}
+        letterSpacing={3}
+        style={{ x: rightLabelX }}
+      >
+        HER FACE
+      </motion.text>
 
-      <div className="absolute bottom-10 left-10 sm:bottom-14 sm:left-14">
-        <p className="max-w-[13rem] text-balance font-serif text-xl italic leading-snug text-[#17352f] sm:text-2xl">
-          We become the people who raised us.
-        </p>
-      </div>
+      <motion.text
+        x={300}
+        y={182}
+        textAnchor="middle"
+        fill={PAPER}
+        fontSize={34}
+        fontStyle="italic"
+        style={{ opacity: meOpacity }}
+      >
+        me
+      </motion.text>
+    </svg>
+  );
+}
 
-      <div className="absolute bottom-0 right-0 grid size-20 place-items-center border-l border-t border-[#17352f]/15 bg-[#f4f0e8] font-mono text-[9px] tracking-[0.2em] text-[#17352f]/55 sm:size-24">
-        01—03
-      </div>
+/* A hairline above each stanza, paid out from the left as the stanza scrolls into place. */
+function Rule() {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 92%", "start 58%"] });
+  return (
+    <div ref={ref} aria-hidden className="mb-8 h-px w-full bg-[#17352f]/10">
+      <motion.div
+        style={{ scaleX: reduce ? 1 : scrollYProgress, transformOrigin: "left" }}
+        className="h-full w-full bg-[#df674d]"
+      />
     </div>
   );
 }
 
-export function InTheirImage() {
-  const reduceMotion = useReducedMotion();
-  const enter = (delay = 0) => ({
-    initial: reduceMotion ? false : { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-8% 0px" },
-    transition: { duration: 0.9, delay, ease: EASE },
-  });
+function Stanza({ lines, index, last }: { lines: string[]; index: number; last: boolean }) {
+  return (
+    <section className="flex min-h-[65dvh] flex-col justify-center py-14">
+      <Rule />
+      <Label className="mb-6 block text-[#17352f]/45">
+        {String(index + 1).padStart(2, "0")} / {String(POEM_STANZAS.length).padStart(2, "0")}
+      </Label>
+      <p className="text-[1.7rem] font-light leading-[1.5] text-[#17352f] sm:text-[2.1rem] sm:leading-[1.45]">
+        {lines.map((line, i) => {
+          const closing = last && i > 2;
+          return (
+            <span
+              key={line}
+              className={`block text-pretty ${closing ? "mt-1 italic text-[#df674d] sm:text-[2.3rem]" : ""}`}
+            >
+              {line}
+            </span>
+          );
+        })}
+      </p>
+    </section>
+  );
+}
 
+/* The figure sits after the last stanza; the circles meet as it scrolls into view. */
+function Figure() {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 90%", "end 50%"] });
+  const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 30, mass: 0.4 });
+
+  const scrolledSep = useTransform(progress, [0, 0.85], [150, 40]);
+  const scrolledMe = useTransform(progress, [0.6, 0.9], [0, 1]);
+  const restSep = useMotionValue(40);
+  const restMe = useMotionValue(1);
+
+  return (
+    <figure ref={ref} className="py-24 lg:py-32">
+      <div className="mx-auto aspect-[5/3] w-full max-w-[32rem]">
+        <Convergence sep={reduce ? restSep : scrolledSep} meOpacity={reduce ? restMe : scrolledMe} />
+      </div>
+      <figcaption className="mx-auto mt-8 max-w-xs text-balance text-center text-xl italic leading-snug text-[#17352f]/70 sm:text-2xl">
+        We become the people who raised us.
+      </figcaption>
+    </figure>
+  );
+}
+
+export function InTheirImage() {
   return (
     <section
       id="sec-in-their-image"
-      className="relative w-full overflow-hidden bg-[#f4f0e8] text-[#17352f] selection:bg-[#df674d] selection:text-[#fffaf2]"
+      className={`${serif.className} relative w-full bg-[#f4f0e8] text-[#17352f] selection:bg-[#df674d] selection:text-[#fffaf2]`}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,rgba(23,53,47,0.055)_1px,transparent_1px)] [background-size:clamp(4rem,8vw,8rem)_100%]" />
-
-      <div className="relative mx-auto w-full max-w-[1600px] px-5 pb-10 pt-6 sm:px-10 sm:pb-14 sm:pt-8 lg:px-16">
-        <header className="flex items-center justify-between border-b border-[#17352f]/15 pb-5 font-mono text-[9px] uppercase tracking-[0.24em] text-[#17352f]/55">
-          <span>Inquation · 2025—26</span>
-          <span className="hidden sm:inline">Poetry / Family archive</span>
-          <span>No. 032</span>
+      <div className="mx-auto max-w-2xl px-6 sm:px-10">
+        <header className="flex min-h-[80dvh] flex-col justify-center py-20">
+          <p className="mb-6 flex items-center gap-3 text-[#df674d]">
+            <span aria-hidden className="h-px w-8 bg-[#df674d]" />
+            <Label>A poem on inheritance</Label>
+          </p>
+          <h2 className="font-heading text-[clamp(4.5rem,15vw,9rem)] uppercase leading-[0.8] tracking-[-0.01em] text-[#17352f]">
+            In their
+            <span className="block text-[#df674d]">image</span>
+          </h2>
         </header>
 
-        <div className="grid min-h-[calc(100dvh-7rem)] items-center gap-16 py-16 lg:grid-cols-[minmax(19rem,0.88fr)_minmax(32rem,1.12fr)] lg:gap-20 lg:py-20 xl:gap-28">
-          <div className="min-w-0">
-            <motion.div {...enter()} className="mb-12 sm:mb-14">
-              <p className="mb-4 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.34em] text-[#df674d]">
-                <span className="h-px w-7 bg-[#df674d]" />
-                A poem on inheritance
-              </p>
-              <h2 className="max-w-2xl text-balance font-heading text-[clamp(4.8rem,13vw,10.5rem)] uppercase leading-[0.76] tracking-[-0.025em] text-[#17352f]">
-                In their
-                <span className="block pl-[0.16em] text-[#df674d]">image</span>
-              </h2>
-            </motion.div>
-
-            <motion.div {...enter(0.1)}>
-              <EchoPortrait />
-            </motion.div>
-          </div>
-
-          <div className="relative lg:pl-8 xl:pl-16">
-            <div className="absolute bottom-0 left-0 top-0 hidden w-px bg-[#17352f]/15 lg:block" />
-
-            <motion.div
-              {...enter(0.08)}
-              className="mb-12 flex items-end justify-between gap-6 border-b border-[#17352f]/15 pb-5"
-            >
-              <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-[#17352f]/50">
-                Read slowly
-              </p>
-              <span className="font-serif text-4xl italic leading-none text-[#df674d] sm:text-5xl">
-                “
-              </span>
-            </motion.div>
-
-            <div className="space-y-12 sm:space-y-14">
-              {POEM_STANZAS.map((stanza, stanzaIndex) => (
-                <motion.div
-                  key={stanza[0]}
-                  {...enter(0.12 + stanzaIndex * 0.08)}
-                  className="grid grid-cols-[2rem_1fr] gap-3 sm:grid-cols-[3rem_1fr] sm:gap-5"
-                >
-                  <span className="pt-1 font-mono text-[8px] tracking-[0.2em] text-[#17352f]/35 sm:text-[9px]">
-                    /{String(stanzaIndex + 1).padStart(2, "0")}
-                  </span>
-                  <div className="space-y-1.5 sm:space-y-2">
-                    {stanza.map((line, lineIndex) => {
-                      const isClosingLine =
-                        stanzaIndex === POEM_STANZAS.length - 1 && lineIndex > 2;
-
-                      return (
-                        <p
-                          key={line}
-                          className={
-                            isClosingLine
-                              ? "text-pretty font-serif text-[clamp(1.35rem,2.3vw,2.15rem)] italic leading-[1.35] text-[#df674d]"
-                              : "text-pretty text-[clamp(1.08rem,1.75vw,1.55rem)] font-light leading-[1.5] tracking-[-0.02em] text-[#17352f]/82"
-                          }
-                        >
-                          {line}
-                        </p>
-                      );
-                    })}
+          {POEM_STANZAS.map((lines, i) => (
+            <Fragment key={lines[0]}>
+              <Stanza lines={lines} index={i} last={i === POEM_STANZAS.length - 1} />
+              {i < MEMORY_IMAGES.length && (
+                <figure className="mb-16 overflow-hidden border-y border-[#17352f]/10 py-6 lg:mb-24 lg:py-8">
+                  <div className="relative aspect-[4/3] w-full max-w-3xl overflow-hidden bg-[#e8e1d5]">
+                    <Image
+                      src={resolveAsset(MEMORY_IMAGES[i].file)}
+                      alt={MEMORY_IMAGES[i].alt}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 48vw"
+                      unoptimized
+                      className="object-cover"
+                    />
                   </div>
-                </motion.div>
-              ))}
-            </div>
+                  <figcaption className="mt-3 text-sm italic text-[#17352f]/55">
+                    {MEMORY_IMAGES[i].caption}
+                  </figcaption>
+                </figure>
+              )}
+            </Fragment>
+          ))}
 
-            <motion.div
-              {...enter(0.18)}
-              className="mt-14 flex flex-col gap-5 border-t border-[#17352f]/15 pt-6 sm:flex-row sm:items-end sm:justify-between"
-            >
-              <div>
-                <p className="mb-2 font-mono text-[8px] uppercase tracking-[0.28em] text-[#17352f]/45">
-                  Words by
-                </p>
-                <p className="text-xl font-medium tracking-[-0.03em] text-[#17352f] sm:text-2xl">
-                  Fathima Aslam
-                </p>
-              </div>
-              <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#17352f]/45 sm:text-right">
-                3rd Year<br />Electrical &amp; Electronics
-              </p>
-            </motion.div>
+        <Figure />
+
+        <div className="flex flex-col gap-5 border-t border-[#17352f]/15 py-16 sm:flex-row sm:items-end sm:justify-between lg:py-24">
+          <div>
+            <Label className="mb-2 block text-[#17352f]/45">Words by</Label>
+            <p className="text-3xl font-medium tracking-[-0.02em] sm:text-4xl">Fathima Aslam</p>
           </div>
+          <Label className="leading-relaxed text-[#17352f]/45 sm:text-right">
+            3rd Year
+            <br />
+            Electrical &amp; Electronics
+          </Label>
         </div>
-
-        <footer className="flex items-center justify-between border-t border-[#17352f]/15 pt-5 font-mono text-[8px] uppercase tracking-[0.22em] text-[#17352f]/45">
-          <span>Poetry collection</span>
-          <span className="hidden sm:inline">What remains, we carry</span>
-          <span>Wayanad · Kerala</span>
-        </footer>
       </div>
     </section>
   );

@@ -1,0 +1,81 @@
+.page { --void: #05060a; --panel: #0b0e17; --paper: #e8e2d7; --muted: #9aa0ad; --amber: #d99065; --hair: #e8e2d71f; --ml: var(--font-malayalam), 'Noto Sans Malayalam', 'Manjari', 'Meera', system-ui, sans-serif; --col: min(100% - 40px, 640px); --wide: min(100% - 40px, 960px); position: relative; background: var(--void); color: var(--paper); isolation: isolate; }
+.page ::selection { background: var(--amber); color: var(--void); }
+.page :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+.kicker, .eyebrow, .colophon { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+.eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; color: var(--muted); }
+.eyebrow span { color: var(--amber); }
+
+/* Hero — the vortex, unobstructed. */
+.hero { position: relative; min-height: min(88svh, 820px); display: flex; align-items: flex-end; overflow: hidden; }
+.heroPlate { position: absolute; inset: -4% 0; }
+.heroImage { object-fit: cover; object-position: center 46%; transform: translate3d(0, var(--drift, 0px), 0); }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(180deg, #05060acc 0%, #05060a40 34%, #05060ae6 84%, var(--void) 100%); }
+.heroBody { position: relative; width: var(--wide); margin: 0 auto; padding: 0 0 clamp(36px, 6vh, 72px); }
+.kicker { color: var(--amber); margin: 0 0 20px; }
+.heroTitle { font-family: var(--ml); font-weight: 500; font-size: clamp(36px, 6.6vw, 84px); line-height: 1.32; letter-spacing: -.01em; margin: 0; max-width: 16ch; text-wrap: balance; }
+
+/* Movements — an image card that carries its own title, then a single reading column. */
+.movement { margin-top: clamp(72px, 11vh, 120px); }
+.hero + .movement { margin-top: 40px; }
+
+.card { position: relative; display: flex; align-items: flex-end; width: var(--wide); margin: 0 auto; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 22px; background: radial-gradient(120% 80% at 85% 0%, #2b2456 0%, transparent 62%), radial-gradient(90% 70% at 8% 100%, #5b3421aa 0%, transparent 62%), #0a0c16; isolation: isolate; }
+.media { position: absolute; inset: -5% 0; }
+.mediaImage { object-fit: cover; transform: translate3d(0, var(--drift, 0px), 0); }
+.mediaCrop { object-position: var(--pos); transform-origin: var(--pos); transform: translate3d(0, var(--drift, 0px), 0) scale(var(--zoom, 1)); filter: hue-rotate(var(--hue, 0deg)); }
+.cardShade { position: absolute; inset: 0; background: linear-gradient(180deg, #05060a00 28%, #05060acc 76%, #05060af2 100%); }
+.cardText { position: relative; width: 100%; max-width: 640px; padding: 0 24px 26px; }
+.cardText h3 { font-family: var(--ml); font-weight: 500; font-size: clamp(38px, 8.5vw, 60px); line-height: 1.3; letter-spacing: -.01em; margin: 0; }
+.cardText .eyebrow { color: #c3c7d1; }
+
+.passages { display: flex; flex-direction: column; gap: 44px; width: var(--col); margin: 44px auto 0; }
+.ml { font-family: var(--ml); font-weight: 400; font-size: clamp(19px, 2.4vw, 22px); line-height: 1.95; margin: 0; text-wrap: pretty; }
+.ask { font-family: var(--ml); font-weight: 500; font-size: clamp(26px, 6vw, 34px); line-height: 1.45; margin: 0 0 18px; text-wrap: balance; }
+
+/* The diagram is the argument: same distance, different path. */
+.fold { width: var(--col); margin: 56px auto 0; padding: 26px 14px 24px; border-radius: 22px; background: var(--panel); }
+.foldSvg { display: block; width: 100%; height: auto; overflow: visible; }
+.foldSheet path { fill: none; stroke: var(--paper); stroke-width: 1; opacity: .16; }
+.foldRoute { fill: none; stroke: var(--paper); stroke-width: 1.5; opacity: .5; stroke-dasharray: 5 7; }
+.foldTunnel { fill: none; stroke: var(--amber); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; filter: drop-shadow(0 0 7px #d9906588); }
+.foldNodes circle { fill: var(--amber); }
+.foldLabels text { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 24px; fill: var(--muted); letter-spacing: .06em; }
+.foldLabels .foldMl { font-family: var(--ml); font-size: 28px; fill: var(--amber); letter-spacing: 0; }
+.fold figcaption { margin: 22px 8px 0; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 15px; line-height: 1.7; color: var(--muted); text-align: center; text-wrap: balance; }
+.fold[data-idle="true"] .foldTunnel { stroke-dashoffset: 1; }
+.fold[data-shown="true"] .foldTunnel { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s cubic-bezier(.22, 1, .36, 1) .35s; }
+
+/* Closing — same card, longer text. */
+.closing { margin-top: clamp(72px, 11vh, 120px); }
+.cardClosing { aspect-ratio: auto; min-height: 560px; }
+.closingMl { font-family: var(--ml); font-weight: 400; font-size: clamp(21px, 2.8vw, 30px); line-height: 1.8; margin: 0; text-wrap: pretty; }
+.colophon { width: var(--col); margin: 32px auto 0; padding: 20px 0 56px; border-top: 1px solid var(--hair); color: var(--muted); }
+
+.page [data-idle="true"] { opacity: 0; transform: translateY(18px); }
+.page [data-reveal] { transition: opacity .8s ease, transform .8s cubic-bezier(.22, 1, .36, 1); }
+.page [data-shown="true"] { opacity: 1; transform: none; }
+
+@media (min-width: 900px) {
+  .card { aspect-ratio: 16 / 9; border-radius: 28px; }
+  .cardText { padding: 0 44px 40px; }
+  .cardClosing { aspect-ratio: auto; min-height: 520px; }
+  .fold { padding: 34px 28px 28px; }
+}
+@media (max-width: 640px) {
+  .hero { min-height: 74svh; }
+  .heroTitle { font-size: clamp(30px, 8.5vw, 44px); line-height: 1.38; }
+  .passages { gap: 40px; margin-top: 36px; }
+  .fold { margin-top: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+  .page [data-reveal] { transition: none; }
+  .heroImage, .mediaImage { transform: none; }
+  .mediaCrop { transform: scale(var(--zoom, 1)); }
+  .fold[data-idle="true"] .foldTunnel { stroke-dashoffset: 0; }
+}
+@media print {
+  .page { background: #fff; color: #000; }
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+}

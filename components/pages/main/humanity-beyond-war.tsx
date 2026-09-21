@@ -1,162 +1,149 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { ReactNode } from "react";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
 
-const SUMMARY = [
-  {
-    tag: "01 / THE TOLL",
-    text: "War may begin with power and politics,\nBut it always ends in the lives of ordinary people.",
-  },
-  {
-    tag: "02 / THE QUESTION",
-    text: "The earth beneath our feet\nDoes not ask who we are,\nWhy then do we let hatred decide our future?",
-  },
-  {
-    tag: "03 / THE VICTORY",
-    text: "The greatest victory\nWill never be written in the history of wars,\nBut in the day\nWhen humanity finally stands beyond war...",
-  }
+const STANZAS = [
+  [
+    "I have never stood on a battlefield,",
+    "Yet I have heard its echoes",
+    "Through the cries of children,",
+    "The silence of broken homes,",
+    "And the eyes that have forgotten what peace looks like.",
+  ],
+  [
+    "War may begin with power and politics,",
+    "But it always ends in the lives of ordinary people.",
+    "A child does not know the language of borders;",
+    "A mother does not pray for victory,",
+    "She only prays that her family survives another night.",
+  ],
+  [
+    "The sky belongs to everyone,",
+    "Yet today it carries smoke instead of dreams.",
+    "The earth beneath our feet",
+    "Does not ask who we are,",
+    "Why then do we let hatred decide our future?",
+  ],
+  [
+    "I dream of a world",
+    "Where schools are rebuilt before weapons,",
+    "Where hands reach to heal, not to harm,",
+    "Where every child grows up",
+    "Knowing books more than fear.",
+  ],
+  [
+    "Perhaps I cannot stop a war.",
+    "Perhaps my words cannot silence the guns.",
+    "But I can choose compassion over hatred,",
+    "Hope over despair,",
+    "And humanity over division.",
+  ],
+  [
+    "Because in the end,",
+    "No nation truly wins",
+    "When innocent lives are lost.",
+  ],
+  [
+    "The greatest victory",
+    "Will never be written in the history of wars,",
+    "But in the day",
+  ],
 ];
 
+function Stanza({ lines, finalLine }: { lines: string[], finalLine?: string }) {
+  return (
+    <div className="mb-24 text-lg font-light leading-[2.2] tracking-wide text-[#e2e8f0] md:text-2xl md:leading-[2.4] italic font-serif">
+      {lines.map((line, idx) => (
+        <p key={idx}>{line}</p>
+      ))}
+      {finalLine && (
+        <p className="mt-8 block text-2xl text-[#8da6b9] not-italic lg:text-4xl">
+          {finalLine}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function HumanityBeyondWar() {
-  const containerRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 20, mass: 0.8 });
-
-  const introOpacity = useTransform(smooth, [0, 0.1, 0.15], [1, 1, 0]);
-  const introY = useTransform(smooth, [0, 0.15], ["0%", "-10%"]);
-
-  const q0Opacity = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
-  const q0Y = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], ["10%", "0%", "0%", "-10%"]);
-
-  const q1Opacity = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], [0, 1, 1, 0]);
-  const q1Y = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], ["10%", "0%", "0%", "-10%"]);
-
-  const q2Opacity = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], [0, 1, 1, 0]);
-  const q2Y = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], ["10%", "0%", "0%", "-10%"]);
-
-  const finalOpacity = useTransform(smooth, [0.85, 0.9, 1, 1], [0, 1, 1, 1]);
-  const finalY = useTransform(smooth, [0.85, 0.9, 1, 1], ["10%", "0%", "0%", "0%"]);
-
   return (
     <section 
-      ref={containerRef}
       id="sec-humanity-beyond-war" 
-      className="relative h-[500vh] w-full bg-[#1f2224] text-[#e2e8f0]"
+      className="relative w-full bg-[#1f2224] text-[#e2e8f0]"
     >
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-between">
+      <div className="mx-auto flex max-w-[90rem] flex-col lg:flex-row">
         
-        {/* Background Visual */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.05]">
-          <motion.div 
-            style={{ 
-              opacity: useTransform(smooth, [0, 1], [0.1, 0.5]),
-              y: useTransform(smooth, [0, 1], ["10%", "-10%"])
-            }}
-            className="w-[150vw] h-[150vw] md:w-[80vw] md:h-[80vw] bg-[radial-gradient(ellipse_at_top,#8da6b9_0%,transparent_70%)] blur-[120px] opacity-20 mix-blend-screen" 
-          />
-        </div>
-
-        {/* Header */}
-        <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#e2e8f0]/40">
-            Inquation / Poetry
+        {/* Sticky Left Column: Image & Title */}
+        <div className="relative h-[100dvh] w-full lg:sticky lg:top-0 lg:w-[45%] xl:w-[40%]">
+          <div className="absolute inset-0 z-0 overflow-hidden bg-[#1f2224]">
+            <div className="absolute inset-0 bg-[#8da6b9]/10 mix-blend-color z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1f2224] via-[#1f2224]/40 to-transparent z-10 lg:bg-gradient-to-r lg:from-transparent lg:via-[#1f2224]/60 lg:to-[#1f2224]" />
+            <Image
+              src={resolveAsset("humanity-beyond-war.webp")}
+              alt="Two children walking together toward a peaceful sunrise"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-1000"
+              unoptimized
+            />
           </div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#e2e8f0]/40 text-right">
-            09
-          </div>
-        </header>
-
-        {/* Content Layers */}
-        <div className="relative flex-1 flex items-center justify-center w-full">
-          {/* Intro */}
-          <motion.div
-            style={{ opacity: introOpacity, y: introY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-          >
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[#8da6b9] uppercase mb-6">
-              A Prayer for Peace
+          
+          <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
+            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#8da6b9]">
+              Inquation / Poetry · 09
             </p>
-            <h2 className="font-heading text-[12vw] md:text-[8vw] lg:text-[6vw] leading-[0.85] tracking-tight text-[#e2e8f0] uppercase">
-              HUMANITY
-              <br />
-              <span className="text-[#8da6b9] text-[5vw] md:text-[4vw] block mt-6 font-serif italic font-light tracking-wide normal-case">Beyond War</span>
+            <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#e2e8f0] uppercase xl:text-7xl">
+              Humanity<br />
+              <span className="text-[#8da6b9]">Beyond War.</span>
             </h2>
-          </motion.div>
-
-          {/* Quotes */}
-          {[
-            { opacity: q0Opacity, y: q0Y, quote: SUMMARY[0] },
-            { opacity: q1Opacity, y: q1Y, quote: SUMMARY[1] },
-            { opacity: q2Opacity, y: q2Y, quote: SUMMARY[2] },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              style={{ opacity: item.opacity, y: item.y }}
-              className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-none"
-            >
-              <span className="font-mono text-[10px] tracking-[0.3em] text-[#8da6b9] uppercase mb-8">
-                {item.quote.tag}
-              </span>
-              <h3 className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#e2e8f0] leading-[1.4] max-w-4xl whitespace-pre-line italic">
-                &ldquo;{item.quote.text}&rdquo;
-              </h3>
-            </motion.div>
-          ))}
-
-          {/* Final CTA */}
-          <motion.div
-            style={{ opacity: finalOpacity, y: finalY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-auto"
-          >
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-8 border-2 border-[#8da6b9]/30 shadow-[0_0_30px_rgba(141,166,185,0.15)] bg-[#8da6b9]/10">
-              <Image 
-                src={resolveAsset("saliha.png")} 
-                alt="Saliha VK" 
-                width={128} 
-                height={128} 
-                className="w-full h-full object-cover grayscale opacity-90 mix-blend-luminosity hover:grayscale-0 hover:mix-blend-normal hover:opacity-100 transition-all duration-500"
-              />
-            </div>
-            <span className="font-mono text-[10px] tracking-[0.3em] text-[#8da6b9] uppercase mb-4">
-              Written by
-            </span>
-            <h3 className="font-serif text-2xl md:text-4xl text-[#e2e8f0]">
-              Saliha VK
-            </h3>
-            <p className="font-sans text-sm md:text-base text-[#e2e8f0]/50 mt-2 max-w-2xl">
-              2nd Year, Electronics & Communication
+            <p className="mt-6 font-serif text-xl italic tracking-wide text-[#e2e8f0]/70">
+              A prayer for peace.
             </p>
-            <div className="mt-16">
-              <Link
-                href="/humanity-beyond-war"
-                className="group inline-flex items-center gap-4 bg-[#8da6b9] px-8 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#1f2224] transition-all hover:bg-[#e2e8f0]"
-              >
-                <span>Read the Full Poem</span>
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Footer */}
-        <footer className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-[#e2e8f0]/10 pointer-events-none">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#e2e8f0]/40">
-            GEC Wayanad · 2025-26
+        {/* Scrolling Right Column: The Poem */}
+        <div className="relative z-10 flex w-full flex-col justify-center px-8 py-24 md:px-16 md:py-32 lg:w-[55%] xl:w-[60%] lg:px-24">
+          <article className="max-w-xl">
+            {STANZAS.map((stanza, index) => (
+              <Stanza 
+                key={index} 
+                lines={stanza} 
+              />
+            ))}
+            <Stanza 
+              lines={[]} 
+              finalLine="When humanity finally stands beyond war." 
+            />
+          </article>
+        </div>
+      </div>
+
+      {/* Author Profile */}
+      <div className="relative z-20 flex flex-col items-center justify-center border-t border-[#8da6b9]/10 bg-[#1f2224] px-6 py-32 text-center md:py-40">
+        <div className="mb-8 h-24 w-24 overflow-hidden rounded-full border-2 border-[#8da6b9]/30 bg-[#8da6b9]/10 p-1 md:h-32 md:w-32">
+          <div className="h-full w-full overflow-hidden rounded-full">
+            <Image 
+              src={resolveAsset("saliha.webp")} 
+              alt="Saliha vk" 
+              width={128} 
+              height={128} 
+              className="h-full w-full object-cover grayscale mix-blend-luminosity transition-all duration-500 hover:grayscale-0 hover:mix-blend-normal"
+              unoptimized
+            />
           </div>
-          <div className="font-sans text-[10px] text-[#e2e8f0]/40">
-            Humanity Beyond War
-          </div>
-        </footer>
+        </div>
+        <span className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#8da6b9]">
+          Written by
+        </span>
+        <h3 className="font-serif text-2xl text-[#e2e8f0] md:text-4xl">
+          Saliha vk
+        </h3>
+        <p className="mt-2 font-sans text-sm tracking-widest uppercase text-[#e2e8f0]/50 md:text-base">
+          Second year, Electronics and communication
+        </p>
       </div>
     </section>
   );

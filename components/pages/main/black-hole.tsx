@@ -73,7 +73,7 @@ export function BlackHole() {
             className="mt-8 sm:mt-12 md:mt-16 max-w-xl md:max-w-2xl mx-auto will-change-transform px-4"
           >
             <p className="text-sm sm:text-base md:text-xl font-mono text-[#a39b8c] leading-relaxed tracking-wide">
-              A region of spacetime where gravity is so intense that <span className="text-[#d99065] font-semibold">nothing</span>—not even light—can escape its grasp.
+              A region of spacetime where gravity is so intense that <span className="text-[#d99065] font-semibold">nothing</span>, not even light, can escape its grasp.
             </p>
           </motion.div>
         </div>

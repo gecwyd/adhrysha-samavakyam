@@ -382,10 +382,10 @@ export function MissMinutes({
           return (
             <line
               key={i}
-              x1={cx + Math.cos(angle) * innerR}
-              y1={cy + Math.sin(angle) * innerR}
-              x2={cx + Math.cos(angle) * outerR}
-              y2={cy + Math.sin(angle) * outerR}
+              x1={+(cx + Math.cos(angle) * innerR).toFixed(3)}
+              y1={+(cy + Math.sin(angle) * innerR).toFixed(3)}
+              x2={+(cx + Math.cos(angle) * outerR).toFixed(3)}
+              y2={+(cy + Math.sin(angle) * outerR).toFixed(3)}
               stroke="#2A1A0A"
               strokeWidth={isMajor ? r * 0.05 : r * 0.025}
               strokeLinecap="round"

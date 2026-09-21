@@ -1,0 +1,79 @@
+.page { --mist: #e8ede9; --ink: #14201a; --body: #1d2b24; --muted: #55635b; --moss: #2f5d4a; --sun: #c2803f; --deep: #0f1a15; --hair: #14201a1f; --ml: var(--font-malayalam), 'Noto Sans Malayalam', 'Manjari', 'Meera', system-ui, sans-serif; --col: min(100% - 40px, 620px); --wide: min(100% - 40px, 1040px); position: relative; background: var(--mist); color: var(--ink); isolation: isolate; }
+.page ::selection { background: #c9d8cd; color: var(--ink); }
+
+.kicker, .byline, .written, .role, .colophon { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+
+/* Hero — the photograph dissolves into the page like mist lifting off a hillside. */
+.hero { position: relative; }
+.heroMedia { position: relative; overflow: hidden; height: clamp(420px, 72svh, 760px); background: #2a3d33; -webkit-mask-image: linear-gradient(#000 40%, transparent 96%); mask-image: linear-gradient(#000 40%, transparent 96%); }
+.heroImage { object-fit: cover; object-position: 28% 62%; }
+.heroMedia::before, .heroMedia::after { content: ''; position: absolute; left: -40%; width: 180%; height: 38%; z-index: 1; pointer-events: none; background: radial-gradient(closest-side, #ffffff99, transparent); }
+.heroMedia::before { top: 34%; animation: drift 38s ease-in-out infinite alternate; }
+.heroMedia::after { top: 54%; opacity: .75; animation: drift 54s ease-in-out infinite alternate-reverse; }
+@keyframes drift { from { transform: translate3d(-7%, 0, 0); } to { transform: translate3d(7%, 0, 0); } }
+
+.heroBody { position: relative; z-index: 2; width: var(--col); margin: -9svh auto 0; }
+.kicker { margin: 0 0 18px; color: var(--ink); }
+.title { font-family: var(--ml); font-weight: 500; font-size: clamp(46px, 11vw, 92px); line-height: 1.25; letter-spacing: -.01em; margin: 0; }
+.byline { margin: 18px 0 0; color: var(--muted); }
+.lede { font-family: var(--ml); font-weight: 400; font-size: clamp(21px, 3.2vw, 26px); line-height: 1.85; color: var(--moss); margin: 34px 0 0; text-wrap: balance; }
+
+/* Reading column. */
+.prose { width: var(--col); margin: 56px auto 0; }
+.hero + .prose { margin-top: 64px; }
+.p { font-family: var(--ml); font-weight: 400; font-size: clamp(19px, 2.3vw, 21px); line-height: 2; color: var(--body); margin: 0 0 1.5em; text-wrap: pretty; }
+.prose > :last-child { margin-bottom: 0; }
+.beat { font-weight: 500; font-size: clamp(21px, 2.8vw, 25px); line-height: 1.8; color: var(--moss); }
+
+.dialogue { margin: 0 0 1.5em; padding-left: 20px; border-left: 2px solid var(--sun); }
+.dialogue p { font-family: var(--ml); font-size: clamp(19px, 2.3vw, 21px); line-height: 1.85; color: var(--body); margin: 0 0 .5em; }
+.dialogue p:last-child { margin-bottom: 0; }
+
+.ornament { display: flex; justify-content: center; gap: 10px; margin: 2.4em 0 2.8em; }
+.ornament span { width: 5px; height: 5px; border-radius: 50%; background: var(--moss); }
+.ornament span:nth-child(2) { opacity: .55; }
+.ornament span:nth-child(3) { opacity: .25; }
+
+/* Image breaks — soft-edged so they melt into the page instead of sitting on it. */
+.plate { position: relative; width: min(100%, 1040px); aspect-ratio: 4 / 3; margin: 56px auto 0; -webkit-mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 68%, transparent 100%); mask-image: radial-gradient(ellipse closest-side at 50% 50%, #000 68%, transparent 100%); }
+.plateImage { object-fit: cover; }
+
+/* The single dark moment. */
+.finale { position: relative; width: var(--wide); margin: 72px auto 0; padding: clamp(44px, 8vw, 84px) clamp(24px, 6vw, 72px); border-radius: 26px; overflow: hidden; background: radial-gradient(90% 70% at 88% 0%, #2f4d3f 0%, transparent 64%), radial-gradient(60% 50% at 6% 100%, #4a3320a0 0%, transparent 70%), var(--deep); color: var(--mist); }
+.finaleLead { font-family: var(--ml); font-size: 17px; line-height: 1.8; color: #a9b7ae; margin: 0 0 18px; max-width: 620px; margin-inline: auto; }
+.finale blockquote { max-width: 620px; margin: 0 auto; font-family: var(--ml); font-weight: 500; font-size: clamp(26px, 5.4vw, 40px); line-height: 1.6; color: #f1f4f1; text-wrap: balance; }
+
+.end { width: var(--col); margin: 0 auto; }
+.author { display: flex; align-items: center; gap: 16px; margin-top: 56px; }
+.author img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+.author p { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.written, .role { color: var(--muted); }
+.author strong { font-family: var(--ml); font-weight: 500; font-size: 22px; line-height: 1.4; }
+.colophon { margin: 32px 0 0; padding: 20px 0 64px; border-top: 1px solid var(--hair); color: var(--muted); }
+
+.page [data-idle="true"] { opacity: 0; transform: translateY(18px); }
+.page [data-reveal] { transition: opacity .9s ease, transform .9s cubic-bezier(.22, 1, .36, 1); }
+.page [data-shown="true"] { opacity: 1; transform: none; }
+
+@media (min-width: 900px) {
+  .plate { aspect-ratio: 16 / 9; margin-top: 72px; }
+  .heroImage { object-position: 40% 58%; }
+}
+@media (max-width: 640px) {
+  .heroBody { margin-top: -7svh; }
+  .lede { margin-top: 28px; }
+  .prose { margin-top: 44px; }
+  .plate { margin-top: 44px; }
+  .finale { margin-top: 56px; border-radius: 22px; }
+  .author { margin-top: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+  .page [data-reveal] { transition: none; }
+  .heroMedia::before, .heroMedia::after { animation: none; }
+}
+@media print {
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+  .heroMedia::before, .heroMedia::after { display: none; }
+}

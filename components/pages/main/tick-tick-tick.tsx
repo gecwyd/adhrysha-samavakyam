@@ -119,11 +119,9 @@ export function TickTickTick() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(8,7,5,0)_0%,#080705_100%)] opacity-80" />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 pt-24 pb-32 flex flex-col lg:flex-row relative">
-        
-        {/* Left Sticky Column */}
-        <div className="lg:w-5/12 lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center pt-8 lg:pt-0 pb-16 lg:pb-0 z-10">
-           <motion.div style={{ opacity: stickyOpacity, y: stickyY }}>
+      <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 pt-8 sm:pt-16 pb-24 sm:pb-32 flex flex-col lg:flex-row relative">
+        <div className="lg:w-5/12 lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center pt-0 pb-8 lg:pb-0 z-10">
+           <div>
              <div className="flex items-center mb-6 lg:mb-10">
                <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.4em] text-[#c96a45]">
                  A Poem About Time
@@ -157,7 +155,7 @@ export function TickTickTick() {
                   unoptimized
                 />
              </div>
-           </motion.div>
+           </div>
         </div>
 
         {/* Right Scroll Column */}

@@ -7,12 +7,12 @@ const STORY = [
   {
     tag: "01 / THE DEFINITION",
     ml: "ബഹിരാകാശത്തിലെ പരസ്പരം വളരെ അകലെയുള്ള രണ്ട് പ്രദേശങ്ങളെ ഒരു തുരങ്കംപോലുള്ള പാതയിലൂടെ ബന്ധിപ്പിക്കുന്നതായി സിദ്ധാന്തപരമായി കരുതപ്പെടുന്ന ഘടനയാണ് വിശദദ്വാരം.",
-    en: "A wormhole — a theoretical tunnel connecting two distant points in spacetime.",
+    en: "A wormhole: a theoretical tunnel connecting two distant points in spacetime.",
   },
   {
     tag: "02 / THE ESCAPE",
     ml: "എല്ലാംകൊണ്ടും മടുപ്പായി തുടങ്ങി. ജോലിയും ജീവിതവും എല്ലാം. ഒരാഴ്ച ലീവ് എടുത്ത് ട്രെയിൻ കയറി ഞാൻ നാട്ടിലേക്ക് വന്നു.",
-    en: "Tired of everything — work, life, all of it. I took a week off and came home on a train.",
+    en: "Tired of everything, work, life, all of it. I took a week off and came home on a train.",
   },
   {
     tag: "03 / THE CLOCK",
@@ -21,8 +21,8 @@ const STORY = [
   },
   {
     tag: "04 / THE DOOR",
-    ml: "സൂചി 3ൽ എത്തിയപ്പോൾ — കതകുതുറന്ന് അമ്മ മുറിയിലേക്ക് വന്നു. കൈകൊണ്ട് കണ്ണ് തിരുമ്മി അമ്മ എന്നെ നോക്കി.",
-    en: "When the hand reached 3 — the door opened. Mother walked in, rubbing her eyes, looking at me.",
+    ml: "സൂചി 3ൽ എത്തിയപ്പോൾ കതകുതുറന്ന് അമ്മ മുറിയിലേക്ക് വന്നു. കൈകൊണ്ട് കണ്ണ് തിരുമ്മി അമ്മ എന്നെ നോക്കി.",
+    en: "When the hand reached 3, the door opened. Mother walked in, rubbing her eyes, looking at me.",
   },
   {
     tag: "05 / HER WORDS",
@@ -36,8 +36,8 @@ const STORY = [
   },
   {
     tag: "07 / THE WORMHOLE",
-    ml: "അന്ന് രാത്രി സംഭവിച്ചതിന് ഒരു പേരുണ്ടോ എന്ന് എനിക്ക് അറിയില്ല. പക്ഷേ വർഷങ്ങൾക്കുശേഷം, സ്ഥലകാലത്തെക്കുറിച്ചും വിശദദ്വാരത്തെക്കുറിച്ചും വായിച്ചപ്പോൾ — ഒരുപക്ഷേ ആ രാത്രിയിൽ ഞാൻ കണ്ടത് ഇതാണെന്ന് ചിന്തിച്ചുതുടങ്ങി.",
-    en: "I don't know if there's a name for what happened that night. But years later, reading about spacetime and wormholes — I began to wonder if that's what I witnessed.",
+    ml: "അന്ന് രാത്രി സംഭവിച്ചതിന് ഒരു പേരുണ്ടോ എന്ന് എനിക്ക് അറിയില്ല. പക്ഷേ വർഷങ്ങൾക്കുശേഷം, സ്ഥലകാലത്തെക്കുറിച്ചും വിശദദ്വാരത്തെക്കുറിച്ചും വായിച്ചപ്പോൾ, ഒരുപക്ഷേ ആ രാത്രിയിൽ ഞാൻ കണ്ടത് ഇതാണെന്ന് ചിന്തിച്ചുതുടങ്ങി.",
+    en: "I don't know if there's a name for what happened that night. But years later, reading about spacetime and wormholes, I began to wonder if that's what I witnessed.",
   },
 ];
 
@@ -71,7 +71,6 @@ export function WormholeStory() {
     return { opacity, y };
   });
 
-  const lineProgress = useTransform(smooth, [0, 1], ["0%", "100%"]);
   const clockHandRotate = useTransform(smooth, [0.2, 0.5], [0, -360]);
   const clockOpacity = useTransform(smooth, [0.18, 0.28, 0.52, 0.62], [0, 0.18, 0.18, 0]);
 
@@ -85,10 +84,6 @@ export function WormholeStory() {
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-between">
 
           <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSI0IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIi8+PC9zdmc+')] bg-repeat" />
-
-          <div className="absolute left-6 md:left-12 top-0 bottom-0 w-px bg-white/5 pointer-events-none">
-            <motion.div style={{ height: lineProgress }} className="w-full bg-white/20 origin-top" />
-          </div>
 
           <motion.div
             style={{ opacity: clockOpacity }}
@@ -217,15 +212,6 @@ export function WormholeStory() {
               </motion.div>
             ))}
           </div>
-
-          <footer className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-white/[0.05] pointer-events-none">
-            <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-              GEC Wayanad · 2025–26
-            </div>
-            <div className="font-sans text-[10px] text-white/20" lang="ml">
-              വിശദദ്വാരം
-            </div>
-          </footer>
         </div>
       </div>
     </section>

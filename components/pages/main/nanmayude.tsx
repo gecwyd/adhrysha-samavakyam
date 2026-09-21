@@ -1,177 +1,101 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { ReactNode } from "react";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
 
-const SUMMARY = [
-  {
-    tag: "01 / THE RADIANCE",
-    text: "അല്ലയോ പൂവേ!\nനീ ജന്മം നൽകും\nപൂമൊട്ടുകൾക്കെന്തൊരു കാന്തി!",
-    translation: "Oh flower!\nThe buds you give birth to\nWhat radiance they have!",
-  },
-  {
-    tag: "02 / THE LIGHT",
-    text: "പകരൂ നീ നന്മ തൻ തൂവെളിച്ചം...\nവളർന്നു തുടങ്ങുന്ന പൂമൊട്ടുകൾ\nവിടരട്ടെ നന്മയുടെ വിരിഞ്ഞ പുഷ്പങ്ങളായ്",
-    translation: "Pour out the pure light of goodness...\nMay the growing buds\nBloom into open flowers of goodness",
-  },
-  {
-    tag: "03 / THE DREAM",
-    text: "പറയൂ പകരൂ നീ നന്മതൻ പ്രിയസ്വപ്നങ്ങൾ\nവളരും മൊട്ടുകൾ വിടരട്ടേ നന്മയാൽ",
-    translation: "Speak and pour out the dear dreams of goodness\nLet the growing buds bloom with goodness",
-  }
+const STANZAS = [
+  ["അല്ലയോ പൂവേ!", "നീ ജന്മം നൽകും", "പൂമൊട്ടുകൾക്കെന്തൊരു കാന്തി!"],
+  ["ചിത്രപതംഗം തേൻ നുകരുന്ന", "എളിമയാർന്ന ഗാത്രത്തിനുടമേ!", "ആരും കൊതിക്കുന്ന ശോഭയാൽ", "തിളങ്ങുന്ന മഹിതേ!"],
+  ["നിൻ പൂമൊട്ടുകൾ ഉല്ലസിക്കുന്ന", "ആതപാർന്ന ഈ വേളയിൽ", "പകരൂ നീ നന്മ തൻ തൂവെളിച്ചം"],
+  ["മർത്ത്യർ കൊതിക്കുന്ന കാന്തിയാർന്ന", "പ്രിയ ലളിതേ !", "വളർന്നു തുടങ്ങുന്ന പൂമൊട്ടുകൾ", "വിടരട്ടെ നന്മയുടെ വിരിഞ്ഞ പുഷ്പങ്ങളായ്"],
+  ["പറയൂ പകരൂ നീ നന്മതൻ പ്രിയസ്വപ്നങ്ങൾ", "ക്വാണമോടംബര ഛായയിൽ", "വളരും മൊട്ടുകൾ വിടരട്ടേ നന്മയാൽ"],
 ];
 
+function Stanza({ lines, accent = false }: { lines: string[]; accent?: boolean }) {
+  return (
+    <div className={`mb-24 text-lg font-light leading-[2.2] tracking-wide md:text-2xl md:leading-[2.4] italic font-serif ${accent ? "text-[#bef264]" : "text-[#ecfccb]"}`} lang="ml">
+      {lines.map((line, idx) => (
+        <p key={idx}>{line}</p>
+      ))}
+    </div>
+  );
+}
+
 export function Nanmayude() {
-  const containerRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 20, mass: 0.8 });
-
-  const introOpacity = useTransform(smooth, [0, 0.1, 0.15], [1, 1, 0]);
-  const introY = useTransform(smooth, [0, 0.15], ["0%", "-10%"]);
-
-  const q0Opacity = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
-  const q0Y = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], ["10%", "0%", "0%", "-10%"]);
-
-  const q1Opacity = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], [0, 1, 1, 0]);
-  const q1Y = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], ["10%", "0%", "0%", "-10%"]);
-
-  const q2Opacity = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], [0, 1, 1, 0]);
-  const q2Y = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], ["10%", "0%", "0%", "-10%"]);
-
-  const finalOpacity = useTransform(smooth, [0.85, 0.9, 1, 1], [0, 1, 1, 1]);
-  const finalY = useTransform(smooth, [0.85, 0.9, 1, 1], ["10%", "0%", "0%", "0%"]);
-
   return (
     <section 
-      ref={containerRef}
       id="sec-nanmayude" 
-      className="relative h-[500vh] w-full bg-[#052e16] text-[#ecfccb]"
+      className="relative w-full bg-[#052e16] text-[#ecfccb]"
     >
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-between">
+      <div className="mx-auto flex max-w-[90rem] flex-col lg:flex-row">
         
-        {/* Background Visual */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.05]">
-          <motion.div 
-            style={{ 
-              scale: useTransform(smooth, [0, 1], [0.8, 1.3]),
-              opacity: useTransform(smooth, [0, 1], [0.1, 0.4]),
-              rotate: useTransform(smooth, [0, 1], [0, 90])
-            }}
-            className="w-[120vw] h-[120vw] md:w-[60vw] md:h-[60vw] border-[2px] border-dashed border-[#bef264] rounded-full absolute" 
-          />
-          <motion.div 
-            style={{ 
-              scale: useTransform(smooth, [0, 1], [1, 1.8]),
-              opacity: useTransform(smooth, [0, 1], [0.2, 0]),
-              rotate: useTransform(smooth, [0, 1], [0, -90])
-            }}
-            className="w-[90vw] h-[90vw] md:w-[45vw] md:h-[45vw] border-[1px] border-[#bef264] rounded-full absolute" 
-          />
-        </div>
-
-        {/* Header */}
-        <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#ecfccb]/40">
-            Inquation / Poetry
+        {/* Sticky Left Column: Image & Title */}
+        <div className="relative h-[100dvh] w-full lg:sticky lg:top-0 lg:w-[45%] xl:w-[40%]">
+          <div className="absolute inset-0 z-0 overflow-hidden bg-[#052e16]">
+            <div className="absolute inset-0 bg-[#bef264]/10 mix-blend-color z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#052e16] via-[#052e16]/40 to-transparent z-10 lg:bg-gradient-to-r lg:from-transparent lg:via-[#052e16]/60 lg:to-[#052e16]" />
+            <Image
+              src={resolveAsset("buds-of-goodness.webp")}
+              alt="Green flower buds in soft morning light"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-1000"
+              unoptimized
+            />
           </div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#ecfccb]/40 text-right">
-            12
-          </div>
-        </header>
-
-        {/* Content Layers */}
-        <div className="relative flex-1 flex items-center justify-center w-full">
-          {/* Intro */}
-          <motion.div
-            style={{ opacity: introOpacity, y: introY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-          >
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[#bef264] uppercase mb-6">
-              A Poem of Nature and Hope
+          
+          <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
+            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#bef264]/75">
+              Inquation / Poetry · 12
             </p>
-            <h2 className="font-heading text-[12vw] md:text-[8vw] lg:text-[6vw] leading-[0.85] tracking-tight text-[#ecfccb]">
-              BUDS OF
-              <br />
-              <span className="text-[#bef264] text-[6vw] md:text-[4vw] block mt-6 font-serif italic font-light tracking-wide">Goodness</span>
+            <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#ecfccb] uppercase xl:text-7xl" lang="ml">
+              നന്മയുടെ<br />
+              <span className="text-[#bef264]">പൂമൊട്ടുകൾ</span>
             </h2>
-          </motion.div>
-
-          {/* Quotes */}
-          {[
-            { opacity: q0Opacity, y: q0Y, quote: SUMMARY[0] },
-            { opacity: q1Opacity, y: q1Y, quote: SUMMARY[1] },
-            { opacity: q2Opacity, y: q2Y, quote: SUMMARY[2] },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              style={{ opacity: item.opacity, y: item.y }}
-              className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-none"
-            >
-              <span className="font-mono text-[10px] tracking-[0.3em] text-[#bef264] uppercase mb-8">
-                {item.quote.tag}
-              </span>
-              <h3 className="font-sans text-3xl md:text-5xl lg:text-6xl font-light text-[#ecfccb] leading-[1.4] max-w-4xl whitespace-pre-line" lang="ml">
-                &ldquo;{item.quote.text}&rdquo;
-              </h3>
-              <p className="font-serif text-sm md:text-lg text-[#ecfccb]/60 mt-8 max-w-2xl italic whitespace-pre-line">
-                {item.quote.translation}
-              </p>
-            </motion.div>
-          ))}
-
-          {/* Final CTA */}
-          <motion.div
-            style={{ opacity: finalOpacity, y: finalY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-auto"
-          >
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-8 border-2 border-[#bef264]/30 shadow-[0_0_30px_rgba(190,242,100,0.15)] bg-[#bef264]/10">
-              <Image 
-                src={resolveAsset("eldho.png")} 
-                alt="Eldho Paul Shajan" 
-                width={128} 
-                height={128} 
-                className="w-full h-full object-cover grayscale opacity-90 mix-blend-luminosity hover:grayscale-0 hover:mix-blend-normal hover:opacity-100 transition-all duration-500"
-              />
-            </div>
-            <span className="font-mono text-[10px] tracking-[0.3em] text-[#bef264] uppercase mb-4">
-              Written by
-            </span>
-            <h3 className="font-serif text-2xl md:text-4xl text-[#ecfccb]" lang="ml">
-              ഏൽദോ പോൾ ഷാജൻ
-            </h3>
-            <p className="font-sans text-sm md:text-base text-[#ecfccb]/50 mt-2 max-w-2xl" lang="ml">
-              ഒന്നാം വർഷം, മെക്കാനിക്കൽ എഞ്ചിനീയറിങ്
+            <p className="mt-6 font-serif text-xl italic tracking-wide text-[#ecfccb]/70">
+              Buds of goodness.
             </p>
-            <div className="mt-16">
-              <Link
-                href="/nanmayude"
-                className="group inline-flex items-center gap-4 bg-[#bef264] px-8 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#052e16] transition-all hover:bg-[#ecfccb]"
-              >
-                <span>Read the Full Poem</span>
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Footer */}
-        <footer className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-[#ecfccb]/10 pointer-events-none">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#ecfccb]/40">
-            GEC Wayanad · 2025-26
+        {/* Scrolling Right Column: The Poem */}
+        <div className="relative z-10 flex w-full flex-col justify-center px-8 py-24 md:px-16 md:py-32 lg:w-[55%] xl:w-[60%] lg:px-24">
+          <article className="max-w-xl">
+            {STANZAS.slice(0, 2).map((lines, index) => (
+              <Stanza key={index} lines={lines} />
+            ))}
+            
+            <Stanza lines={STANZAS[2]} />
+            <Stanza lines={STANZAS[3]} accent />
+            <Stanza lines={STANZAS[4]} accent />
+          </article>
+        </div>
+      </div>
+
+      {/* Author Profile */}
+      <div className="relative z-20 flex flex-col items-center justify-center border-t border-[#bef264]/10 bg-[#052e16] px-6 py-32 text-center md:py-40">
+        <div className="mb-8 h-24 w-24 overflow-hidden rounded-full border-2 border-[#bef264]/30 bg-[#bef264]/10 p-1 md:h-32 md:w-32">
+          <div className="h-full w-full overflow-hidden rounded-full">
+            <Image 
+              src={resolveAsset("eldho.webp")} 
+              alt="ഏൽദോ പോൾ ഷാജൻ" 
+              width={128} 
+              height={128} 
+              className="h-full w-full object-cover grayscale mix-blend-luminosity transition-all duration-500 hover:grayscale-0 hover:mix-blend-normal"
+              unoptimized
+            />
           </div>
-          <div className="font-sans text-[10px] text-[#ecfccb]/40" lang="ml">
-            നന്മയുടെ പൂമൊട്ടുകൾ
-          </div>
-        </footer>
+        </div>
+        <span className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#bef264]/70">
+          Written by
+        </span>
+        <h3 className="font-serif text-2xl text-[#ecfccb] md:text-4xl" lang="ml">
+          ഏൽദോ പോൾ ഷാജൻ
+        </h3>
+        <p className="mt-2 font-sans text-sm tracking-widest uppercase text-[#ecfccb]/50 md:text-base" lang="ml">
+          ഒന്നാം വർഷം, മെക്കാനിക്കൽ എഞ്ചിനീയറിങ്
+        </p>
       </div>
     </section>
   );

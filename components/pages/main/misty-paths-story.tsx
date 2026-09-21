@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
+import styles from "./misty-paths-story.module.css";
 
 const STORY_PARTS = [
   "വയനാട്ടിലെ മഴയ്ക്ക് ഒരു പ്രത്യേക സ്വഭാവമുണ്ട്. അത് വെറുതെ പെയ്യുകയല്ല. ഓർമ്മകളെ നനയ്ക്കും.",
@@ -25,180 +25,139 @@ const STORY_PARTS = [
   "അപ്പോൾ മനസ്സും മന്ദമായി പറയും:\n\n\"നമ്മൾ കോളേജിൽ പഠിച്ചത് പാഠപുസ്തകങ്ങൾ ആയിരുന്നില്ല സ്നേഹിക്കാനും നഷ്ടപ്പെടാനും ഓർമ്മിക്കാനും ആയിരുന്നു\""
 ];
 
-export function MistyPathsStory() {
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+const P = STORY_PARTS;
+// Single-sentence paragraphs are the story's held breaths — set them a little larger.
+const BEAT = 100;
+const curly = (line: string) => line.replace(/"([^"]*)"/g, "“$1”");
+const [exchangeLead, exchangeBody] = P[8].split("\n\n");
+const exchangeLines = exchangeBody.split("\n").map(curly);
+const [finaleLead, finaleQuote] = P[16].split("\n\n");
 
-  const smooth = useSpring(scrollYProgress, { stiffness: 30, damping: 20 });
+const PLATE_SIZES = "(max-width: 1100px) 100vw, 1040px";
+
+function Para({ text }: { text: string }) {
+  return <p className={text.length < BEAT ? `${styles.p} ${styles.beat}` : styles.p} lang="ml">{text}</p>;
+}
+
+function Ornament() {
+  return <div className={styles.ornament} aria-hidden="true"><span /><span /><span /></div>;
+}
+
+function Plate({ src, alt, pos }: { src: string; alt: string; pos: string }) {
+  return (
+    <figure className={styles.plate} data-reveal>
+      <Image src={resolveAsset(src)} alt={alt} fill sizes={PLATE_SIZES} className={styles.plateImage} style={{ objectPosition: pos }} />
+    </figure>
+  );
+}
+
+export function MistyPathsStory() {
+  const root = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = root.current;
+    if (!section) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let cleanup = () => {};
+
+    const setup = () => {
+      cleanup();
+      if (motion.matches) return;
+      // Only the images and the closing card ease in — body copy is never animated.
+      const reveals = new IntersectionObserver((entries, self) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.setAttribute("data-shown", "true");
+          self.unobserve(entry.target);
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      section.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
+        if (element.getBoundingClientRect().top <= window.innerHeight) return;
+        element.setAttribute("data-idle", "true");
+        reveals.observe(element);
+      });
+      cleanup = () => {
+        reveals.disconnect();
+        section.querySelectorAll("[data-idle]").forEach((element) => element.removeAttribute("data-idle"));
+      };
+    };
+
+    setup();
+    motion.addEventListener("change", setup);
+    return () => { cleanup(); motion.removeEventListener("change", setup); };
+  }, []);
 
   return (
-    <section 
-      ref={containerRef}
-      id="sec-misty-paths-story"
-      className="relative w-full bg-black text-white"
-      style={{ height: `${(STORY_PARTS.length + 2) * 100}vh` }}
-    >
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex items-center justify-center">
-        
-        {/* Subtle, minimal animated noise overlay */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-screen bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
-
-        {/* IMAGE 1: Appears in the background during the early middle of the story */}
-        <motion.div
-          style={{
-            opacity: useTransform(smooth, [0.15, 0.25, 0.45, 0.55], [0, 0.4, 0.4, 0]),
-            scale: useTransform(smooth, [0.15, 0.55], [1, 1.1]),
-            filter: "blur(2px)",
-          }}
-          className="absolute inset-0 w-full h-full pointer-events-none"
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10" />
-          <Image 
-            src={resolveAsset("anjali-img1.png")} 
-            alt="Memory" 
-            fill 
-            className="object-cover object-center grayscale opacity-60" 
+    <section ref={root} id="sec-misty-paths-story" aria-labelledby="misty-paths-title" className={styles.page}>
+      <header className={styles.hero}>
+        <div className={styles.heroMedia}>
+          <Image
+            src={resolveAsset("manjirangiya-vazhikal-path.webp")}
+            alt="A stone path climbing through misty green hills at sunrise"
+            fill
+            priority
+            sizes="100vw"
+            className={styles.heroImage}
           />
-        </motion.div>
-
-        {/* IMAGE 2: Appears in the background during the late middle of the story */}
-        <motion.div
-          style={{
-            opacity: useTransform(smooth, [0.65, 0.75, 0.9, 0.95], [0, 0.4, 0.4, 0]),
-            scale: useTransform(smooth, [0.65, 0.95], [1, 1.1]),
-            filter: "blur(2px)",
-          }}
-          className="absolute inset-0 w-full h-full pointer-events-none"
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10" />
-          <Image 
-            src={resolveAsset("anjali-img2.jpg")} 
-            alt="Memory" 
-            fill 
-            className="object-cover object-center grayscale opacity-60" 
-          />
-        </motion.div>
-
-        {/* TITLE SLIDE */}
-        <motion.div
-          style={{
-            opacity: useTransform(smooth, [0, 0.04, 0.08], [1, 1, 0]),
-            y: useTransform(smooth, [0, 0.08], ["0%", "-50%"])
-          }}
-          className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none"
-        >
-          <p className="font-mono text-[10px] tracking-[0.4em] text-white/30 uppercase mb-8">
-            Anjali Krishna · ECE 3rd Year
-          </p>
-          <h2 className="font-sans text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.2] tracking-wide" lang="ml">
-            മഞ്ഞിറങ്ങിയ<br />വഴികൾ
-          </h2>
-        </motion.div>
-
-        {/* STORY SLIDES */}
-        {STORY_PARTS.map((text, i) => {
-          const step = 1 / (STORY_PARTS.length + 2);
-          const start = (i + 1) * step;
-          const end = (i + 2) * step;
-
-          // Fade in for the first 25% of its duration
-          const fadeInStart = start - (step * 0.2);
-          const fadeInEnd = start + (step * 0.2);
-          
-          // Fade out for the last 25% of its duration
-          const fadeOutStart = end - (step * 0.2);
-          const fadeOutEnd = end + (step * 0.2);
-
-          const opacity = useTransform(
-            smooth,
-            [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
-            [0, 1, 1, 0]
-          );
-
-          const y = useTransform(
-            smooth,
-            [fadeInStart, fadeOutEnd],
-            ["40px", "-40px"]
-          );
-          
-          const blur = useTransform(
-            smooth,
-            [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd],
-            ["blur(10px)", "blur(0px)", "blur(0px)", "blur(10px)"]
-          );
-
-          return (
-            <motion.div
-              key={i}
-              style={{ opacity, y, filter: blur }}
-              className="absolute inset-0 flex items-center justify-center px-6 md:px-16 lg:px-32 text-center pointer-events-none"
-            >
-              <p className="font-sans text-2xl md:text-4xl lg:text-5xl font-light leading-[1.8] md:leading-[1.9] text-white/90 whitespace-pre-line" lang="ml">
-                {text}
-              </p>
-            </motion.div>
-          );
-        })}
-
-        {/* AUTHOR SLIDE */}
-        <motion.div
-          style={{
-            opacity: useTransform(
-              smooth,
-              [(STORY_PARTS.length + 0.8) / (STORY_PARTS.length + 2), (STORY_PARTS.length + 1) / (STORY_PARTS.length + 2)],
-              [0, 1]
-            ),
-            y: useTransform(
-              smooth,
-              [(STORY_PARTS.length + 0.8) / (STORY_PARTS.length + 2), (STORY_PARTS.length + 1) / (STORY_PARTS.length + 2)],
-              ["40px", "0px"]
-            )
-          }}
-          className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none"
-        >
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-8 border border-white/20 shadow-2xl relative">
-            <Image 
-              src={resolveAsset("anjali.png")} 
-              alt="Anjali Krishna" 
-              fill
-              className="object-cover grayscale"
-            />
-          </div>
-          <span className="font-mono text-[10px] tracking-[0.3em] text-white/30 uppercase mb-4">
-            Written by
-          </span>
-          <h3 className="font-sans text-2xl md:text-3xl text-white/90" lang="ml">
-            അഞ്ജലി കൃഷ്ണ
-          </h3>
-          <p className="font-mono text-[10px] tracking-[0.2em] text-white/50 mt-4 uppercase">
-            3rd Year · ECE
-          </p>
-        </motion.div>
-
-        {/* Header (Static) */}
-        <header className="absolute top-0 w-full z-20 flex items-center justify-between px-6 py-8 md:px-12 md:py-10 pointer-events-none">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">
-            Inquation / Memoir
-          </div>
-          <div className="font-sans text-[10px] text-white/30" lang="ml">
-            മഞ്ഞിറങ്ങിയ വഴികൾ
-          </div>
-        </header>
-        
-        {/* Progress Bar */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 h-px bg-white/10 z-20">
-           <motion.div 
-             style={{ scaleX: smooth }} 
-             className="w-full h-full bg-white origin-left"
-           />
         </div>
+        <div className={styles.heroBody}>
+          <p className={styles.kicker}>Inquation · Memoir</p>
+          <h2 id="misty-paths-title" className={styles.title} lang="ml">മഞ്ഞിറങ്ങിയ<br />വഴികൾ</h2>
+          <p className={styles.byline}>Anjali Krishna · ECE 3rd Year</p>
+          <p className={styles.lede} lang="ml">{P[0]}</p>
+        </div>
+      </header>
 
+      <div className={styles.prose}>
+        <Para text={P[1]} />
+        <Para text={P[2]} />
       </div>
+
+      <Plate src="manjirangiya-vazhikal-path.webp" alt="A misty mountain path winding through green hills" pos="55% 52%" />
+
+      <div className={styles.prose}>
+        <Para text={P[3]} />
+        <Para text={P[4]} />
+        <Para text={P[5]} />
+        <Para text={P[6]} />
+        <Para text={P[7]} />
+      </div>
+
+      <Plate src="manjirangiya-vazhikal-dew.webp" alt="Dew on grass and ferns beside a path, with the sun rising through mist" pos="30% 50%" />
+
+      <div className={styles.prose}>
+        <p className={styles.p} lang="ml">{exchangeLead}</p>
+        <div className={styles.dialogue} lang="ml">
+          {exchangeLines.map((line, index) => <p key={index}>{line}</p>)}
+        </div>
+        <Para text={P[9]} />
+        <Para text={P[10]} />
+        <Para text={P[11]} />
+        <Ornament />
+        <Para text={P[12]} />
+        <Para text={P[13]} />
+        <Ornament />
+        <Para text={P[14]} />
+        <Para text={P[15]} />
+      </div>
+
+      <figure className={styles.finale} data-reveal>
+        <p className={styles.finaleLead} lang="ml">{finaleLead}</p>
+        <blockquote lang="ml">{curly(finaleQuote)}</blockquote>
+      </figure>
+
+      <footer className={styles.end}>
+        <div className={styles.author}>
+          <Image src={resolveAsset("anjali.webp")} alt="" width={64} height={64} />
+          <p>
+            <span className={styles.written}>Written by</span>
+            <strong lang="ml">അഞ്ജലി കൃഷ്ണ</strong>
+            <span className={styles.role}>3rd Year · ECE</span>
+          </p>
+        </div>
+      </footer>
     </section>
   );
 }
+
+export default MistyPathsStory;

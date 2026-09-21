@@ -126,16 +126,6 @@ export function Wormhole() {
             </h3>
           </motion.div>
         </div>
-
-        {/* Footer */}
-        <footer className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-white/[0.06] pointer-events-none">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-            GEC Wayanad · 2025-26
-          </div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-            Wormhole
-          </div>
-        </footer>
       </div>
     </section>
   );

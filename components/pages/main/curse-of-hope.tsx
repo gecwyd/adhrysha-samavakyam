@@ -1,159 +1,133 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { ReactNode } from "react";
+import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
 
-const SUMMARY = [
-  {
-    tag: "01 / THE NAIVETY",
-    text: "She let them know too much,\nAnd still, she doesn't know she is naive\nBecause she thinks 11:11 wishes always come true.",
-  },
-  {
-    tag: "02 / THE TOLL",
-    text: "Every time they leave, she knows something in her dims;\nEvery time they come again, she knows something lights her up.",
-  },
-  {
-    tag: "03 / THE CURSE",
-    text: "Not everyone can handle a heart like hers,\nBut even now, she believes they could—\nAnd that's not her fault.",
-  }
-];
+function Stanza({ children }: { children: ReactNode }) {
+  return (
+    <div className="mb-24 text-lg font-light leading-[2.2] tracking-wide text-[#c0aec9] md:text-2xl md:leading-[2.4]">
+      {children}
+    </div>
+  );
+}
 
 export function CurseOfHope() {
-  const containerRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 20, mass: 0.8 });
-
-  const introOpacity = useTransform(smooth, [0, 0.1, 0.15], [1, 1, 0]);
-  const introY = useTransform(smooth, [0, 0.15], ["0%", "-10%"]);
-
-  const q0Opacity = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
-  const q0Y = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], ["10%", "0%", "0%", "-10%"]);
-
-  const q1Opacity = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], [0, 1, 1, 0]);
-  const q1Y = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], ["10%", "0%", "0%", "-10%"]);
-
-  const q2Opacity = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], [0, 1, 1, 0]);
-  const q2Y = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], ["10%", "0%", "0%", "-10%"]);
-
-  const finalOpacity = useTransform(smooth, [0.85, 0.9, 1, 1], [0, 1, 1, 1]);
-  const finalY = useTransform(smooth, [0.85, 0.9, 1, 1], ["10%", "0%", "0%", "0%"]);
-
   return (
     <section 
-      ref={containerRef}
       id="sec-curse-of-hope" 
-      className="relative h-[500vh] w-full bg-[#140f1a] text-[#d5c7e8]"
+      className="relative w-full bg-[#140f1a] text-[#d5c7e8]"
     >
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-between">
+      <div className="mx-auto flex max-w-7xl flex-col md:flex-row">
         
-        {/* Background Visual */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <motion.div 
-            style={{ 
-              opacity: useTransform(smooth, [0, 1], [0.1, 0.4]),
-              scale: useTransform(smooth, [0, 1], [0.8, 1.2]) 
-            }}
-            className="w-[100vw] h-[100vw] md:w-[60vw] md:h-[60vw] bg-[radial-gradient(circle_at_center,#d98fa6_0%,transparent_70%)] blur-[100px] opacity-20" 
-          />
-        </div>
-
-        {/* Header */}
-        <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d5c7e8]/40">
-            Inquation / Poetry
+        {/* Sticky Left Column: Image & Title */}
+        <div className="relative h-[100dvh] w-full md:sticky md:top-0 md:w-1/2 md:border-r md:border-[#d98fa6]/10">
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <div className="absolute inset-0 bg-[#d98fa6]/20 mix-blend-color z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#140f1a] via-[#140f1a]/40 to-transparent z-10 md:bg-gradient-to-r md:from-transparent md:via-[#140f1a]/40 md:to-[#140f1a]" />
+            <Image
+              src={resolveAsset("distant_connection.webp")}
+              alt="Abstract representation of hope and connection"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover opacity-40 grayscale"
+              unoptimized
+            />
           </div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d5c7e8]/40 text-right">
-            05
-          </div>
-        </header>
-
-        {/* Content Layers */}
-        <div className="relative flex-1 flex items-center justify-center w-full">
-          {/* Intro */}
-          <motion.div
-            style={{ opacity: introOpacity, y: introY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-          >
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[#d98fa6] uppercase mb-6">
+          
+          <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:p-24">
+            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#d98fa6]">
+              Inquation / Poetry · 05
+            </p>
+            <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#d5c7e8] uppercase lg:text-7xl">
+              The Curse<br />
+              <span className="text-[#d98fa6]">Of Hope.</span>
+            </h2>
+            <p className="mt-6 font-serif text-xl italic tracking-wide text-[#c0aec9]">
               A Poem on Vulnerability
             </p>
-            <h2 className="font-heading text-[12vw] md:text-[9vw] lg:text-[7vw] leading-[0.85] tracking-tight text-[#d5c7e8]">
-              THE CURSE
-              <br />
-              <span className="text-[#d98fa6]">OF HOPE.</span>
-            </h2>
-          </motion.div>
-
-          {/* Quotes */}
-          {[
-            { opacity: q0Opacity, y: q0Y, quote: SUMMARY[0] },
-            { opacity: q1Opacity, y: q1Y, quote: SUMMARY[1] },
-            { opacity: q2Opacity, y: q2Y, quote: SUMMARY[2] },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              style={{ opacity: item.opacity, y: item.y }}
-              className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-none"
-            >
-              <span className="font-mono text-[10px] tracking-[0.3em] text-[#d98fa6] uppercase mb-8">
-                {item.quote.tag}
-              </span>
-              <h3 className="font-serif text-3xl md:text-5xl lg:text-6xl font-light text-[#d5c7e8] leading-[1.4] max-w-4xl whitespace-pre-line italic">
-                &ldquo;{item.quote.text}&rdquo;
-              </h3>
-            </motion.div>
-          ))}
-
-          {/* Final CTA */}
-          <motion.div
-            style={{ opacity: finalOpacity, y: finalY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-auto"
-          >
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-8 border-2 border-[#d98fa6]/30 shadow-[0_0_30px_rgba(217,143,166,0.15)] bg-[#d98fa6]/10">
-              <img 
-                src={resolveAsset("nivedya.png")} 
-                alt="Nivedya A" 
-                className="w-full h-full object-cover grayscale opacity-90 mix-blend-luminosity hover:grayscale-0 hover:mix-blend-normal hover:opacity-100 transition-all duration-500"
-              />
-            </div>
-            <span className="font-mono text-[10px] tracking-[0.3em] text-[#d98fa6] uppercase mb-4">
-              Written by
-            </span>
-            <h3 className="font-serif text-2xl md:text-4xl text-[#d5c7e8]">
-              Nivedya A
-            </h3>
-            <p className="font-sans text-sm md:text-base text-[#d5c7e8]/50 mt-2 max-w-2xl">
-              1st Year, Electronics & Communication
-            </p>
-            <div className="mt-16">
-              <Link
-                href="/curse-of-hope"
-                className="group inline-flex items-center gap-4 bg-[#d98fa6] px-8 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#140f1a] transition-all hover:bg-[#d5c7e8]"
-              >
-                <span>Read the Full Poem</span>
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Footer */}
-        <footer className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-[#d5c7e8]/10 pointer-events-none">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d5c7e8]/40">
-            GEC Wayanad · 2025-26
+        {/* Scrolling Right Column: The Poem */}
+        <div className="relative z-10 flex w-full flex-col justify-center px-8 py-24 md:w-1/2 md:px-16 md:py-32 lg:px-24">
+          <article className="max-w-xl font-serif italic">
+            <Stanza>
+              <p>She loves without limitations</p>
+              <p>She always did love the people.</p>
+              <p>She always believed someone would find her</p>
+              <p>the way she wanted,</p>
+              <p>And she thought that person was the one.</p>
+              <p>Maybe that&apos;s her mistake;</p>
+              <p className="text-[#d98fa6] not-italic mt-2">That&apos;s her curse.</p>
+            </Stanza>
+
+            <Stanza>
+              <p>She let them know too much,</p>
+              <p>And still, she doesn&apos;t know she is naive</p>
+              <p>Because she thinks 11:11 wishes always come true.</p>
+              <p>People take all the love in her like it&apos;s free;</p>
+              <p>People always use her kindness like it&apos;s endless.</p>
+              <p>Little did they know, it cost her everything;</p>
+              <p>It cost her herself and her happiness.</p>
+            </Stanza>
+
+            <Stanza>
+              <p>Every time they don&apos;t pick up her call,</p>
+              <p>Every day they are not there for her,</p>
+              <p>She still believes they want her.</p>
+              <p>And that&apos;s how she ended up being helpless;</p>
+              <p>That&apos;s why she doesn&apos;t want to trust anyone;</p>
+              <p>That&apos;s why she doesn&apos;t want to fall in love again.</p>
+            </Stanza>
+
+            <Stanza>
+              <p>Every time they leave, she knows something in her dims;</p>
+              <p>Every time they come again, she knows something lights her up.</p>
+              <p>But now she is sure they wouldn&apos;t be there,</p>
+              <p>And now she doesn&apos;t want anyone to do that,</p>
+              <p>Because even after everything,</p>
+              <p>It&apos;s the same thing the world gives her.</p>
+              <p>Not everyone can handle a heart like hers,</p>
+              <p>But even now, she believes they could,</p>
+              <p>And that&apos;s not her fault.</p>
+            </Stanza>
+
+            <Stanza>
+              <p>Still, she doesn&apos;t know how much longer she will</p>
+              <p>Keep loving them over everything.</p>
+              <p>Still, she believes they love her the same way:</p>
+              <p className="mt-8 block text-2xl text-[#d98fa6] not-italic lg:text-3xl">
+                Not out of sympathy,<br/>
+                But out of love...
+              </p>
+            </Stanza>
+          </article>
+        </div>
+      </div>
+
+      {/* Author Profile */}
+      <div className="relative z-20 flex flex-col items-center justify-center border-t border-[#d98fa6]/10 bg-[#140f1a] px-6 py-32 text-center md:py-40">
+        <div className="mb-8 h-24 w-24 overflow-hidden rounded-full border-2 border-[#d98fa6]/30 bg-[#d98fa6]/10 p-1 md:h-32 md:w-32">
+          <div className="h-full w-full overflow-hidden rounded-full">
+            <Image 
+              src={resolveAsset("nivedya.png")} 
+              alt="Nivedya A" 
+              width={128} 
+              height={128} 
+              className="h-full w-full object-cover grayscale mix-blend-luminosity transition-all duration-500 hover:grayscale-0 hover:mix-blend-normal"
+            />
           </div>
-          <div className="font-sans text-[10px] text-[#d5c7e8]/40">
-            The Curse of Hope
-          </div>
-        </footer>
+        </div>
+        <span className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#d98fa6]">
+          Written by
+        </span>
+        <h3 className="font-serif text-2xl text-[#d5c7e8] md:text-4xl">
+          Nivedya A
+        </h3>
+        <p className="mt-2 font-sans text-sm tracking-widest uppercase text-[#d5c7e8]/50 md:text-base">
+          1st Year, Electronics & Comm.
+        </p>
       </div>
     </section>
   );

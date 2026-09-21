@@ -138,7 +138,6 @@ export function WritingEraAi() {
       <footer className="w-full border-t border-[#d9d4c7]/5">
         <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.14em] text-[#d9d4c7]/40 sm:flex-row sm:items-center sm:justify-between">
           <span>Author · Fathima Aslam</span>
-          <span>College Union 2026–27</span>
         </div>
       </footer>
     </section>

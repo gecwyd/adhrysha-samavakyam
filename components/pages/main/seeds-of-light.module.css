@@ -1,0 +1,87 @@
+.page { --night: #0b0906; --cream: #efe6d2; --amber: #f2b632; --deep: #9a5606; --dawn: #f7edd8; --ink: #2a1d0d; --serif: var(--font-serif-ml), 'Noto Serif Malayalam', 'Manjari', 'Meera', serif; --mono: var(--font-geist-mono), ui-monospace, monospace; --col: min(100% - 40px, 600px); --plate: min(100% - 40px, 780px); position: relative; background: var(--night); color: var(--cream); font-family: var(--serif); }
+.page ::selection { background: var(--amber); color: var(--night); }
+
+.kicker, .byline, .written, .role, .colophon { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+
+/* ───────── Night ───────── */
+.night { --narr: #d2c8b1; --voice: #f8e9bf; --pull: var(--amber); --q: var(--amber); padding-bottom: clamp(72px, 11vh, 120px); background: radial-gradient(80% 34% at 50% 0%, #2b1d0a80 0%, transparent 72%), var(--night); }
+
+.hero { width: var(--col); margin: 0 auto; padding: clamp(84px, 16svh, 156px) 0 clamp(44px, 7vh, 72px); }
+.seed { display: block; width: 12px; height: 12px; margin-bottom: 34px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 28px 8px #f2b63273; animation: flicker 5s ease-in-out infinite; }
+@keyframes flicker { 0%, 100% { opacity: 1; } 22% { opacity: .82; } 41% { opacity: .96; } 63% { opacity: .78; } 80% { opacity: .92; } }
+.kicker { margin: 0 0 22px; color: var(--amber); }
+.title { margin: 0; font-weight: 500; font-size: clamp(46px, 12vw, 96px); line-height: 1.28; letter-spacing: -.01em; color: #f6efdc; }
+.title span { display: block; color: var(--amber); }
+.byline { margin: 26px 0 0; color: #a99b7f; }
+
+/* Pictures sit in the reading column's own rhythm, like plates in a printed book. */
+.plate { position: relative; width: var(--plate); margin: clamp(44px, 7vh, 72px) auto; aspect-ratio: 3 / 2; overflow: hidden; border-radius: 16px; background: #17110a; }
+.plate::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 50% 45%, transparent 58%, #0b090680 100%); }
+.photo { object-fit: cover; }
+.mockNote { position: absolute; top: 12px; left: 12px; z-index: 3; max-width: min(440px, calc(100% - 24px)); margin: 0; padding: 10px 12px; border-radius: 10px; background: #0c0906d9; color: #cdbf9f; font: 12px/1.55 var(--font-geist-sans), system-ui, sans-serif; }
+.mockNote b { display: block; margin-bottom: 2px; color: var(--amber); font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.mockNote code { display: block; margin-bottom: 6px; color: #f3e6c8; font-family: var(--mono); font-size: 12px; }
+
+/* The story. Narration is quiet, spoken lines are lit; pull-quotes are the only large type. */
+.prose { width: var(--col); margin: 0 auto; }
+.prose > p { margin: 0 0 1.35em; font-size: clamp(19px, 2.4vw, 21px); font-weight: 400; line-height: 2.05; text-wrap: pretty; }
+.prose > :last-child { margin-bottom: 0; }
+.narr { color: var(--narr); }
+.voice { color: var(--voice); }
+.hang { text-indent: -.45em; }
+.q { color: var(--q); }
+.prose > .start { margin-top: 2.2em; }
+.prose > .pull { margin: 1.2em 0 1.4em; font-size: clamp(27px, 5.6vw, 38px); font-weight: 500; line-height: 1.6; color: var(--pull); text-wrap: balance; }
+
+/* The thumbprint that cost him his land. */
+.print { display: flex; justify-content: center; margin: clamp(48px, 8vh, 84px) 0; }
+.print svg { width: clamp(150px, 42vw, 190px); height: auto; overflow: visible; filter: drop-shadow(0 0 14px #f2b63255); }
+.ridge { fill: none; stroke: var(--amber); stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+.print[data-idle="true"] .ridge { stroke-dashoffset: 1; }
+.print[data-shown="true"] .ridge { stroke-dashoffset: 0; transition: stroke-dashoffset 1.5s cubic-bezier(.4, 0, .2, 1) calc(var(--i) * 140ms); }
+
+/* ───────── The turn — one sun, rising once. ───────── */
+.dawn { position: relative; height: clamp(300px, 58svh, 520px); overflow: hidden; background: linear-gradient(180deg, #0b0906 0%, #251809 22%, #6e4310 46%, #dba24c 72%, #f7edd8 100%); }
+.sun { position: absolute; left: 50%; bottom: 20%; width: 96px; height: 96px; margin-left: -48px; border-radius: 50%; background: radial-gradient(circle, #fff6dc 0%, #ffe3a0 46%, #f2b63200 72%); box-shadow: 0 0 80px 40px #f2b6324d; }
+
+/* ───────── Morning ───────── */
+.morning { --narr: #3a2a14; --pull: var(--deep); --q: var(--deep); padding-top: clamp(20px, 4vh, 40px); background: var(--dawn); color: var(--ink); }
+.morning ::selection { background: var(--deep); color: var(--dawn); }
+.morning .plate { margin-top: 0; background: #ecdcb6; }
+.morning .plate::after { background: radial-gradient(120% 90% at 50% 45%, transparent 62%, #2a1d0d33 100%); }
+.end { width: var(--col); margin: clamp(64px, 10vh, 100px) auto 0; }
+.author { display: flex; align-items: center; gap: 16px; padding-top: 28px; border-top: 1px solid #2a1d0d26; }
+.author img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 1px solid #2a1d0d26; }
+.author p { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.written { color: #6b5a45; }
+.author strong { font-size: 24px; font-weight: 500; line-height: 1.4; }
+.role { color: var(--deep); }
+.colophon { display: flex; justify-content: space-between; gap: 16px; margin: clamp(56px, 9vh, 88px) 0 0; padding: 22px max(20px, calc((100% - 600px) / 2)); background: #efe3c8; color: #6b5a45; }
+
+/* Reveals — pictures, thumbprint and sun only. */
+.page [data-idle="true"] { opacity: 0; transform: translateY(18px); }
+.page [data-reveal] { transition: opacity .9s ease, transform .9s cubic-bezier(.22, 1, .36, 1); }
+.page [data-shown="true"] { opacity: 1; transform: none; }
+.sun[data-idle="true"] { transform: translateY(90px); }
+.sun[data-reveal] { transition: opacity 1.6s ease, transform 2.6s cubic-bezier(.22, 1, .36, 1); }
+
+@media (min-width: 900px) {
+  .plate { aspect-ratio: 16 / 10; }
+}
+@media (max-width: 640px) {
+  .hero { padding-top: 72px; }
+  .seed { margin-bottom: 28px; }
+  .prose > .pull { margin: 1em 0 1.2em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seed { animation: none; }
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+  .page [data-reveal] { transition: none; }
+  .print[data-idle="true"] .ridge { stroke-dashoffset: 0; }
+}
+@media print {
+  .seed { animation: none; }
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+  .mockNote { display: none; }
+}

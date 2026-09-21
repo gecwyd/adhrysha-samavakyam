@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
+import styles from "./last-tree.module.css";
 
 const STORY_PARAGRAPHS = [
   "വർഷം 2050. പുതിയൊരു അധ്യയന വർഷത്തിന് തുടക്കമായി. പുത്തൻ പ്രതീക്ഷകളും പേറി കോളേജിന്റെ പടികൾ കയറുമ്പോൾ അരുണിന്റെ മനസ്സിൽ ഒരാഗ്രഹം മാത്രം, പഠിച്ച് ഒരു കളക്ടർ ആവണം. പിന്നിട്ട വഴികളിലെ ദുർഗന്ധം വമിക്കുന്ന ഓർമകൾ അതിന് അവനൊരു പ്രചോദനമായി.",
@@ -15,110 +16,222 @@ const STORY_PARAGRAPHS = [
   "ആഞ്ഞുവീശിയ കാറ്റ് വീണ്ടും അവന്റെ മുടിയിഴകളെ ആക്രമിച്ചു. പക്ഷെ അവൻ ചിന്തകളിൽ മുഴുകിയില്ല. അവന്റെ മനസ് പോലെ പച്ച നിറഞ്ഞ ചുറ്റുമുള്ള ലോകം അവന്റെ ആഗ്രഹങ്ങൾക്ക് പ്രത്യാശ നുകർന്നു. ഇനിയൊരു സ്വപ്നം മാത്രം.. പഠിച്ച് കലക്ടർ ആവണം. ഈ യാത്രയിൽ അരുൺ തനിച്ചല്ലായിരുന്നു.. മരങ്ങളും പ്രകൃതിയും മഴയുമെല്ലാം അവനൊപ്പമുണ്ടായിരുന്നു."
 ];
 
-function Paragraph({ text }: { text: string }) {
+/*
+ * IMAGES — every photo below is a placeholder until its real file is uploaded to the release assets.
+ * To replace one: upload the file named in `file` (webp) and it swaps in automatically. Nothing else to change.
+ * `alt` is the full brief for the picture, so it can be handed straight to an image generator.
+ */
+const mock = (from: string, to: string, beam: string) =>
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMid slice'>` +
+      `<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${from}'/><stop offset='1' stop-color='${to}'/></linearGradient>` +
+      `<linearGradient id='b' x1='0' y1='0' x2='.5' y2='1'><stop offset='0' stop-color='#cfe6d2' stop-opacity='.32'/><stop offset='1' stop-color='#cfe6d2' stop-opacity='0'/></linearGradient></defs>` +
+      `<rect width='1600' height='900' fill='url(#g)'/><polygon points='${beam}' fill='url(#b)'/></svg>`,
+  );
+
+type Shot = { n: number; file: string; ratio: string; alt: string; mock: string };
+
+const SHOTS = {
+  tree: {
+    n: 1,
+    file: "last-tree-banyan-rain.webp",
+    ratio: "16:9",
+    alt: "Wide cinematic shot of a lone, ancient banyan tree standing in front of a plain concrete college library on a rainy evening in a near-future campus. Aerial roots and hanging vines drape the branches, its leaves a deep wet green against a grey, overcast sky and bare paved ground with no other vegetation anywhere. Fine rain falls diagonally; cool desaturated grey-green palette, soft diffuse light, quiet and resilient. No people, no text.",
+    mock: mock("#20382a", "#0a130e", "0,0 700,0 1200,900 200,900"),
+  },
+  branch: {
+    n: 2,
+    file: "last-tree-broken-branch.webp",
+    ratio: "16:9",
+    alt: "Close-up of a snapped branch on an old banyan tree in heavy rain. Pale splintered wood at the break, with a steady stream of rainwater running down the bark and dripping from the tip like tears; hanging aerial roots blurred in the foreground. Shallow depth of field, moody deep greens and wet greys, gentle backlight from a pale sky. Melancholic, tender. No people, no text.",
+    mock: mock("#1c3025", "#08110c", "900,0 1500,0 1000,900 300,900"),
+  },
+  saplings: {
+    n: 3,
+    file: "last-tree-saplings.webp",
+    ratio: "16:9",
+    alt: "A group of college students of different genders planting young saplings around one old banyan tree on a bare campus lawn, shown from behind and the side so no faces are prominent. Hands pressing soil around thin stems, watering cans, a few wheelbarrows; soft overcast morning light after rain, fresh green and damp brown earth. Hopeful, communal, documentary style. No text.",
+    mock: mock("#28442f", "#0b150f", "0,200 1600,0 1600,420 0,900"),
+  },
+  grove: {
+    n: 4,
+    file: "last-tree-grove.webp",
+    ratio: "16:9",
+    alt: "Years later: the same campus now lush and green, dozens of young trees in leaf around the tired old banyan, whose branches droop gently. A lone young man in a backpack, seen from behind, pauses at the gate and looks back; a light rain is falling and soft clouds hang low. Luminous fresh greens, silver mist, warm hope in the light breaking through. Quiet, cinematic. No text.",
+    mock: mock("#2f5238", "#0c1710", "400,0 1200,0 1500,900 100,900"),
+  },
+} satisfies Record<string, Shot>;
+
+const PLATE_SIZES = "(max-width: 1100px) 100vw, 1100px";
+
+// The story text is untouched; it is only cut at sentence boundaries so a closing line can be set apart.
+const sentences = (text: string) => text.split(/(?<=\.)\s+/);
+const tail = (text: string, count: number) => {
+  const parts = sentences(text);
+  return [parts.slice(0, -count).join(" "), parts.slice(-count).join(" ")] as const;
+};
+
+const [ARRIVAL, EVENING, SIGHTING, VISITS, VOICE, CAMPAIGN, FAREWELL, FINALE] = STORY_PARAGRAPHS;
+const [sightingBody, sightingEcho] = tail(SIGHTING, 1);
+const [finaleBody, finaleEcho] = tail(FINALE, 2);
+const [, voiceText, voiceNote] = VOICE.match(/^"([\s\S]+?)"\s*([\s\S]*)$/) ?? ["", VOICE, ""];
+
+function Photo({ shot, priority }: { shot: Shot; priority?: boolean }) {
+  const [missing, setMissing] = useState(false);
   return (
-    <motion.p
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="font-sans text-[20px] md:text-[24px] lg:text-[26px] font-light leading-[1.9] text-[#182018]/85 mb-10 text-justify sm:text-left drop-shadow-sm"
-      lang="ml"
+    <>
+      <Image
+        src={missing ? shot.mock : resolveAsset(shot.file)}
+        alt={shot.alt}
+        fill
+        priority={priority}
+        sizes={PLATE_SIZES}
+        className={styles.photo}
+        onError={() => setMissing(true)}
+      />
+      {missing && (
+        <p className={styles.mockNote} aria-hidden="true">
+          <b>Image {shot.n} · {shot.ratio}</b>
+          <code>{shot.file}</code>
+          {shot.alt}
+        </p>
+      )}
+    </>
+  );
+}
+
+// One old tree, then the saplings that joined it. x = trunk position, h = trunk height, r = canopy radius.
+const OLD_TREE = { x: 44, h: 46, r: 24 };
+const SAPLINGS = [
+  { x: 112, h: 22, r: 8 },
+  { x: 152, h: 28, r: 10 },
+  { x: 194, h: 20, r: 7 },
+  { x: 232, h: 30, r: 11 },
+  { x: 274, h: 24, r: 9 },
+  { x: 312, h: 18, r: 7 },
+];
+const GROUND = 84;
+
+function Grove() {
+  return (
+    <svg
+      className={styles.grove}
+      viewBox="0 0 340 90"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      role="img"
+      aria-label="Line drawing of one old tree standing among many young saplings"
     >
-      {text}
-    </motion.p>
+      <path className={styles.ground} d={`M0 ${GROUND}H340`} />
+      {[OLD_TREE, ...SAPLINGS].map((tree, i) => (
+        <g key={tree.x} className={styles.tree} style={{ "--i": i } as CSSProperties}>
+          <path d={`M${tree.x} ${GROUND}V${GROUND - tree.h}`} strokeWidth={i === 0 ? 2.5 : 1.5} />
+          <circle cx={tree.x} cy={GROUND - tree.h - tree.r * 0.6} r={tree.r} />
+        </g>
+      ))}
+    </svg>
   );
 }
 
 export function LastTree() {
+  const root = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = root.current;
+    if (!section) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let cleanup = () => {};
+
+    const setup = () => {
+      cleanup();
+      if (motion.matches) return;
+      // Only the photographs, the tree's voice, the grove and the byline ease in — body copy is never animated.
+      const reveals = new IntersectionObserver((entries, self) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.setAttribute("data-shown", "true");
+          self.unobserve(entry.target);
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      section.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
+        if (element.getBoundingClientRect().top <= window.innerHeight) return;
+        element.setAttribute("data-idle", "true");
+        reveals.observe(element);
+      });
+      cleanup = () => {
+        reveals.disconnect();
+        section.querySelectorAll("[data-idle]").forEach((element) => element.removeAttribute("data-idle"));
+      };
+    };
+
+    setup();
+    motion.addEventListener("change", setup);
+    return () => { cleanup(); motion.removeEventListener("change", setup); };
+  }, []);
+
   return (
-    <section
-      id="sec-last-tree"
-      className="relative w-full bg-[#f3f5f2] text-[#182018] font-sans selection:bg-[#182018] selection:text-[#f3f5f2]"
-    >
-      {/* Subtle organic noise texture */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.35] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]" />
+    <section ref={root} id="sec-last-tree" aria-labelledby="last-tree-title" className={styles.page}>
+      <header className={styles.head}>
+        <p className={styles.kicker}>Inquation · Short Story</p>
+        <h2 id="last-tree-title" className={styles.title} lang="ml">
+          ക്യാമ്പസിലെ<span>അവസാന മരം</span>
+        </h2>
+        <p className={styles.byline}>Adarsh P · Civil 1st Year</p>
+      </header>
 
-      <div className="mx-auto w-full max-w-[1200px] px-6 sm:px-10 lg:px-16 pt-24 md:pt-32 pb-32 relative z-10 flex flex-col md:flex-row gap-16 md:gap-24">
-        
-        {/* Left Column - Title & Author Sticky */}
-        <div className="w-full md:w-1/3 flex flex-col relative">
-          <div className="md:sticky md:top-32 flex flex-col gap-16">
-            
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-            >
-              <div className="w-8 h-[2px] bg-[#182018] mb-8" />
-              <p className="font-mono text-[9px] tracking-[0.4em] text-[#182018]/40 uppercase mb-6">
-                Short Story
-              </p>
-              <h2 
-                className="font-sans text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-[#182018]"
-                lang="ml"
-              >
-                ക്യാമ്പസിലെ
-                <br />
-                <span className="font-serif italic text-[#182018]/60 font-normal">അവസാന മരം</span>
-              </h2>
-            </motion.div>
+      <figure className={styles.plate}>
+        <Photo shot={SHOTS.tree} priority />
+        <div className={styles.rain} aria-hidden="true" />
+      </figure>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="flex items-center gap-5"
-            >
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden relative border border-[#182018]/10 shrink-0">
-                <Image 
-                  src={resolveAsset("adarsh.png")}
-                  alt="Adarsh P" 
-                  fill
-                  className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-mono text-[9px] tracking-[0.3em] text-[#182018]/40 uppercase mb-1">
-                  Written by
-                </span>
-                <span className="font-sans text-xl md:text-2xl font-medium tracking-tight text-[#182018]" lang="ml">
-                  ആദർഷ് പി
-                </span>
-                <span className="font-mono text-[9px] tracking-[0.2em] text-[#182018]/50 uppercase mt-1">
-                  1st Year · Civil
-                </span>
-              </div>
-            </motion.div>
-
-          </div>
-        </div>
-
-        {/* Right Column - Story Content */}
-        <div className="w-full md:w-2/3 md:pl-12 md:border-l border-[#182018]/10 pt-4 md:pt-0">
-          <div className="flex flex-col">
-            {STORY_PARAGRAPHS.map((text, index) => (
-              <Paragraph key={index} text={text} />
-            ))}
-          </div>
-          
-          <motion.div 
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="w-full h-[1px] bg-[#182018]/20 origin-left mt-16"
-          />
-        </div>
-
+      <div className={styles.prose}>
+        <p className={styles.lede} lang="ml">{ARRIVAL}</p>
+        <p className={styles.p} lang="ml">{EVENING}</p>
+        <p className={styles.p} lang="ml">{sightingBody}</p>
+        <p className={styles.echo} lang="ml">{sightingEcho}</p>
       </div>
-      
-      <footer className="w-full border-t border-[#182018]/10 bg-[#ebece7]">
-        <div className="mx-auto max-w-[1200px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.15em] text-[#182018]/40 sm:flex-row sm:items-center sm:justify-between">
-          <span>Inquation 2025–26</span>
-          <span>The Last Tree on Campus</span>
+
+      <div className={styles.prose}>
+        <p className={styles.p} lang="ml">{VISITS}</p>
+      </div>
+
+      <figure className={styles.plate} data-reveal><Photo shot={SHOTS.branch} /></figure>
+
+      <div className={styles.prose}>
+        <div data-reveal>
+          <blockquote className={styles.voice} lang="ml">
+            <p>{voiceText}”</p>
+            {voiceNote && <footer>{voiceNote}</footer>}
+          </blockquote>
+        </div>
+        <p className={styles.p} lang="ml">{CAMPAIGN}</p>
+      </div>
+
+      <figure className={styles.plate} data-reveal><Photo shot={SHOTS.saplings} /></figure>
+
+      <div className={styles.prose}>
+        <p className={styles.p} lang="ml">{FAREWELL}</p>
+      </div>
+
+      <figure className={styles.plate} data-reveal><Photo shot={SHOTS.grove} /></figure>
+
+      <div className={styles.prose}>
+        <p className={styles.p} lang="ml">{finaleBody}</p>
+        <p className={styles.echo} lang="ml">{finaleEcho}</p>
+      </div>
+
+      <footer className={styles.end}>
+        <div data-reveal><Grove /></div>
+        <div className={styles.author} data-reveal>
+          <Image src={resolveAsset("adarsh.webp")} alt="Portrait of Adarsh P, the author" width={64} height={64} />
+          <p>
+            <span className={styles.written}>Written by</span>
+            <strong lang="ml">ആദർഷ് പി</strong>
+            <span className={styles.role}>1st Year · Civil</span>
+          </p>
         </div>
       </footer>
     </section>

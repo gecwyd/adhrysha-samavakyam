@@ -1,11 +1,30 @@
 "use client"
 
 import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import { usePreloadStore } from "@/lib/preload"
 import { useAudio } from "@/context/audio.context"
 import { Volume2, ArrowRight, Headphones } from "lucide-react"
 import { usePathname } from "next/navigation"
+
+const WAVE = [0.35, 0.7, 0.45, 1, 0.6, 0.85, 0.5, 0.75, 0.4, 0.9, 0.55, 0.7, 0.35]
+
+function Wave() {
+  const reduceMotion = useReducedMotion()
+  return (
+    <div aria-hidden="true" className="flex h-8 items-center gap-1.5">
+      {WAVE.map((level, i) => (
+        <motion.span
+          key={i}
+          className="h-full w-[3px] origin-center rounded-full bg-[#eae4d7]"
+          style={{ scaleY: level, opacity: 0.35 + level * 0.5 }}
+          animate={reduceMotion ? undefined : { scaleY: [level, Math.min(1, level + 0.4), level * 0.5, level] }}
+          transition={{ duration: 1.1 + (i % 4) * 0.18, repeat: Infinity, ease: "easeInOut", delay: i * 0.07 }}
+        />
+      ))}
+    </div>
+  )
+}
 
 export function Preloader() {
   const { isComplete, progress, total, loaded } = usePreloadStore()
@@ -67,166 +86,135 @@ export function Preloader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col justify-between bg-[#070708] text-[#eae4d7] transition-all duration-700 ease-in-out p-6 sm:p-10 select-none overflow-hidden ${
-        isVisible ? "opacity-100 scale-100 backdrop-blur-md" : "opacity-0 scale-105 pointer-events-none"
+      className={`fixed inset-0 z-[100] flex select-none flex-col overflow-hidden bg-[#070708] text-[#eae4d7] transition-all duration-700 ease-in-out ${
+        isVisible ? "scale-100 opacity-100" : "pointer-events-none scale-105 opacity-0"
       }`}
       aria-live="polite"
       aria-busy={!isComplete}
     >
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(234,228,215,0.08)_0%,_transparent_65%)]" />
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,#eae4d7_1px,transparent_1px),linear-gradient(to_bottom,#eae4d7_1px,transparent_1px)] bg-[size:3.5rem_3.5rem]" />
+      {/* Soft spotlight + a faint grid that fades out toward the edges. */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_45%,rgba(234,228,215,0.10),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(234,228,215,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(234,228,215,0.06)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_70%)]" />
 
-      <div className="relative z-10 w-full flex justify-between items-center font-mono text-[9px] sm:text-[11px] tracking-[0.3em] uppercase text-[#eae4d7]/50 font-semibold">
-        <div className="flex items-center gap-2.5">
-          <span className="inline-block w-2 h-2 rounded-full bg-red-500/90 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-          <span>REEL 01 // AUDIO ARCHIVE</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span>GEC WAYANAD</span>
-          <span className="hidden sm:inline">·</span>
-          <span className="hidden sm:inline">EST. 1999</span>
-        </div>
-      </div>
+      <header className="relative z-10 flex items-center justify-between px-6 py-5 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[#eae4d7]/80 sm:px-10 sm:py-7 sm:text-[13px]">
+        <span className="flex items-center gap-2.5">
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${
+              isComplete ? "bg-emerald-400" : "animate-pulse bg-amber-400"
+            }`}
+          />
+          {isComplete ? "Ready" : "Loading"}
+        </span>
+        <span>GEC Wayanad · Est. 1999</span>
+      </header>
 
-      <div className="relative z-10 my-auto flex flex-col items-center justify-center w-full max-w-2xl mx-auto text-center px-4">
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 text-center">
         {!isComplete ? (
-          <div className="flex flex-col items-center justify-center gap-8 w-full animate-in fade-in duration-500">
-            <div className="relative flex items-center justify-center size-36 sm:size-40">
-              <svg className="absolute inset-0 size-full -rotate-90 transform" viewBox="0 0 100 100">
-                <circle
-                  className="text-white/10 stroke-current"
-                  strokeWidth="2.5"
-                  cx="50"
-                  cy="50"
-                  r="46"
-                  fill="transparent"
-                />
-                <circle
-                  className="text-[#eae4d7] stroke-current transition-all duration-300 ease-out"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  cx="50"
-                  cy="50"
-                  r="46"
-                  fill="transparent"
-                  strokeDasharray={`${progress * 2.89} 289`}
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl sm:text-5xl font-mono font-bold text-[#eae4d7] tabular-nums tracking-tight">
-                  {progress}
-                </span>
-                <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-[#eae4d7]/50 mt-0.5">
-                  PERCENT
-                </span>
-              </div>
+          <div className="flex w-full max-w-md flex-col items-center animate-in fade-in duration-500">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.25em] text-[#eae4d7]/80 sm:text-[13px]">
+              Preparing the archive
+            </p>
+
+            <p
+              className="mt-5 font-heading text-[clamp(6rem,22vw,10rem)] leading-none tabular-nums"
+              aria-hidden="true"
+            >
+              {progress}
+              <span className="ml-1 align-top text-[0.35em] text-[#eae4d7]/60">%</span>
+            </p>
+
+            <div
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={progress}
+              aria-label="Loading archive"
+              className="mt-6 h-[3px] w-full overflow-hidden rounded-full bg-[#eae4d7]/15"
+            >
+              <div
+                className="h-full rounded-full bg-[#eae4d7] transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              />
             </div>
 
-            <div className="flex flex-col items-center gap-3 w-full max-w-xs">
-              <span className="text-[11px] font-mono uppercase tracking-[0.3em] text-[#eae4d7]/80 font-bold">
-                {progress < 50 ? "INITIALIZING ARCHIVE..." : "PRE-BUFFERING SOUND..."}
-              </span>
-              <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#eae4d7] transition-all duration-300 ease-out rounded-full shadow-[0_0_10px_rgba(234,228,215,0.6)]"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#eae4d7]/40">
-                {loaded} / {total} ASSETS READY
-              </span>
-            </div>
+            <p className="mt-5 text-sm text-[#eae4d7]/75 sm:text-base">
+              {progress < 50 ? "Loading pages and images…" : "Buffering sound…"}
+              <span className="text-[#eae4d7]/50"> · {loaded} of {total} ready</span>
+            </p>
           </div>
         ) : (
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex flex-col items-center gap-6 sm:gap-8 w-full"
+            className="flex w-full max-w-3xl flex-col items-center"
           >
-            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-[#eae4d7]/20 bg-[#eae4d7]/5 font-mono text-[9px] sm:text-[11px] tracking-[0.35em] uppercase text-[#eae4d7]/70 font-semibold">
-              <span>OFFICIAL DIGITAL ARCHIVE</span>
-              <span className="text-[#eae4d7]/30">·</span>
-              <span>2025–26</span>
+            <p className="flex items-center gap-4 font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-[#eae4d7]/80 sm:text-[13px]">
+              <span aria-hidden="true" className="hidden h-px w-10 bg-[#eae4d7]/40 sm:block" />
+              Official Digital Archive · 2025–26
+              <span aria-hidden="true" className="hidden h-px w-10 bg-[#eae4d7]/40 sm:block" />
+            </p>
+
+            <h1 className="mt-6 font-heading text-[clamp(6.5rem,26vw,17rem)] uppercase leading-[0.82] tracking-tight text-[#f4efe3] drop-shadow-[0_10px_40px_rgba(0,0,0,0.7)]">
+              Sathva
+            </h1>
+
+            <p className="mt-6 font-mono text-sm font-semibold uppercase tracking-[0.3em] text-[#eae4d7] sm:text-lg">
+              College Union · GEC Wayanad
+            </p>
+
+            <div className="mt-7">
+              <Wave />
             </div>
 
-            <div className="flex flex-col items-center">
-              <h1 className="font-heading text-6xl sm:text-8xl md:text-9xl uppercase tracking-tight text-[#eae4d7] leading-[0.85] drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]">
-                SATHVA
-              </h1>
-              <span className="font-mono text-[10px] sm:text-[13px] tracking-[0.4em] uppercase text-[#eae4d7]/60 font-semibold mt-3 sm:mt-4">
-                COLLEGE UNION // GEC WAYANAD
+            <p className="mt-7 max-w-md text-base leading-relaxed text-[#eae4d7]/80 sm:text-lg">
+              Stories, clubs and moments from the academic year 2025–26.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleEnter}
+              autoFocus
+              className="group mt-10 inline-flex cursor-pointer items-center gap-3.5 rounded-full bg-[#eae4d7] px-9 py-4 text-[#070708] shadow-[0_0_50px_rgba(234,228,215,0.25)] outline-none transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_80px_rgba(234,228,215,0.45)] focus-visible:ring-2 focus-visible:ring-[#eae4d7] focus-visible:ring-offset-4 focus-visible:ring-offset-[#070708] active:scale-95 sm:px-12 sm:py-5"
+            >
+              <Volume2 className="h-5 w-5" aria-hidden="true" />
+              <span className="font-mono text-sm font-bold uppercase tracking-[0.25em] sm:text-base">
+                Enter experience
               </span>
-            </div>
+              <ArrowRight
+                className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden="true"
+              />
+            </button>
 
-            <div className="flex items-center gap-1.5 my-1">
-              {[40, 70, 45, 90, 60, 85, 50, 75, 40].map((h, i) => (
-                <motion.span
-                  key={i}
-                  animate={{
-                    scaleY: [0.3, 1, 0.4, 0.9, 0.3],
-                    opacity: [0.4, 0.9, 0.5, 1, 0.4]
-                  }}
-                  transition={{
-                    duration: 1.2 + (i % 3) * 0.2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: i * 0.08
-                  }}
-                  style={{ height: `${h * 0.3}px` }}
-                  className="w-1 bg-[#eae4d7] rounded-full origin-center"
-                />
-              ))}
-            </div>
-
-            <div className="flex flex-col items-center gap-3.5 mt-2">
-              <button
-                type="button"
-                onClick={handleEnter}
-                className="group relative inline-flex items-center gap-4 px-8 sm:px-12 py-4 sm:py-5 rounded-full border border-[#eae4d7]/40 hover:border-[#eae4d7] bg-[#eae4d7]/10 hover:bg-[#eae4d7] text-[#eae4d7] hover:text-[#070708] transition-all duration-300 shadow-[0_0_40px_rgba(234,228,215,0.18)] hover:shadow-[0_0_70px_rgba(234,228,215,0.45)] hover:scale-105 active:scale-95 cursor-pointer"
-              >
-                <Volume2 className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 animate-pulse text-red-400 group-hover:text-[#070708]" />
-                <span className="font-mono text-xs sm:text-sm uppercase tracking-[0.35em] font-bold">
-                  ENTER EXPERIENCE
-                </span>
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-
-              <div className="flex items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-[#eae4d7]/40 font-medium">
-                <span className="hidden sm:inline">PRESS</span>
-                <kbd className="hidden sm:inline-block px-1.5 py-0.5 rounded border border-white/20 bg-white/5 text-white/70 font-mono text-[8px]">
-                  SPACE
-                </kbd>
-                <span className="hidden sm:inline">OR</span>
-                <kbd className="hidden sm:inline-block px-1.5 py-0.5 rounded border border-white/20 bg-white/5 text-white/70 font-mono text-[8px]">
-                  ENTER
-                </kbd>
-                <span className="hidden sm:inline">·</span>
-                <span>CLICK TO EXPLORE</span>
-              </div>
-            </div>
+            <p className="mt-5 hidden font-mono text-xs uppercase tracking-[0.2em] text-[#eae4d7]/65 sm:block">
+              Press{" "}
+              <kbd className="rounded border border-[#eae4d7]/35 bg-[#eae4d7]/10 px-2 py-0.5 text-[11px] text-[#eae4d7]">
+                Enter
+              </kbd>{" "}
+              or{" "}
+              <kbd className="rounded border border-[#eae4d7]/35 bg-[#eae4d7]/10 px-2 py-0.5 text-[11px] text-[#eae4d7]">
+                Space
+              </kbd>
+            </p>
           </motion.div>
         )}
-      </div>
+      </main>
 
-      <div className="relative z-10 w-full flex justify-between items-center font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-[#eae4d7]/40 font-medium">
-        <div className="flex items-center gap-2">
-          <span>11.6854° N</span>
-          <span>·</span>
-          <span>76.1320° E</span>
-        </div>
-        <div className="flex items-center gap-2 text-[#eae4d7]/60">
-          <Headphones className="w-3.5 h-3.5 text-[#eae4d7]/50" />
-          <span>HEADPHONES RECOMMENDED</span>
-        </div>
-      </div>
+      <footer className="relative z-10 flex items-center justify-between gap-4 px-6 py-5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-[#eae4d7]/70 sm:px-10 sm:py-7 sm:text-xs">
+        <span className="hidden sm:inline">11.6854° N · 76.1320° E</span>
+        <span className="flex items-center gap-2.5 sm:ml-auto">
+          <Headphones className="h-4 w-4" aria-hidden="true" />
+          Best with sound on · headphones recommended
+        </span>
+      </footer>
     </div>
   )
 }
 
 export function PreloadProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  
+
   if (pathname === "/" && process.env.NODE_ENV !== "development") {
     return <>{children}</>
   }

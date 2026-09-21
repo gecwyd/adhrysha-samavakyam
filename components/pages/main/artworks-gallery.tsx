@@ -149,7 +149,7 @@ export function ArtworksGallery() {
           GEC Wayanad
         </p>
         <p className="text-white/40 font-serif italic text-sm sm:text-base">
-          Inquation Annual Magazine — Visual Arts Edition
+          Inquation Annual Magazine · Visual Arts Edition
         </p>
       </div>
 

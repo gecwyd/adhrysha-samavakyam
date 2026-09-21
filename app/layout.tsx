@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Geist, Geist_Mono } from "next/font/google";
+import { Bebas_Neue, Geist, Geist_Mono, Noto_Sans_Malayalam } from "next/font/google";
 import "./globals.css";
 import { PreloadProvider } from "@/components/ui/preloader";
 import { AudioProvider } from "@/components/providers/audio-provider";
@@ -12,6 +12,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const notoMalayalam = Noto_Sans_Malayalam({
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-malayalam",
+  subsets: ["malayalam"],
+  display: "swap",
 });
 
 const bebasNeue = Bebas_Neue({
@@ -29,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${notoMalayalam.variable} h-full antialiased`}
     >
       <head>
         <link rel="preconnect" href="https://www.youtube.com" crossOrigin="anonymous" />

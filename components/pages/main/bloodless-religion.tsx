@@ -107,13 +107,6 @@ export function BloodlessReligion() {
         </div>
 
       </div>
-      
-      <footer className="w-full border-t border-white/5 bg-[#040404]">
-        <div className="mx-auto max-w-[1200px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.15em] text-white/20 sm:flex-row sm:items-center sm:justify-between">
-          <span>Inquation 2025–26</span>
-          <span>Poetry Collection</span>
-        </div>
-      </footer>
     </section>
   );
 }

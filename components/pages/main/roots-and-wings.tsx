@@ -1,8 +1,23 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import Image from "next/image";
+import { Cormorant_Garamond } from "next/font/google";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { resolveAsset } from "@/lib/asset-registry";
+
+const serif = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
 
 const POEM_PARTS = [
   "I buried my faith in your hands,\nAnd called it home.\nI named you my anchor,\nNever knowing you'd become\nthe tide that pulled me under.",
@@ -14,120 +29,373 @@ const POEM_PARTS = [
   "Then one morning,\nThe wind spoke, with a storm.\nThe scars on my soul\nBegan remembering\nthe shape of wings.",
   "Every tear became a feather.\nEvery feather remembered the sky.\nEvery lonely night became a sky,\nand the sky became\nthe home I had been seeking.",
   "You were my destination.\nYou were the lesson before it.\nThe roots still remember your name,\nBut my wings no longer need it.",
-  "Now I fly\nNot because I escaped the fall,\nBut because I grew wings from it.\nI found the sun.\nI found both my roots and my wings."
+  "Now I fly\nNot because I escaped the fall,\nBut because I grew wings from it.\nI found the sun.\nI found both my roots and my wings.",
 ];
 
-function Stanza({ text, index }: { text: string; index: number }) {
+/* Stanzas whose closing line is set apart in the act's accent colour. */
+const ACCENT_LAST = new Set([0, 3, 6, 8]);
+
+/*
+ * IMAGES — each picture below is a placeholder until its real file is uploaded to the release assets.
+ * To replace one: upload the file named in `file` (webp) and it swaps in automatically. Nothing else to change.
+ * `alt` is the full brief for the picture, so it can be handed straight to an image generator.
+ */
+type Shot = { n: number; file: string; ratio: string; alt: string; mock: string };
+
+const SHOTS = {
+  roots: {
+    n: 1,
+    file: "roots-and-wings-roots.webp",
+    ratio: "16:9",
+    alt: "Cross-section of dark earth showing the roots of a great tree spreading downward and outward like veins, each fine root tipped with a faint amber glow. Only the base of the trunk is visible at the top edge, lost in shadow. Deep umber and near-black tones with warm amber light, cinematic and painterly, lots of quiet negative space on the left. No people, no text.",
+    mock: "radial-gradient(ellipse at 70% 30%, #3b2412 0%, #16110d 70%)",
+  },
+  cave: {
+    n: 2,
+    file: "roots-and-wings-cave.webp",
+    ratio: "4:5",
+    alt: "A lone woman seen from behind, standing deep inside the mouth of a cave. Outside, a violent storm: slate-blue clouds, sheets of rain, wind-torn trees. Daylight is visible beyond the opening but does not reach her; the cave around her is heavy shadow. Desaturated blue-grey palette, cinematic and moody. Face not visible, no text.",
+    mock: "linear-gradient(160deg, #26323f 0%, #10161d 75%)",
+  },
+  feathers: {
+    n: 3,
+    file: "roots-and-wings-feathers.webp",
+    ratio: "21:9",
+    alt: "Hundreds of pale feathers drifting upward through a dark stormy sky that lightens toward the top into pale dawn gold. A few feathers carry glistening droplets, as if tears are turning into feathers. Soft focus, slate blue at the bottom fading to warm cream at the top. No people, no text.",
+    mock: "linear-gradient(to top, #10161d 0%, #5d7185 45%, #f6efe4 100%)",
+  },
+  flight: {
+    n: 4,
+    file: "roots-and-wings-flight.webp",
+    ratio: "16:9",
+    alt: "A woman in a flowing dress lifting into the sky with wide feathered wings spread, seen from below and behind, silhouetted against a rising sun over soft clouds. Far below, the roots of a tree are visible as a thin dark pattern in the earth. Pale gold and soft blue, luminous and hopeful. Face not visible, no text.",
+    mock: "linear-gradient(to top, #e9c58a 0%, #f6efe4 55%, #cfe1ea 100%)",
+  },
+} satisfies Record<string, Shot>;
+
+function Plate({
+  shot,
+  sizes = "100vw",
+  priority,
+  className = "object-cover",
+  overlay,
+}: {
+  shot: Shot;
+  sizes?: string;
+  priority?: boolean;
+  className?: string;
+  overlay?: ReactNode;
+}) {
+  const img = useRef<HTMLImageElement>(null);
+  const [missing, setMissing] = useState(false);
+
+  /* onError can fire before hydration, so also catch an image that already failed. */
+  useEffect(() => {
+    const el = img.current;
+    if (el && el.complete && el.naturalWidth === 0) setMissing(true);
+  }, []);
+
+  if (missing) {
+    return (
+      <>
+        <div role="img" aria-label={shot.alt} className="absolute inset-0" style={{ background: shot.mock }} />
+        {overlay}
+        <div className="absolute inset-0 z-10 flex items-center justify-center p-6">
+          <p
+            aria-hidden="true"
+            className="max-w-md rounded-sm bg-black/55 px-5 py-4 text-left font-mono text-[11px] leading-relaxed text-white/80 backdrop-blur-sm"
+          >
+            <b className="mb-1 block text-[10px] font-medium uppercase tracking-[0.25em] text-white">
+              Image {shot.n} · {shot.ratio}
+            </b>
+            <code className="mb-3 block text-white/50">{shot.file}</code>
+            {shot.alt}
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Image
+        ref={img}
+        src={resolveAsset(shot.file)}
+        alt={shot.alt}
+        fill
+        priority={priority}
+        sizes={sizes}
+        unoptimized
+        className={className}
+        onError={() => setMissing(true)}
+      />
+      {overlay}
+    </>
+  );
+}
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  const reduce = useReducedMotion();
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={reduce ? false : { opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="mb-32 md:mb-48 last:mb-0"
+      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+      transition={{ duration: 1.1, ease: EASE, delay }}
+      className={className}
     >
-      <span className="block font-mono text-[9px] uppercase tracking-[0.3em] text-black/30 mb-8">
-        Stanza {String(index + 1).padStart(2, "0")}
-      </span>
-      <p className="font-serif text-2xl md:text-3xl lg:text-4xl font-light leading-[1.8] text-[#111111] whitespace-pre-line">
-        {text}
-      </p>
+      {children}
     </motion.div>
   );
 }
 
+function Label({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <span className={`font-mono text-[10px] uppercase tracking-[0.3em] ${className}`}>{children}</span>
+  );
+}
+
+function Stanza({
+  text,
+  index,
+  accent,
+  className = "",
+  accentClass,
+  numberClass,
+}: {
+  text: string;
+  index: number;
+  accent: boolean;
+  className?: string;
+  accentClass: string;
+  numberClass: string;
+}) {
+  const reduce = useReducedMotion();
+  const lines = text.split("\n");
+  return (
+    <div className={className}>
+      <Label className={`mb-6 block ${numberClass}`}>
+        {String(index + 1).padStart(2, "0")} / {String(POEM_PARTS.length).padStart(2, "0")}
+      </Label>
+      <p className="text-[1.75rem] font-light leading-[1.5] sm:text-[2.1rem] md:text-[2.6rem] md:leading-[1.45]">
+        {lines.map((line, i) => {
+          const isAccent = accent && i === lines.length - 1;
+          return (
+            <motion.span
+              key={i}
+              initial={reduce ? false : { opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px 0px -8% 0px" }}
+              transition={{ duration: 0.9, ease: EASE, delay: i * 0.12 }}
+              className={`block ${isAccent ? `italic ${accentClass}` : ""}`}
+            >
+              {line}
+            </motion.span>
+          );
+        })}
+      </p>
+    </div>
+  );
+}
+
+function ActHeading({ no, title, className = "" }: { no: string; title: string; className?: string }) {
+  return (
+    <div className={`flex items-center gap-5 ${className}`}>
+      <Label>
+        {no} · {title}
+      </Label>
+      <span aria-hidden className="h-px flex-1 bg-current opacity-20" />
+    </div>
+  );
+}
+
+
+
 export function RootsAndWings() {
+  const reduce = useReducedMotion();
+  const heroRef = useRef<HTMLElement>(null);
+  const rootsRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress: heroP } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroY = useTransform(heroP, [0, 1], ["0%", "14%"]);
+  const heroScale = useTransform(heroP, [0, 1], [1.05, 1.15]);
+  const heroFade = useTransform(heroP, [0, 0.7], [1, 0]);
+
   return (
     <section
       id="sec-roots-and-wings"
-      className="relative w-full bg-[#f4f4f2] text-[#111111] font-sans selection:bg-black selection:text-white"
+      className={`${serif.className} relative w-full bg-[#16110d] text-[#efe4d2] selection:bg-[#c98a4b] selection:text-[#16110d]`}
     >
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+      {/* ───────── Cover ───────── */}
+      <header ref={heroRef} className="relative isolate flex min-h-[100dvh] items-end overflow-hidden">
+        <motion.div
+          style={reduce ? undefined : { y: heroY, scale: heroScale }}
+          className="absolute inset-0 -z-10"
+        >
+          <Plate
+            shot={SHOTS.roots}
+            priority
+            overlay={<div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#16110d] via-[#16110d]/50 to-[#16110d]/10" />}
+          />
+        </motion.div>
 
-      <div className="mx-auto w-full max-w-[1600px] px-6 sm:px-10 lg:px-16 pt-24 md:pt-32 pb-32">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 relative">
-          
-          {/* Sticky Left Column: Title & Author */}
-          <div className="w-full lg:w-1/3 flex flex-col relative">
-            <div className="lg:sticky lg:top-32 flex flex-col gap-12">
-              
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="w-8 h-[1px] bg-black mb-8" />
-                <p className="font-mono text-[10px] tracking-[0.4em] text-black/40 uppercase mb-4">
-                  Poetry · Volume 1
-                </p>
-                <h2 className="text-5xl md:text-6xl xl:text-7xl font-medium tracking-tighter leading-[0.9] text-[#111111] mb-2">
-                  ROOTS
-                </h2>
-                <h2 className="text-5xl md:text-6xl xl:text-7xl font-light italic tracking-tighter leading-[0.9] text-black/40">
-                  &amp; WINGS
-                </h2>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.2 }}
-                className="flex items-center gap-6 mt-4 lg:mt-12"
-              >
-                <div className="w-16 h-16 rounded-full overflow-hidden relative border border-black/10 shrink-0">
-                  <Image 
-                    src={resolveAsset("sefana-elizabeth.png")}
-                    alt="Sefana Elizabeth" 
-                    fill
-                    className="object-cover grayscale"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-mono text-[9px] tracking-[0.3em] text-black/40 uppercase mb-1">
-                    Written by
-                  </span>
-                  <span className="font-sans text-lg font-medium tracking-tight text-[#111111]">
-                    Sefana Elizabeth
-                  </span>
-                  <span className="font-mono text-[9px] tracking-[0.2em] text-black/50 uppercase mt-0.5">
-                    1st Year · ECE
-                  </span>
-                </div>
-              </motion.div>
-
-            </div>
+        <motion.div
+          style={reduce ? undefined : { opacity: heroFade }}
+          className="mx-auto w-full max-w-6xl px-6 pb-16 md:px-10 md:pb-24 lg:px-16"
+        >
+          <Label className="text-[#c98a4b]">Poetry · Volume 1</Label>
+          <h2 className="mt-6 text-[4.75rem] font-light uppercase leading-[0.85] tracking-[0.04em] text-[#f6ecd9] sm:text-[7rem] md:text-[10rem] lg:text-[12rem]">
+            Roots
+            <span className="block text-[0.62em] font-light normal-case italic tracking-normal text-[#c98a4b]">&amp; Wings</span>
+          </h2>
+          <div className="mt-10 flex items-center justify-between gap-6 border-t border-[#efe4d2]/15 pt-6">
+            <p className="text-lg italic text-[#efe4d2]/70 md:text-xl">by Sefana Elizabeth</p>
+            <Label className="flex items-center gap-3 text-[#efe4d2]/50">
+              Scroll
+            </Label>
           </div>
+        </motion.div>
+      </header>
 
-          {/* Right Column: Scrolling Poetry */}
-          <div className="w-full lg:w-2/3 max-w-3xl lg:pl-10 xl:pl-20">
-            <div className="w-full h-px bg-black/10 mb-16 lg:hidden" />
-            
-            <div className="py-8 lg:py-24">
-              {POEM_PARTS.map((text, i) => (
-                <Stanza key={i} text={text} index={i} />
+      {/* ───────── I · Roots ───────── */}
+      <section ref={rootsRef} className="relative bg-[#16110d] text-[#efe4d2]">
+        <div className="mx-auto max-w-6xl px-6 py-28 md:px-10 md:py-44 lg:px-16">
+          <ActHeading no="I" title="Roots" className="text-[#c98a4b]" />
+          <div className="mt-20 max-w-2xl space-y-32 md:mt-32 md:space-y-52">
+            {POEM_PARTS.slice(0, 3).map((text, i) => (
+              <Stanza
+                key={i}
+                text={text}
+                index={i}
+                accent={ACCENT_LAST.has(i)}
+                accentClass="text-[#c98a4b]"
+                numberClass="text-[#c98a4b]/70"
+                className={i % 2 ? "md:ml-[14%]" : ""}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── II · Storm ───────── */}
+      <section className="relative bg-gradient-to-b from-[#16110d] via-[#10161d] to-[#10161d] text-[#dbe4ec]">
+        <div className="mx-auto max-w-6xl px-6 pb-28 pt-12 md:px-10 md:pb-44 lg:px-16">
+          <ActHeading no="II" title="Storm" className="text-[#8fb0c9]" />
+          <div className="mt-20 grid gap-16 md:mt-28 lg:grid-cols-12 lg:gap-20">
+            <Reveal className="lg:col-span-5">
+              <div className="relative aspect-[4/5] w-full overflow-hidden lg:sticky lg:top-24">
+                <Plate
+                  shot={SHOTS.cave}
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  overlay={<div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#10161d]/60 via-transparent to-transparent" />}
+                />
+              </div>
+            </Reveal>
+            <div className="space-y-32 md:space-y-52 lg:col-span-7 lg:pt-16">
+              {POEM_PARTS.slice(3, 6).map((text, i) => (
+                <Stanza
+                  key={i}
+                  text={text}
+                  index={i + 3}
+                  accent={ACCENT_LAST.has(i + 3)}
+                  accentClass="text-[#8fb0c9]"
+                  numberClass="text-[#8fb0c9]/70"
+                />
               ))}
             </div>
-            
-            <motion.div 
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="w-full h-[1px] bg-black/20 origin-left mt-16"
-            />
           </div>
+        </div>
+      </section>
 
-        </div>
+      {/* ───────── Turn: tears become feathers ───────── */}
+      <div className="relative isolate h-[70svh] min-h-[420px] overflow-hidden bg-[#10161d]">
+        <Plate
+          shot={SHOTS.feathers}
+          overlay={
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-b from-[#10161d] via-transparent to-[#f6efe4]"
+            />
+          }
+        />
       </div>
-      
-      <footer className="w-full border-t border-black/5 bg-[#f0f0ee]">
-        <div className="mx-auto max-w-[1600px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-black/30 sm:flex-row sm:items-center sm:justify-between">
-          <span>Inquation 2025–26</span>
-          <span>Poetry Collection</span>
+
+      {/* ───────── III · Wings ───────── */}
+      <section className="relative bg-[#f6efe4] text-[#2a2018] selection:bg-[#b5561f] selection:text-[#f6efe4]">
+        <div className="mx-auto max-w-6xl px-6 pb-28 pt-8 md:px-10 md:pb-44 lg:px-16">
+          <ActHeading no="III" title="Wings" className="text-[#b5561f]" />
+          <div className="mt-20 max-w-2xl space-y-32 md:mt-32 md:space-y-52 lg:ml-[8%]">
+            {POEM_PARTS.slice(6, 9).map((text, i) => (
+              <Stanza
+                key={i}
+                text={text}
+                index={i + 6}
+                accent={ACCENT_LAST.has(i + 6)}
+                accentClass="text-[#b5561f]"
+                numberClass="text-[#b5561f]/70"
+              />
+            ))}
+          </div>
         </div>
-      </footer>
+
+        {/* Finale */}
+        <div className="relative isolate h-[80svh] min-h-[440px] overflow-hidden">
+          <Plate
+            shot={SHOTS.flight}
+            overlay={
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-b from-[#f6efe4] via-transparent to-[#f6efe4]"
+              />
+            }
+          />
+        </div>
+
+        <div className="mx-auto max-w-4xl px-6 pb-28 text-center md:px-10 md:pb-40">
+          {(() => {
+            const lines = POEM_PARTS[9].split("\n");
+            const closing = lines[lines.length - 1];
+            return (
+              <Reveal>
+                <Label className="mb-8 block text-[#b5561f]/70">10 / 10</Label>
+                <p className="text-[1.6rem] font-light leading-[1.6] text-[#2a2018]/80 md:text-[2.25rem]">
+                  {lines.slice(0, -1).map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </p>
+                <p className="mx-auto mt-10 max-w-3xl text-[2.25rem] font-light italic leading-[1.25] text-[#b5561f] sm:text-[3.25rem] md:text-[4.5rem]">
+                  {closing}
+                </p>
+              </Reveal>
+            );
+          })()}
+        </div>
+
+        {/* Author */}
+        <div className="mx-auto max-w-6xl px-6 pb-24 md:px-10 lg:px-16">
+          <Reveal className="flex items-center gap-6 border-t border-[#2a2018]/15 pt-10">
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#2a2018]/15 md:h-20 md:w-20">
+              <Image
+                src={resolveAsset("sefana-elizabeth.png")}
+                alt="Sefana Elizabeth"
+                fill
+                sizes="80px"
+                unoptimized
+                className="object-cover grayscale"
+              />
+            </div>
+            <div className="flex flex-col">
+              <Label className="mb-1 text-[#2a2018]/50">Written by</Label>
+              <span className="text-2xl font-medium md:text-3xl">Sefana Elizabeth</span>
+              <Label className="mt-1 text-[#b5561f]/70">1st Year · CSE</Label>
+            </div>
+          </Reveal>
+        </div>
+      </section>
     </section>
   );
 }

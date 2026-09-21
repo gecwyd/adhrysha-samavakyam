@@ -1,164 +1,120 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { ReactNode } from "react";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
 
-const SUMMARY = [
-  {
-    tag: "01 / THE ILLUSION",
-    text: "ഒരു പെൺകുട്ടിയുടെ കഴിവിനോ വിദ്യാഭ്യാസത്തിനോ പകരം അവൾക്ക് നൽകാൻ കഴിയുന്ന സ്ത്രീധനത്തിന്റെ അളവാണ് പലപ്പോഴും വിലയിരുത്തപ്പെടുന്നത്.",
-    translation: "Often, a girl is evaluated not by her ability or education, but by the amount of dowry she can provide.",
-  },
-  {
-    tag: "02 / THE TRAGEDY",
-    text: "സ്ത്രീയും പുരുഷനും തുല്യരാണെന്ന് പറയുന്ന സമൂഹത്തിൽ സ്ത്രീധനം പോലുള്ള ആചാരങ്ങൾക്ക് സ്ഥാനമില്ല. നിയമം നിരോധിച്ചിട്ടുണ്ടെങ്കിലും അത് പൂർണമായും ഇല്ലാതായിട്ടില്ല.",
-    translation: "In a society that claims men and women are equal, customs like dowry have no place. Though banned by law, it has not completely disappeared.",
-  },
-  {
-    tag: "03 / THE RESOLUTION",
-    text: "വിദ്യാഭ്യാസവും പുരോഗതിയും യഥാർത്ഥ അർഥത്തിൽ നേടണമെങ്കിൽ സ്ത്രീധനം എന്ന പഴഞ്ചൻ ചങ്ങല പൊട്ടിച്ചെറിയണം.",
-    translation: "To truly achieve education and progress, the old chain of dowry must be broken.",
-  }
+const PARAGRAPHS = [
+  "ഇന്ന് നമ്മുടെ സമൂഹം വിദ്യാഭ്യാസത്തിലും സാങ്കേതികവിദ്യയിലും ജീവിത നിലവാരത്തിലും വളരെയധികം മുന്നേറിയിട്ടുണ്ട്. എന്നാൽ ഇത്രയും പുരോഗതി ഉണ്ടായിട്ടും സ്ത്രീധനം എന്ന ദുരാചാരം ഇന്നും സമൂഹത്തിൽ നിലനിൽക്കുന്നു. അതുകൊണ്ടാണ് സ്ത്രീധനത്തെ പുരോഗതിയുടെ മറവിലെ പഴഞ്ചൻ ചങ്ങല എന്ന് വിശേഷിപ്പിക്കുന്നത്. വിവാഹസമയത്ത് വധുവിന്റെ വീട്ടുകാർ വരന്റെ വീട്ടുകാർക്ക് പണം, സ്വർണം, വാഹനം, ഭൂമി തുടങ്ങിയവ നൽകുന്ന രീതിയാണ് സ്ത്രീധനം. ഇത് ഒരു ആചാരമെന്ന പേരിൽ തുടരുന്നുണ്ടെങ്കിലും യഥാർത്ഥത്തിൽ ഇത് സ്ത്രീകളോടുള്ള അനീതിയാണ്.",
+  "സ്ത്രീധനം കാരണം നിരവധി കുടുംബങ്ങൾ സാമ്പത്തിക ബുദ്ധിമുട്ടുകൾ നേരിടുന്നു. മകളുടെ വിവാഹത്തിനായി മാതാപിതാക്കൾ കടം വാങ്ങുകയും ജീവിതകാല സമ്പാദ്യം ചെലവഴിക്കുകയും ചെയ്യുന്നു. പല കുടുംബങ്ങളും ഇതുമൂലം കടബാധ്യതകളിൽ അകപ്പെടുന്നു. കേരളത്തെ ഞെട്ടിച്ച വിസ്മയ എന്ന പെൺകുട്ടിയുടെ സംഭവം സ്ത്രീധനത്തിന്റെ ഭീകരത സമൂഹത്തിന് മുന്നിൽ തുറന്നുകാട്ടിയ ഒന്നായിരുന്നു. ഉന്നത വിദ്യാഭ്യാസം നേടിയ ഒരു യുവതിക്ക് പോലും സ്ത്രീധനത്തിന്റെ പേരിൽ പീഡനങ്ങൾ നേരിടേണ്ടി വന്നത് ഈ ദുരാചാരം എത്രമാത്രം ആഴത്തിൽ സമൂഹത്തിൽ വേരൂന്നിയിട്ടുണ്ടെന്ന് കാണിക്കുന്നു. ആ സംഭവം കേരള സമൂഹത്തിന് വലിയൊരു തിരിച്ചറിവും മുന്നറിയിപ്പും ആയിരുന്നു.",
+  "വിവാഹശേഷവും കൂടുതൽ സ്ത്രീധനം ആവശ്യപ്പെട്ട് പല സ്ത്രീകളും മാനസികവും ശാരീരികവുമായ പീഡനങ്ങൾ അനുഭവിക്കുന്നു. ചിലർക്ക് സ്വന്തം വീട്ടിൽ പോലും സുരക്ഷിതമായി ജീവിക്കാൻ കഴിയാത്ത അവസ്ഥ വരുന്നു. കുടുംബ തർക്കങ്ങൾ, വിവാഹമോചനം, ആത്മഹത്യകൾ തുടങ്ങിയ പല ദുരന്തങ്ങൾക്കും സ്ത്രീധനം കാരണമാകുന്നു. സ്ത്രീധനം സ്ത്രീകളുടെ ആത്മാഭിമാനത്തെയും സ്വാതന്ത്ര്യത്തെയും ബാധിക്കുന്നു. സ്ത്രീയും പുരുഷനും തുല്യരാണെന്ന് പറയുന്ന സമൂഹത്തിൽ സ്ത്രീധനം പോലുള്ള ആചാരങ്ങൾക്ക് സ്ഥാനമില്ല.",
+  "നിയമം സ്ത്രീധനത്തെ നിരോധിച്ചിട്ടുണ്ടെങ്കിലും അത് പൂർണമായും ഇല്ലാതായിട്ടില്ല. അതിനാൽ നിയമത്തോടൊപ്പം സമൂഹത്തിന്റെ മനോഭാവവും മാറണം. സ്ത്രീധനം വാങ്ങുകയോ നൽകുകയോ ചെയ്യില്ലെന്ന് ഓരോ യുവാവും യുവതിയും തീരുമാനിക്കണം. ഒരു വിദ്യാർത്ഥി എന്ന നിലയിൽ, സ്ത്രീധനം വാങ്ങുന്നതും നൽകുന്നതും ഒരുപോലെ തെറ്റാണെന്ന് ഞാൻ വിശ്വസിക്കുന്നു.",
 ];
 
-export function Dowry() {
-  const containerRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 20, mass: 0.8 });
-
-  const introOpacity = useTransform(smooth, [0, 0.1, 0.15], [1, 1, 0]);
-  const introY = useTransform(smooth, [0, 0.15], ["0%", "-10%"]);
-
-  const q0Opacity = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
-  const q0Y = useTransform(smooth, [0.15, 0.2, 0.3, 0.35], ["10%", "0%", "0%", "-10%"]);
-
-  const q1Opacity = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], [0, 1, 1, 0]);
-  const q1Y = useTransform(smooth, [0.35, 0.4, 0.5, 0.55], ["10%", "0%", "0%", "-10%"]);
-
-  const q2Opacity = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], [0, 1, 1, 0]);
-  const q2Y = useTransform(smooth, [0.55, 0.6, 0.8, 0.85], ["10%", "0%", "0%", "-10%"]);
-
-  const finalOpacity = useTransform(smooth, [0.85, 0.9, 1, 1], [0, 1, 1, 1]);
-  const finalY = useTransform(smooth, [0.85, 0.9, 1, 1], ["10%", "0%", "0%", "0%"]);
-
+function P({ children }: { children: string }) {
   return (
-    <section 
-      ref={containerRef}
-      id="sec-dowry" 
-      className="relative h-[500vh] w-full bg-[#111827] text-[#f8fafc]"
+    <p
+      className="mb-12 font-serif text-[1.15rem] font-light leading-[2.2] tracking-wide text-[#d5d9e2] md:text-[1.25rem] md:leading-[2.4]"
+      lang="ml"
     >
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-between">
+      {children}
+    </p>
+  );
+}
+
+export function Dowry() {
+  return (
+    <section
+      id="sec-dowry"
+      className="relative w-full bg-[#111827] text-[#f8fafc]"
+    >
+      <div className="mx-auto flex max-w-[90rem] flex-col lg:flex-row">
         
-        {/* Background Visual */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
-          <div className="w-px h-[100vh] bg-[#e11d48] absolute left-1/4" />
-          <div className="w-px h-[100vh] bg-[#e11d48] absolute right-1/4" />
-          <div className="w-[100vw] h-px bg-[#e11d48] absolute top-1/2" />
+        {/* Sticky Left Column: Image & Title */}
+        <div className="relative h-[100dvh] w-full lg:sticky lg:top-0 lg:w-[45%] xl:w-[40%]">
+          <div className="absolute inset-0 z-0 overflow-hidden bg-[#111827]">
+            <div className="absolute inset-0 bg-[#e11d48]/10 mix-blend-color z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/40 to-transparent z-10 lg:bg-gradient-to-r lg:from-transparent lg:via-[#111827]/60 lg:to-[#111827]" />
+            <Image
+              src={resolveAsset("dowry-balance.webp")}
+              alt="A balance scale weighing books against gold beside a woman"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover opacity-40 grayscale hover:grayscale-0 transition-all duration-1000"
+              unoptimized
+            />
+          </div>
+          
+          <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
+            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#fb7185]">
+              Inquation / Opinion · 08
+            </p>
+            <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#f8fafc] uppercase xl:text-7xl">
+              Dowry<br />
+              <span className="text-[#e11d48]">Ends.</span>
+            </h2>
+            <p className="mt-6 font-serif text-xl italic tracking-wide text-[#d5d9e2]/70" lang="ml">
+              സ്ത്രീധനം: പുരോഗതിയുടെ മറവിലെ പഴഞ്ചൻ ചങ്ങല
+            </p>
+          </div>
         </div>
 
-        {/* Header */}
-        <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#f8fafc]/40">
-            Inquation / Opinion
-          </div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#f8fafc]/40 text-right">
-            08
-          </div>
-        </header>
+        {/* Scrolling Right Column: The Article */}
+        <div className="relative z-10 flex w-full flex-col justify-center px-8 py-24 md:px-16 md:py-32 lg:w-[55%] xl:w-[60%] lg:px-24">
+          <article className="max-w-2xl">
+            <P>{PARAGRAPHS[0]}</P>
 
-        {/* Content Layers */}
-        <div className="relative flex-1 flex items-center justify-center w-full">
-          {/* Intro */}
-          <motion.div
-            style={{ opacity: introOpacity, y: introY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-          >
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[#e11d48] uppercase mb-6">
-              A Voice Against The Chains
-            </p>
-            <h2 className="font-heading text-[12vw] md:text-[8vw] lg:text-[6vw] leading-[0.85] tracking-tight text-[#f8fafc]">
-              DOWRY
-              <br />
-              <span className="text-[#e11d48] text-[5vw] md:text-[3vw] block mt-6 font-serif italic font-light tracking-wide">The Old Chain Behind Progress</span>
-            </h2>
-          </motion.div>
-
-          {/* Quotes */}
-          {[
-            { opacity: q0Opacity, y: q0Y, quote: SUMMARY[0] },
-            { opacity: q1Opacity, y: q1Y, quote: SUMMARY[1] },
-            { opacity: q2Opacity, y: q2Y, quote: SUMMARY[2] },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              style={{ opacity: item.opacity, y: item.y }}
-              className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-none"
-            >
-              <span className="font-mono text-[10px] tracking-[0.3em] text-[#e11d48] uppercase mb-8">
-                {item.quote.tag}
-              </span>
-              <h3 className="font-sans text-3xl md:text-5xl lg:text-6xl font-light text-[#f8fafc] leading-[1.4] max-w-4xl" lang="ml">
-                &ldquo;{item.quote.text}&rdquo;
-              </h3>
-              <p className="font-serif text-sm md:text-lg text-[#f8fafc]/60 mt-8 max-w-2xl italic">
-                {item.quote.translation}
+            <div className="my-16 border-l-2 border-[#e11d48]/70 bg-gradient-to-r from-[#e11d48]/5 to-transparent py-10 pl-8 md:my-24 md:pl-12">
+              <p className="font-serif text-2xl font-light italic leading-relaxed text-[#fb7185] md:text-3xl lg:text-4xl" lang="ml">
+                "ഒരു പെൺകുട്ടിയുടെ കഴിവിനോ വിദ്യാഭ്യാസത്തിനോ പകരം അവൾക്ക് നൽകാൻ കഴിയുന്ന സ്ത്രീധനത്തിന്റെ അളവാണ് പലപ്പോഴും വിലയിരുത്തപ്പെടുന്നത്."
               </p>
-            </motion.div>
-          ))}
+            </div>
 
-          {/* Final CTA */}
-          <motion.div
-            style={{ opacity: finalOpacity, y: finalY }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 text-center pointer-events-auto"
-          >
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-8 border-2 border-[#e11d48]/30 shadow-[0_0_30px_rgba(225,29,72,0.15)] bg-[#e11d48]/10">
+            {PARAGRAPHS.slice(1).map((paragraph, index) => (
+              <P key={index}>{paragraph}</P>
+            ))}
+          </article>
+        </div>
+      </div>
+
+      {/* Finale & Author Profile */}
+      <div className="relative z-20 flex flex-col items-center justify-center border-t border-[#e11d48]/10 bg-[#111827] px-6 py-32 text-center md:py-48">
+        
+        <div className="mb-32 max-w-4xl">
+          <p className="mb-10 font-serif text-3xl font-light leading-[1.7] text-[#f8fafc] md:text-5xl" lang="ml">
+            സ്ത്രീയെ സ്വർണത്തിന്റെയോ പണത്തിന്റെയോ അടിസ്ഥാനത്തിൽ വിലയിരുത്തുന്ന മനോഭാവം മാറണം.
+          </p>
+          <p className="font-serif text-lg font-light leading-[2] text-white/55 md:text-2xl" lang="ml">
+            വിദ്യാഭ്യാസവും പുരോഗതിയും യഥാർത്ഥ അർഥത്തിൽ നേടണമെങ്കിൽ സ്ത്രീധനം എന്ന പഴഞ്ചൻ ചങ്ങല പൊട്ടിച്ചെറിയണം. സ്ത്രീധനം അവസാനിപ്പിക്കേണ്ട ഒരു സാമൂഹിക ദുരാചാരമാണ്.
+          </p>
+          <p className="mt-16 font-serif text-2xl font-normal leading-[1.5] text-[#fb7185] md:text-4xl" lang="ml">
+            സ്ത്രീയുടെ മൂല്യം സ്വർണത്തിലും പണത്തിലും അല്ല,<br/>അവളുടെ വ്യക്തിത്വത്തിലും കഴിവുകളിലുമാണ്.
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center justify-center border-t border-[#e11d48]/10 pt-24 w-full">
+          <div className="mb-8 h-24 w-24 overflow-hidden rounded-full border-2 border-[#e11d48]/30 bg-[#e11d48]/10 p-1 md:h-32 md:w-32">
+            <div className="h-full w-full overflow-hidden rounded-full">
               <Image 
-                src={resolveAsset("shaheer.png")} 
-                alt="Ahammed Shaheer" 
+                src={resolveAsset("shaheer.webp")} 
+                alt="അഹമ്മദ് ഷഹീർ" 
                 width={128} 
                 height={128} 
-                className="w-full h-full object-cover grayscale opacity-90"
+                className="h-full w-full object-cover grayscale mix-blend-luminosity transition-all duration-500 hover:grayscale-0 hover:mix-blend-normal"
+                unoptimized
               />
             </div>
-            <span className="font-mono text-[10px] tracking-[0.3em] text-[#e11d48] uppercase mb-4">
-              Written by
-            </span>
-            <h3 className="font-serif text-2xl md:text-4xl text-[#f8fafc]" lang="ml">
-              അഹമ്മദ് ഷഹീർ 
-            </h3>
-            <p className="font-sans text-sm md:text-base text-[#f8fafc]/50 mt-2 max-w-2xl" lang="ml">
-              രണ്ടാം വർഷം, മെക്കാനിക്കൽ എഞ്ചിനീയറിങ്
-            </p>
-            <div className="mt-16">
-              <Link
-                href="/dowry"
-                className="group inline-flex items-center gap-4 bg-[#e11d48] px-8 py-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#f8fafc] transition-all hover:bg-[#be123c]"
-              >
-                <span>Read the Full Essay</span>
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-          </motion.div>
+          </div>
+          <span className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#fb7185]">
+            Written by
+          </span>
+          <h3 className="font-serif text-2xl text-[#f8fafc] md:text-4xl" lang="ml">
+            അഹമ്മദ് ഷഹീർ
+          </h3>
+          <p className="mt-2 font-sans text-sm tracking-widest uppercase text-white/50 md:text-base" lang="ml">
+            രണ്ടാം വർഷം, മെക്കാനിക്കൽ എഞ്ചിനീയറിങ്
+          </p>
         </div>
-
-        {/* Footer */}
-        <footer className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-[#f8fafc]/10 pointer-events-none">
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#f8fafc]/40">
-            GEC Wayanad · 2025-26
-          </div>
-          <div className="font-sans text-[10px] text-[#f8fafc]/40" lang="ml">
-            സ്ത്രീധനം
-          </div>
-        </footer>
       </div>
     </section>
   );

@@ -25,7 +25,7 @@ import { TheGirlWhoDances } from "@/components/pages/main/the-girl-who-dances";
 import { ShadowOfWar } from "@/components/pages/main/shadow-of-war";
 import { GecwMist } from "@/components/pages/main/gecw-mist";
 import { MistyPathsStory } from "@/components/pages/main/misty-paths-story";
-import { LastBenchStory } from "@/components/pages/main/last-bench-story";
+import { LastBench } from "@/components/pages/main/last-bench";
 import { RootsAndWings } from "@/components/pages/main/roots-and-wings";
 import { InTheirImage } from "@/components/pages/main/in-their-image";
 import { SeedsOfLight } from "@/components/pages/main/seeds-of-light";
@@ -40,6 +40,23 @@ import { Wormhole } from "@/components/pages/main/wormhole";
 import { WormholeStory } from "@/components/pages/main/wormhole-story";
 import { WormholeEssay } from "@/components/pages/main/wormhole-essay";
 import { ArtworksGallery } from "@/components/pages/main/artworks-gallery";
+import { Decibel } from "@/components/pages/main/decibel";
+import { DrawingClub } from "@/components/pages/main/drawing-club";
+import { IliadLiteratureClub } from "@/components/pages/main/iliad-literature-club";
+import { MonochromeFilmClub } from "@/components/pages/main/monochrome-film-club";
+import { Nss } from "@/components/pages/main/nss";
+import { Ieee } from "@/components/pages/main/ieee";
+import { Iste } from "@/components/pages/main/iste";
+import { Exorque } from "@/components/pages/main/exorque";
+import { Sae } from "@/components/pages/main/sae";
+import { Gbot } from "@/components/pages/main/gbot";
+import { Orion } from "@/components/pages/main/orion";
+import { Aeronauts } from "@/components/pages/main/aeronauts";
+import { Iedc } from "@/components/pages/main/iedc";
+import { BhoomithraSena } from "@/components/pages/main/bhoomithra-sena";
+import { Thrive } from "@/components/pages/main/thrive";
+import { StudentProjects } from "@/components/pages/main/student-projects";
+import { Sports } from "@/components/pages/main/sports";
 
 export default function Home() {
   if (process.env.NODE_ENV === "development") {
@@ -73,7 +90,7 @@ export default function Home() {
         <WormholeStory />
         <WormholeEssay />
         <MistyPathsStory />
-        <LastBenchStory />
+        <LastBench />
         <RootsAndWings />
         <ChipHappens />
         <QuantumEntanglement />
@@ -86,6 +103,23 @@ export default function Home() {
         <PromiseWeMustKeep />
         <ArtworksGallery />
         <GecwMist />
+        <Decibel />
+        <DrawingClub />
+        <IliadLiteratureClub />
+        <MonochromeFilmClub />
+        <Nss />
+        <Ieee />
+        <Iste />
+        <Exorque />
+        <Sae />
+        <Gbot />
+        <Orion />
+        <Aeronauts />
+        <Iedc />
+        <BhoomithraSena />
+        <Thrive />
+        <StudentProjects />
+        <Sports />
       </main>
     );
   }

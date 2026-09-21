@@ -156,21 +156,12 @@ export function ChipHappens() {
                 "{quote.text}"
               </h4>
               <p className="font-mono text-xs tracking-[0.2em] text-white/40 uppercase">
-                — {quote.author}
+                {quote.author}
               </p>
             </motion.div>
           ))}
         </div>
       </div>
-
-      <footer className="flex items-center justify-between px-6 py-8 md:px-16 border-t border-white/5 text-white/30">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em]">
-          GEC Wayanad · 2025–26
-        </div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em]">
-          Semiconductor Odyssey
-        </div>
-      </footer>
     </section>
   );
 }

@@ -1,0 +1,77 @@
+.page { --bg: #14100b; --cream: #e8dcc2; --lede: #f3e6c8; --muted: #a99b7f; --amber: #e0a94a; --hair: #e8dcc21f; --ml: var(--font-malayalam), 'Noto Sans Malayalam', 'Manjari', 'Meera', system-ui, sans-serif; --col: min(100% - 40px, 620px); --wide: min(100%, 1100px); position: relative; background: var(--bg); color: var(--cream); isolation: isolate; }
+.page ::selection { background: var(--amber); color: var(--bg); }
+
+.kicker, .byline, .written, .role, .colophon { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+
+/* Hero — an empty room in evening light, with dust still drifting through it. */
+.hero { position: relative; display: flex; align-items: flex-end; min-height: min(92svh, 860px); overflow: hidden; background: #0c0906; }
+.heroMedia { position: absolute; inset: 0; }
+.photo { object-fit: cover; }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(180deg, #14100b66 0%, #14100b1a 30%, #14100bd9 78%, var(--bg) 100%); }
+.dust { position: absolute; inset: -220px 0 0; pointer-events: none; opacity: .55; background-size: 220px 220px; background-image: radial-gradient(1.5px 1.5px at 18% 24%, #ffe4b0 50%, transparent 52%), radial-gradient(1px 1px at 64% 58%, #ffe4b0 50%, transparent 52%), radial-gradient(2px 2px at 41% 84%, #ffd58a 50%, transparent 52%), radial-gradient(1px 1px at 86% 14%, #ffe4b0 50%, transparent 52%); animation: settle 70s linear infinite; }
+@keyframes settle { to { transform: translate3d(0, 220px, 0); } }
+
+.heroBody { position: relative; z-index: 2; width: var(--col); margin: 0 auto; padding-bottom: clamp(36px, 7vh, 72px); }
+.kicker { margin: 0 0 18px; color: var(--amber); }
+.title { font-family: var(--ml); font-weight: 500; font-size: clamp(52px, 13vw, 104px); line-height: 1.2; letter-spacing: -.01em; margin: 0; }
+.title span { display: block; color: var(--amber); }
+.byline { margin: 20px 0 0; color: var(--muted); }
+
+/* Reading column. */
+.prose { width: var(--col); margin: 56px auto 0; }
+.hero + .prose { margin-top: 52px; }
+.lede { font-family: var(--ml); font-weight: 400; font-size: clamp(22px, 3.4vw, 27px); line-height: 1.85; color: var(--lede); margin: 0 0 1.2em; text-wrap: balance; }
+.p { font-family: var(--ml); font-weight: 400; font-size: clamp(19px, 2.3vw, 21px); line-height: 2; color: var(--cream); margin: 0 0 1.5em; text-wrap: pretty; }
+.prose > :last-child { margin-bottom: 0; }
+
+/* Things the bench kept — set as a list, each with a small carved notch. */
+.things { list-style: none; margin: 0 0 1.7em; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.things li { position: relative; padding-left: 30px; font-family: var(--ml); font-size: clamp(19px, 2.3vw, 21px); line-height: 1.8; color: var(--cream); text-wrap: pretty; }
+.things li::before { content: ''; position: absolute; left: 0; top: .98em; width: 14px; height: 2px; background: var(--amber); }
+
+/* The note left in the forgotten notebook. */
+.note { --lh: 36px; margin: 2em 4px; padding: 26px 22px 24px 28px; border-radius: 6px; background: repeating-linear-gradient(to bottom, transparent 0 calc(var(--lh) - 1px), #2a211320 calc(var(--lh) - 1px) var(--lh)), #efe4c8; color: #2a2113; font-family: var(--ml); font-weight: 500; font-size: 20px; line-height: var(--lh); box-shadow: 0 24px 48px #0009; transform: rotate(-1deg); }
+
+/* Photographs. */
+.plate { position: relative; width: var(--wide); margin: 56px auto 0; aspect-ratio: 4 / 3; overflow: hidden; background: #0c0906; }
+.plate::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 50% 40%, transparent 55%, #14100bb3 100%); }
+
+/* Visible only while a photo is still a placeholder. */
+.mockNote { position: absolute; top: 14px; left: 14px; z-index: 3; max-width: min(440px, calc(100% - 28px)); margin: 0; padding: 10px 12px; border-radius: 10px; background: #0c0906d9; color: #cdbf9f; font: 12px/1.55 var(--font-geist-sans), system-ui, sans-serif; }
+.mockNote b { display: block; margin-bottom: 2px; color: var(--amber); font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.mockNote code { display: block; margin-bottom: 6px; color: #f3e6c8; font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 12px; }
+
+.end { width: var(--col); margin: 0 auto; }
+.author { display: flex; align-items: center; gap: 16px; margin-top: 64px; }
+.author img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+.author p { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.written, .role { color: var(--muted); }
+.author strong { font-family: var(--ml); font-weight: 500; font-size: 22px; line-height: 1.4; color: var(--lede); }
+.colophon { margin: 32px 0 0; padding: 20px 0 64px; border-top: 1px solid var(--hair); color: var(--muted); }
+
+.page [data-idle="true"] { opacity: 0; transform: translateY(18px); }
+.page [data-reveal] { transition: opacity .9s ease, transform .9s cubic-bezier(.22, 1, .36, 1); }
+.page [data-shown="true"] { opacity: 1; transform: none; }
+
+@media (min-width: 900px) {
+  .plate { aspect-ratio: 16 / 9; margin-top: 72px; }
+  .note { --lh: 40px; padding: 30px 30px 28px 36px; font-size: 22px; }
+}
+@media (min-width: 1140px) {
+  .plate { border-radius: 20px; }
+}
+@media (max-width: 640px) {
+  .prose { margin-top: 44px; }
+  .plate { margin-top: 44px; }
+  .author { margin-top: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+  .page [data-reveal] { transition: none; }
+  .dust { animation: none; }
+}
+@media print {
+  .page [data-idle="true"] { opacity: 1; transform: none; }
+  .dust, .mockNote { display: none; }
+}

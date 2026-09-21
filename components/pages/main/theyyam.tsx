@@ -1,10 +1,22 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
 import { YouTubePlayer } from "@/components/ui/youtube-player";
+
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => setIsMobile(e.matches);
+    handler(mql);
+    mql.addEventListener("change", handler as (e: MediaQueryListEvent) => void);
+    return () => mql.removeEventListener("change", handler as (e: MediaQueryListEvent) => void);
+  }, [breakpoint]);
+  return isMobile;
+}
 
 /* Hero backdrop: North Malabar theyyam footage, looped over a hand-picked
    window so the clip never shows its title card or outro. */
@@ -87,10 +99,10 @@ function CrownMotif() {
     >
       {rays.map((deg, i) => {
         const rad = (deg * Math.PI) / 180;
-        const x1 = 300 + Math.cos(rad) * 70;
-        const y1 = 300 + Math.sin(rad) * 70;
-        const x2 = 300 + Math.cos(rad) * (250 + (i % 2 ? 22 : 0));
-        const y2 = 300 + Math.sin(rad) * (250 + (i % 2 ? 22 : 0));
+        const x1 = +(300 + Math.cos(rad) * 70).toFixed(3);
+        const y1 = +(300 + Math.sin(rad) * 70).toFixed(3);
+        const x2 = +(300 + Math.cos(rad) * (250 + (i % 2 ? 22 : 0))).toFixed(3);
+        const y2 = +(300 + Math.sin(rad) * (250 + (i % 2 ? 22 : 0))).toFixed(3);
         return (
           <motion.line
             key={`ray-${deg}`}
@@ -139,34 +151,46 @@ function CrownMotif() {
 /* Continuous scroll-scrubbed reveal — mirrors tick-tick-tick.tsx's ScrollLine:
    value is driven directly by scroll position (in and back out), never a
    one-shot "reached viewport" trigger. */
-function Paragraph({ text, ordinal, lede }: { text: string; ordinal: number; lede?: boolean }) {
+function Paragraph({ text, ordinal, lede, mobile }: { text: string; ordinal: number; lede?: boolean; mobile?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 92%", "end 22%"],
+    offset: mobile ? ["start 96%", "end 8%"] : ["start 92%", "end 22%"],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.12, 1, 1, 0.12]);
-  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [28, 0, 0, -28]);
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.97, 1, 1, 0.97]);
+  const opacity = useTransform(
+    scrollYProgress,
+    mobile ? [0, 0.15, 0.85, 1] : [0, 0.3, 0.7, 1],
+    mobile ? [0.45, 1, 1, 0.45] : [0.12, 1, 1, 0.12],
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7, 1],
+    mobile ? [14, 0, 0, -14] : [28, 0, 0, -28],
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7, 1],
+    mobile ? [0.99, 1, 1, 0.99] : [0.97, 1, 1, 0.97],
+  );
 
   return (
     <motion.div
       ref={ref}
       style={{ opacity, y, scale, transformOrigin: "left center" }}
-      className="group relative md:grid md:grid-cols-[4rem_1fr] md:gap-8 will-change-[opacity,transform]"
+      className="group relative md:grid md:grid-cols-[3rem_1fr] md:gap-6 will-change-[opacity,transform]"
       lang="ml"
     >
       <span
         aria-hidden
-        className="mb-3 block font-mono text-[10px] tracking-[0.2em] text-[#e0a35e]/45 transition-colors duration-500 group-hover:text-[#e0a35e] md:mb-0 md:pt-[0.9em] md:text-right"
+        className="mb-3 hidden font-mono text-[10px] tracking-[0.2em] text-[#e0a35e]/45 transition-colors duration-500 group-hover:text-[#e0a35e] md:block md:mb-0 md:pt-[0.9em] md:text-right"
       >
         {String(ordinal).padStart(2, "0")}
       </span>
       <p
         className={`font-sans tracking-tight text-pretty ${lede
-            ? "text-[21px] leading-[1.85] text-[#efe3d0] sm:text-[24px] md:text-[27px] md:leading-[1.8]"
-            : "text-[18px] leading-[1.95] text-[#efe3d0]/80 sm:text-[20px] md:text-[22px] md:leading-[1.9]"
+            ? "text-[19px] leading-[1.9] text-[#efe3d0] sm:text-[22px] md:text-[27px] md:leading-[1.8]"
+            : "text-[17px] leading-[2] text-[#efe3d0]/80 sm:text-[19px] md:text-[22px] md:leading-[1.9]"
           }`}
       >
         {text}
@@ -175,48 +199,48 @@ function Paragraph({ text, ordinal, lede }: { text: string; ordinal: number; led
   );
 }
 
-function QuoteLine({ text }: { text: string }) {
+function QuoteLine({ text, mobile }: { text: string; mobile?: boolean }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 90%", "end 25%"],
+    offset: mobile ? ["start 96%", "end 10%"] : ["start 90%", "end 25%"],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.1, 1, 1, 0.1]);
-  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [22, 0, 0, -22]);
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.94, 1, 1, 0.94]);
+  const opacity = useTransform(
+    scrollYProgress,
+    mobile ? [0, 0.15, 0.85, 1] : [0, 0.3, 0.7, 1],
+    mobile ? [0.35, 1, 1, 0.35] : [0.1, 1, 1, 0.1],
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7, 1],
+    mobile ? [12, 0, 0, -12] : [22, 0, 0, -22],
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7, 1],
+    mobile ? [0.98, 1, 1, 0.98] : [0.94, 1, 1, 0.94],
+  );
 
   return (
     <motion.p
       ref={ref}
       style={{ opacity, y, scale, transformOrigin: "left center" }}
-      className="font-sans text-[22px] leading-[1.6] tracking-tight text-[#e0a35e] sm:text-[28px] md:text-[34px] will-change-[opacity,transform]"
+      className="font-sans text-[20px] leading-[1.6] tracking-tight text-[#e0a35e] sm:text-[26px] md:text-[34px] will-change-[opacity,transform]"
     >
       {text}
     </motion.p>
   );
 }
 
-function PullQuote({ lines, source }: { lines: string[]; source: string }) {
-  const barRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: barProgress } = useScroll({
-    target: barRef,
-    offset: ["start 92%", "end 35%"],
-  });
-  const barScale = useTransform(barProgress, [0, 1], [0, 1]);
-
+function PullQuote({ lines, source, mobile }: { lines: string[]; source: string; mobile?: boolean }) {
   return (
-    <figure ref={barRef} className="relative md:ml-[6rem]" lang="ml">
-      <motion.span
-        aria-hidden
-        style={{ scaleY: barScale }}
-        className="absolute left-0 top-0 h-full w-px origin-top bg-gradient-to-b from-[#d3452b] via-[#e0a35e]/60 to-transparent"
-      />
-      <blockquote className="pl-6 sm:pl-10">
+    <figure className="relative my-4 sm:my-6 md:ml-12" lang="ml">
+      <blockquote className="border-l border-[#d3452b]/60 pl-5 sm:pl-8">
         {lines.map((line) => (
-          <QuoteLine key={line} text={line} />
+          <QuoteLine key={line} text={line} mobile={mobile} />
         ))}
-        <figcaption className="mt-6 font-mono text-[9px] uppercase tracking-[0.28em] text-[#efe3d0]/35">
+        <figcaption className="mt-4 font-mono text-[8px] uppercase tracking-[0.28em] text-[#efe3d0]/35 sm:mt-6 sm:text-[9px]">
           {source}
         </figcaption>
       </blockquote>
@@ -225,24 +249,17 @@ function PullQuote({ lines, source }: { lines: string[]; source: string }) {
 }
 
 export function Theyyam() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
-
+  const mobile = useIsMobile();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroY = useTransform(heroProgress, [0, 1], [0, -70]);
+  const heroY = useTransform(heroProgress, [0, 1], [0, mobile ? -30 : -70]);
   const heroFade = useTransform(heroProgress, [0, 0.8], [1, 0]);
 
   return (
     <section
-      ref={sectionRef}
       id="sec-o"
       aria-labelledby="theyyam-title"
       className="relative w-full overflow-hidden bg-[#12100e] text-[#efe3d0]"
@@ -257,26 +274,8 @@ export function Theyyam() {
         }}
       />
 
-      {/* Reading progress rail */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-10 z-20 hidden lg:block"
-      >
-        <div className="sticky top-0 flex h-screen flex-col items-center justify-center gap-6">
-          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#efe3d0]/25 [writing-mode:vertical-rl]">
-            Theyyam
-          </span>
-          <div className="relative h-40 w-px bg-[#efe3d0]/10">
-            <motion.div
-              style={{ scaleY: progress }}
-              className="absolute inset-0 origin-top bg-gradient-to-b from-[#d3452b] to-[#e0a35e]"
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Hero */}
-      <div ref={heroRef} className="relative flex min-h-[92svh] flex-col justify-center px-6 pt-28 pb-16 sm:px-10 lg:px-24">
+      <div ref={heroRef} className="relative flex min-h-[85svh] flex-col justify-center px-5 pt-20 pb-12 sm:min-h-[92svh] sm:px-10 sm:pt-28 sm:pb-16 lg:px-24">
         {/* Hero background video — looped, muted, cropped to a fixed window of the source clip */}
         <div
           aria-hidden
@@ -317,7 +316,7 @@ export function Theyyam() {
 
         <motion.div
           style={{ y: heroY, opacity: heroFade }}
-          className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center text-center"
+          className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center text-center px-2"
         >
           <div className="relative flex w-full flex-col items-center">
             <div
@@ -332,7 +331,7 @@ export function Theyyam() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: EASE }}
-              className="relative font-mono text-[9px] uppercase tracking-[0.42em] text-[#e0a35e] sm:text-[10px]"
+              className="relative font-mono text-[8px] uppercase tracking-[0.32em] text-[#e0a35e] sm:text-[9px] sm:tracking-[0.42em] md:text-[10px]"
             >
               Culture · Survival · Resistance
             </motion.p>
@@ -343,7 +342,7 @@ export function Theyyam() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1.2, delay: 0.15, ease: EASE }}
-              className="relative mt-8 font-sans text-[22vw] leading-[0.95] tracking-[-0.06em] text-[#efe3d0] sm:text-[18vw] md:text-[160px] lg:text-[190px]"
+              className="relative mt-5 font-sans text-[18vw] leading-[0.95] tracking-[-0.06em] text-[#efe3d0] sm:mt-8 sm:text-[16vw] md:text-[140px] lg:text-[190px]"
               lang="ml"
             >
               തെയ്യം
@@ -355,7 +354,7 @@ export function Theyyam() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.1, delay: 0.35, ease: EASE }}
-            className="mt-6 max-w-2xl font-sans text-[18px] leading-[1.5] tracking-tight text-[#e0a35e] sm:mt-10 sm:text-[26px] md:text-[32px]"
+            className="mt-4 max-w-2xl font-sans text-[16px] leading-[1.5] tracking-tight text-[#e0a35e] sm:mt-10 sm:text-[22px] md:text-[32px]"
             lang="ml"
           >
             അതിജീവനത്തിന്റെ കലയും ചെറുത്തുനിൽപ്പും.
@@ -368,7 +367,7 @@ export function Theyyam() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="mx-auto mt-16 grid w-full max-w-[1200px] grid-cols-2 gap-px border-t border-[#efe3d0]/10 pt-5 font-mono text-[8px] uppercase tracking-[0.22em] text-[#efe3d0]/35 sm:mt-24 sm:grid-cols-4 sm:text-[9px]"
+          className="mx-auto mt-10 grid w-full max-w-[1200px] grid-cols-2 gap-px border-t border-[#efe3d0]/10 pt-4 font-mono text-[7px] uppercase tracking-[0.18em] text-[#efe3d0]/35 sm:mt-24 sm:grid-cols-4 sm:text-[9px] sm:tracking-[0.22em] sm:pt-5"
         >
           <span>Essay</span>
           <span className="sm:text-center">Malayalam</span>
@@ -378,14 +377,14 @@ export function Theyyam() {
       </div>
 
       {/* Body */}
-      <div className="relative mx-auto w-full max-w-[46rem] px-6 pb-28 sm:px-10 md:pb-40">
-        <div className="flex flex-col gap-14 sm:gap-20">
+      <div className="relative mx-auto w-full max-w-[46rem] px-5 pb-20 sm:px-10 md:pb-40">
+        <div className="flex flex-col gap-10 sm:gap-16 md:gap-20">
           {BLOCKS.map((block, i) => {
             if (block.kind === "quote") {
-              return <PullQuote key={`q-${i}`} lines={block.lines} source={block.source} />;
+              return <PullQuote key={`q-${i}`} lines={block.lines} source={block.source} mobile={mobile} />;
             }
             return (
-              <Paragraph key={`p-${i}`} text={block.text} ordinal={ORDINALS[i]} lede={block.lede} />
+              <Paragraph key={`p-${i}`} text={block.text} ordinal={ORDINALS[i]} lede={block.lede} mobile={mobile} />
             );
           })}
         </div>
@@ -396,14 +395,14 @@ export function Theyyam() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: EASE }}
-          className="relative -mx-6 my-12 sm:-mx-10 lg:my-16 flex flex-col items-center"
+          className="relative -mx-5 my-10 sm:-mx-10 sm:my-12 lg:my-16 flex flex-col items-center"
         >
           {/* Image frame with sophisticated treatment */}
           <div className="relative w-full max-w-3xl overflow-hidden">
             {/* Outer frame border with subtle glow */}
             <div className="absolute -inset-[3px] rounded-xl lg:rounded-2xl bg-gradient-to-b from-[#e0a35e]/20 via-[#d3452b]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
 
-            <div className="relative h-64 sm:h-80 md:h-96 lg:h-[540px] overflow-hidden rounded-lg lg:rounded-xl border border-[#efe3d0]/15 bg-[#0c0b09] group shadow-2xl shadow-[#d3452b]/10 hover:shadow-[#d3452b]/20 transition-shadow duration-700">
+            <div className="relative h-72 sm:h-80 md:h-96 lg:h-[540px] overflow-hidden rounded-lg lg:rounded-xl border border-[#efe3d0]/15 bg-[#0c0b09] group shadow-2xl shadow-[#d3452b]/10 hover:shadow-[#d3452b]/20 transition-shadow duration-700">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Theyyam_of_Kerala_3.jpg"
@@ -418,17 +417,17 @@ export function Theyyam() {
           </div>
 
           {/* Caption */}
-          <figcaption className="mt-5 sm:mt-6 max-w-lg px-6 sm:px-0 text-center">
+          <figcaption className="mt-4 sm:mt-6 max-w-lg px-5 sm:px-0 text-center">
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
             >
-              <p className="font-sans text-[15px] sm:text-[16px] leading-[1.6] text-[#efe3d0]/70">
+              <p className="font-sans text-[14px] sm:text-[16px] leading-[1.6] text-[#efe3d0]/70">
                 A ritual art form of North Malabar, embodying stories of resistance and survival.
               </p>
-              <p className="mt-3 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#efe3d0]/35">
+              <p className="mt-2 font-mono text-[8px] sm:mt-3 sm:text-[10px] uppercase tracking-[0.2em] text-[#efe3d0]/35">
                 Shagil Kannur · CC BY-SA 4.0
               </p>
             </motion.div>
@@ -441,15 +440,10 @@ export function Theyyam() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
           transition={{ duration: 0.9, ease: EASE }}
-          className="relative mt-16 flex flex-col gap-8 sm:mt-20 sm:flex-row sm:items-center"
+          className="relative mt-12 flex flex-col gap-6 sm:mt-20 sm:flex-row sm:items-center sm:gap-8 border-t border-[#efe3d0]/10 pt-8"
         >
-          <span
-            aria-hidden
-            className="absolute left-0 top-0 hidden h-full w-px bg-gradient-to-b from-[#d3452b] via-[#e0a35e]/40 to-transparent sm:block"
-          />
-
-          <div className="flex items-center gap-5 sm:pl-8">
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#efe3d0]/10 grayscale transition-all duration-700 hover:grayscale-0 sm:h-20 sm:w-20">
+          <div className="flex items-center gap-5">
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-[#efe3d0]/10 grayscale transition-all duration-700 hover:grayscale-0 sm:h-20 sm:w-20">
               <Image
                 src={resolveAsset("asika-k.png")}
                 alt="Author portrait of Asika K"
@@ -460,13 +454,13 @@ export function Theyyam() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#e0a35e]">
+              <span className="font-mono text-[8px] uppercase tracking-[0.25em] text-[#e0a35e] sm:text-[9px] sm:tracking-[0.3em]">
                 Written by
               </span>
-              <span className="mt-1 font-sans text-2xl leading-none tracking-tight text-[#efe3d0] sm:text-3xl lg:text-[32px]">
+              <span className="mt-1 font-sans text-xl leading-none tracking-tight text-[#efe3d0] sm:text-3xl lg:text-[32px]">
                 Asika K
               </span>
-              <span className="mt-2 font-mono text-[9px] uppercase tracking-[0.15em] text-[#efe3d0]/40">
+              <span className="mt-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-[#efe3d0]/40 sm:mt-2 sm:text-[9px] sm:tracking-[0.15em]">
                 Second year · Electronics &amp; Communication
               </span>
             </div>
