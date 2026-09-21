@@ -9,3 +9,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 <!-- END:nextjs-agent-rules -->
 
 - Note that the project structure is available in .ai-context/filetree.txt in root folder
+- All images and media must be converted to WebP format and uploaded to GitHub release assets (using `gh release upload`). Do not serve images from the local `public/` directory; resolve all media assets through `resolveAsset` in `lib/asset-registry.ts`.

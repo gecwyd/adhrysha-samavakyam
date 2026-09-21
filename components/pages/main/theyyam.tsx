@@ -4,6 +4,13 @@ import { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
+import { YouTubePlayer } from "@/components/ui/youtube-player";
+
+/* Hero backdrop: North Malabar theyyam footage, looped over a hand-picked
+   window so the clip never shows its title card or outro. */
+const HERO_VIDEO_ID = "Wmuy_jfGI68";
+const HERO_VIDEO_START = 6;
+const HERO_VIDEO_END = 34;
 
 type Block =
   | { kind: "p"; text: string; lede?: boolean }
@@ -129,14 +136,25 @@ function CrownMotif() {
   );
 }
 
+/* Continuous scroll-scrubbed reveal — mirrors tick-tick-tick.tsx's ScrollLine:
+   value is driven directly by scroll position (in and back out), never a
+   one-shot "reached viewport" trigger. */
 function Paragraph({ text, ordinal, lede }: { text: string; ordinal: number; lede?: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 92%", "end 22%"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.12, 1, 1, 0.12]);
+  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [28, 0, 0, -28]);
+  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.97, 1, 1, 0.97]);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 26 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
-      transition={{ duration: 1, ease: EASE }}
-      className="group relative md:grid md:grid-cols-[4rem_1fr] md:gap-8"
+      ref={ref}
+      style={{ opacity, y, scale, transformOrigin: "left center" }}
+      className="group relative md:grid md:grid-cols-[4rem_1fr] md:gap-8 will-change-[opacity,transform]"
       lang="ml"
     >
       <span
@@ -158,38 +176,52 @@ function Paragraph({ text, ordinal, lede }: { text: string; ordinal: number; led
   );
 }
 
-function PullQuote({ lines, source }: { lines: string[]; source: string }) {
+function QuoteLine({ text }: { text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 90%", "end 25%"],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.1, 1, 1, 0.1]);
+  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [22, 0, 0, -22]);
+  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.94, 1, 1, 0.94]);
+
   return (
-    <motion.figure
-      initial={{ opacity: 0, y: 26 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-12% 0px -12% 0px" }}
-      transition={{ duration: 1, ease: EASE }}
-      className="relative md:ml-[6rem]"
-      lang="ml"
+    <motion.p
+      ref={ref}
+      style={{ opacity, y, scale, transformOrigin: "left center" }}
+      className="font-sans text-[22px] leading-[1.6] tracking-tight text-[#e0a35e] sm:text-[28px] md:text-[34px] will-change-[opacity,transform]"
     >
+      {text}
+    </motion.p>
+  );
+}
+
+function PullQuote({ lines, source }: { lines: string[]; source: string }) {
+  const barRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: barProgress } = useScroll({
+    target: barRef,
+    offset: ["start 92%", "end 35%"],
+  });
+  const barScale = useTransform(barProgress, [0, 1], [0, 1]);
+
+  return (
+    <figure ref={barRef} className="relative md:ml-[6rem]" lang="ml">
       <motion.span
         aria-hidden
-        initial={{ scaleY: 0 }}
-        whileInView={{ scaleY: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.1, ease: EASE }}
+        style={{ scaleY: barScale }}
         className="absolute left-0 top-0 h-full w-px origin-top bg-gradient-to-b from-[#d3452b] via-[#e0a35e]/60 to-transparent"
       />
       <blockquote className="pl-6 sm:pl-10">
         {lines.map((line) => (
-          <p
-            key={line}
-            className="font-sans text-[22px] leading-[1.6] tracking-tight text-[#e0a35e] sm:text-[28px] md:text-[34px]"
-          >
-            {line}
-          </p>
+          <QuoteLine key={line} text={line} />
         ))}
         <figcaption className="mt-6 font-mono text-[9px] uppercase tracking-[0.28em] text-[#efe3d0]/35">
           {source}
         </figcaption>
       </blockquote>
-    </motion.figure>
+    </figure>
   );
 }
 
@@ -246,19 +278,42 @@ export function Theyyam() {
 
       {/* Hero */}
       <div ref={heroRef} className="relative flex min-h-[92svh] flex-col justify-center px-6 pt-28 pb-16 sm:px-10 lg:px-24">
-        {/* Hero background image */}
-        <div 
+        {/* Hero background video — looped, muted, cropped to a fixed window of the source clip */}
+        <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-          style={{
-            backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/1/1b/Theyyam_of_Kerala_3.jpg")',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundAttachment: 'fixed',
-          }}
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#0c0b09]"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-[#12100e] via-[#12100e]/70 to-[#12100e]/50" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#12100e] via-[#12100e]/40 to-transparent" />
+          <div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            style={{
+              width: "100vw",
+              height: "56.25vw",
+              minWidth: "177.78vh",
+              minHeight: "100vh",
+            }}
+          >
+            <YouTubePlayer
+              videoId={HERO_VIDEO_ID}
+              autoPlay
+              muted
+              loop
+              hideControls
+              showFloatingMute={false}
+              showQualitySelector={false}
+              playsInline
+              priority
+              height="100%"
+              className="h-full w-full"
+              playerVars={{
+                start: HERO_VIDEO_START,
+                end: HERO_VIDEO_END,
+                mute: 1,
+              }}
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#12100e] via-[#12100e]/65 to-[#12100e]/45" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#12100e] via-[#12100e]/35 to-[#12100e]/60" />
+          <div className="absolute inset-0 bg-[#12100e]/20" />
         </div>
 
         <motion.div
