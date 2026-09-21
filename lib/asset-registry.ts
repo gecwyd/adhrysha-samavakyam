@@ -51,6 +51,20 @@ const ASSET_MAP: Record<string, string> = {
   "tick-tick-bg.jpg": `${GITHUB_RELEASE_V2_BASE}/tick-tick-bg.jpg`,
   "tick-tick-art.webp": `${GITHUB_RELEASE_V2_BASE}/tick-tick-art.webp`,
   "version-zero-art.webp": `${GITHUB_RELEASE_V2_BASE}/version-zero-art.webp`,
+  "clock-essay-hero.webp": `${GITHUB_RELEASE_V2_BASE}/clock-essay-hero.webp`,
+  "clock-essay-hero.png": `${GITHUB_RELEASE_V2_BASE}/clock-essay-hero.png`,
+  "clock-essay-clock.webp": `${GITHUB_RELEASE_V2_BASE}/clock-essay-clock.webp`,
+  "clock-essay-clock.png": `${GITHUB_RELEASE_V2_BASE}/clock-essay-clock.png`,
+  "clock-essay-mind.webp": `${GITHUB_RELEASE_V2_BASE}/clock-essay-mind.webp`,
+  "clock-essay-mind.png": `${GITHUB_RELEASE_V2_BASE}/clock-essay-mind.png`,
+  "clock-essay-depth.webp": `${GITHUB_RELEASE_V2_BASE}/clock-essay-depth.webp`,
+  "clock-essay-depth.png": `${GITHUB_RELEASE_V2_BASE}/clock-essay-depth.png`,
+  "clock-essay-life.webp": `${GITHUB_RELEASE_V2_BASE}/clock-essay-life.webp`,
+  "clock-essay-life.png": `${GITHUB_RELEASE_V2_BASE}/clock-essay-life.png`,
+  "clock-essay-rain.webp": `${GITHUB_RELEASE_V2_BASE}/clock-essay-rain.webp`,
+  "clock-essay-rain.png": `${GITHUB_RELEASE_V2_BASE}/clock-essay-rain.png`,
+  "clock-essay-campus.webp": `${GITHUB_RELEASE_V2_BASE}/clock-essay-campus.webp`,
+  "clock-essay-campus.png": `${GITHUB_RELEASE_V2_BASE}/clock-essay-campus.png`,
 }
 
 export function resolveAsset(path: string): string {
