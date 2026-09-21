@@ -286,10 +286,6 @@ export function ClockEssay() {
                   {/* Chapter label */}
                   {chapter.label && (
                     <div className="flex items-center gap-3 mb-7">
-                      <div
-                        className="w-5 h-px transition-colors duration-700"
-                        style={{ backgroundColor: labelColor }}
-                      />
                       <span
                         className="font-mono text-[10px] tracking-[0.35em] uppercase transition-colors duration-700"
                         style={{ color: labelColor }}
