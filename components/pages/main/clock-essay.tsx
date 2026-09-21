@@ -89,7 +89,7 @@ const N = CHAPTERS.length;
 
 function ProgressDots({ active, total, dark }: { active: number; total: number; dark: boolean }) {
   return (
-    <div className="flex flex-col gap-2 items-center">
+    <div className="flex flex-col gap-1.5 md:gap-2 items-center">
       {Array.from({ length: total }).map((_, i) => (
         <motion.div
           key={i}
@@ -97,7 +97,7 @@ function ProgressDots({ active, total, dark }: { active: number; total: number; 
             height: i === active ? 20 : 4,
             opacity: i === active ? 1 : i < active ? 0.5 : 0.2,
           }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="w-[2px] rounded-full"
           style={{ backgroundColor: dark ? "rgba(217,212,199,0.8)" : "rgba(25,23,19,0.7)" }}
         />
@@ -190,7 +190,7 @@ export function ClockEssay() {
       {/* Outer div sets the total scroll height */}
       <div
         ref={containerRef}
-        style={{ height: `${N * 100}vh` }}
+        style={{ height: `${N * 120}vh` }}
         className="relative"
       >
         {/* Sticky viewport */}
@@ -208,7 +208,7 @@ export function ClockEssay() {
                   key={key}
                   className="absolute inset-0"
                   animate={{ opacity: isActive ? 1 : 0 }}
-                  transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+                  transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
                 >
                   <img
                     src={IMAGES[key]}
@@ -228,7 +228,7 @@ export function ClockEssay() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.5 }}
                 style={{
                   background: isDark
                     ? "linear-gradient(to bottom, rgba(10,8,6,0.85) 0%, rgba(10,8,6,0.75) 100%)"
@@ -256,20 +256,20 @@ export function ClockEssay() {
           </div>
 
           {/* Right side progress bar */}
-          <div className="absolute right-5 top-1/2 -translate-y-1/2 z-30">
+          <div className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 z-30">
             <ProgressDots active={active} total={N} dark={isDark} />
           </div>
 
           {/* ── CHAPTER CONTENT ───────────────────────────────────────── */}
-          <div className="absolute inset-0 z-20 flex items-center justify-center px-6 md:px-16">
+          <div className="absolute inset-0 z-20 flex items-center justify-center pl-6 pr-10 md:px-16">
             <div className="w-full max-w-2xl">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}
-                  initial={{ opacity: 0, y: 28 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   className="flex flex-col"
                 >
                   {/* Chapter label */}
@@ -291,7 +291,7 @@ export function ClockEssay() {
                     style={{
                       color: textColor,
                       fontFamily: "Georgia, serif",
-                      fontSize: "clamp(1.1rem, 2.2vw, 1.5rem)",
+                      fontSize: "clamp(1.05rem, 2.2vw, 1.5rem)",
                     }}
                   >
                     {chapter.text}
@@ -299,11 +299,11 @@ export function ClockEssay() {
 
                   {/* Bottom divider */}
                   <motion.div
-                    className="mt-10 h-px w-10 transition-colors duration-700"
+                    className="mt-8 h-px w-10 transition-colors duration-700"
                     style={{ backgroundColor: dividerColor }}
                     initial={{ scaleX: 0, originX: 0 }}
                     animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                   />
                 </motion.div>
               </AnimatePresence>
