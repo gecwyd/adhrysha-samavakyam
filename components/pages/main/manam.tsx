@@ -37,12 +37,8 @@ function ScrollParagraph({ para, index }: { para: string, index: number }) {
     <motion.div
       ref={ref}
       style={{ opacity, y }}
-      className="relative pl-6 sm:pl-10 border-l border-[#1b1915]/10 group"
+      className="relative"
     >
-      <div className="absolute top-2 bottom-2 left-0 w-[2px] bg-[#a84e2a] origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-700 ease-in-out" />
-      <div className="absolute top-2 left-0 -ml-10 sm:-ml-12 font-mono text-[9px] text-[#1b1915]/30 rotate-[-90deg] origin-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        {String(index + 1).padStart(2, '0')}
-      </div>
       <p className="font-sans text-[20px] sm:text-[24px] md:text-[28px] lg:text-[32px] leading-[1.8] sm:leading-[1.9] text-[#1b1915]/95 tracking-tight" lang="ml">
         {para}
       </p>

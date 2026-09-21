@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { resolveAsset } from "@/lib/asset-registry";
 
 const ARTICLE_PARAGRAPHS = [
   "Writing, I believe, is something anyone can carry off. Be it journals, articles, poems, essays and whatnot. You can jot whatever it is in your long, worked off shoes.",
@@ -70,11 +71,10 @@ export function WritingEraAi() {
 
          {/* Core Reading Experience - Two Column Editorial */}
          <div className="relative w-full max-w-[1300px] mx-auto lg:grid lg:grid-cols-12 gap-10 lg:gap-20 pb-20">
-            {/* Left Column: Sticky Image */}
             <div className="lg:col-span-5 hidden lg:block">
                <div className="sticky top-32 w-full h-[75vh] rounded-xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-[1.5s] border border-[#d9d4c7]/10">
                  <img
-                   src="/writing-era-ai-art.jpg"
+                   src={resolveAsset("writing-era-ai-art.webp")}
                    alt="Typewriter merging with digital fibers"
                    className="w-full h-full object-cover"
                  />
@@ -82,12 +82,10 @@ export function WritingEraAi() {
                </div>
             </div>
 
-            {/* Right Column: Essay Text */}
             <div className="lg:col-span-7 flex flex-col gap-10 sm:gap-14">
-              {/* Mobile Image (Visible only on small screens) */}
               <div className="w-full aspect-[4/5] rounded-xl overflow-hidden grayscale border border-[#d9d4c7]/10 lg:hidden mb-6">
                  <img
-                   src="/writing-era-ai-art.jpg"
+                   src={resolveAsset("writing-era-ai-art.webp")}
                    alt="Typewriter merging with digital fibers"
                    className="w-full h-full object-cover"
                  />

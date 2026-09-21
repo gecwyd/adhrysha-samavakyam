@@ -5,65 +5,78 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
 
-const POEM_LINES = [
-  "Sometimes",
-  "i wonder what",
-  "the little girl i used to be",
-  "would think of me now.",
-  "would she notice",
-  "all the ways i’ve changed,",
-  "or all the ways",
-  "i’ve stayed the same?",
-  "",
-  "i hope she'd see",
-  "that even after disappointment,",
-  "i still choose hope.",
-  "that even after everything,",
-  "i still choose love.",
-  "that even after getting lost,",
-  "i still find my way back to myself.",
-  "",
-  "life didn't become",
-  "what we imagined.",
-  "some dreams changed.",
-  "some doors closed.",
-  "some lessons arrived",
-  "harder than they needed to.",
-  "",
-  "but i'm still here.",
-  "still learning.",
-  "still growing.",
-  "still believing",
-  "there is something beautiful",
-  "waiting ahead.",
-  "",
-  "and i think",
-  "the little girl i used to be",
-  "wouldn't care about",
-  "everything i haven't done yet.",
-  "she'd just be proud",
-  "that i never stopped trying.",
+const POEM_STANZAS = [
+  [
+    "Sometimes",
+    "i wonder what",
+    "the little girl i used to be",
+    "would think of me now.",
+    "would she notice",
+    "all the ways i’ve changed,",
+    "or all the ways",
+    "i’ve stayed the same?"
+  ],
+  [
+    "i hope she'd see",
+    "that even after disappointment,",
+    "i still choose hope.",
+    "that even after everything,",
+    "i still choose love.",
+    "that even after getting lost,",
+    "i still find my way back to myself."
+  ],
+  [
+    "life didn't become",
+    "what we imagined.",
+    "some dreams changed.",
+    "some doors closed.",
+    "some lessons arrived",
+    "harder than they needed to."
+  ],
+  [
+    "but i'm still here.",
+    "still learning.",
+    "still growing.",
+    "still believing",
+    "there is something beautiful",
+    "waiting ahead."
+  ],
+  [
+    "and i think",
+    "the little girl i used to be",
+    "wouldn't care about",
+    "everything i haven't done yet.",
+    "she'd just be proud",
+    "that i never stopped trying."
+  ]
 ];
 
-function ScrollLine({ text }: { text: string }) {
+function Stanza({ lines }: { lines: string[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 75%", "center 45%"]
+    offset: ["start 95%", "center 40%"]
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 1], [0.1, 1]);
-  const filter = useTransform(scrollYProgress, [0, 1], ["blur(4px)", "blur(0px)"]);
-  const y = useTransform(scrollYProgress, [0, 1], [15, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [0, 0.8, 1]);
+  const y = useTransform(scrollYProgress, [0, 1], [60, 0]);
+  const rotateX = useTransform(scrollYProgress, [0, 1], [25, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.92, 1]);
 
   return (
     <motion.div
       ref={ref}
-      style={{ opacity, filter, y }}
-      className="font-serif text-[26px] sm:text-[36px] md:text-[48px] lg:text-[56px] leading-[1.3] text-center text-[#e6e0d3] tracking-tight italic drop-shadow-md will-change-[opacity,filter,transform]"
+      style={{ opacity, y, rotateX, scale, transformPerspective: 1200, transformOrigin: "bottom center" }}
+      className="flex flex-col items-center gap-1 my-10 sm:my-16 will-change-transform"
     >
-      {text}
+      {lines.map((line, i) => (
+        <span
+          key={i}
+          className="font-serif text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[1.4] text-center text-[#e6e0d3]/90 tracking-tight italic"
+        >
+          {line}
+        </span>
+      ))}
     </motion.div>
   );
 }
@@ -73,63 +86,89 @@ export function ShedBeProud() {
     <section
       id="sec-n"
       aria-labelledby="shed-be-proud-title"
-      className="relative w-full bg-[#1b1915] text-[#e6e0d3]"
+      className="relative w-full bg-[#0a0908] text-[#e6e0d3]"
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pointer-events-none select-none z-0 px-6">
-        <div className="flex items-center gap-4 sm:gap-6 mb-8 opacity-20">
-          <div className="w-12 sm:w-20 h-[1px] bg-[#d99065]" />
-          <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#d99065]">
-            For the person still becoming
-          </p>
-          <div className="w-12 sm:w-20 h-[1px] bg-[#d99065]" />
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+          <Image
+            src={resolveAsset("shed-be-proud-art.webp")}
+            alt="Vintage mirror reflecting morning light"
+            fill
+            className="object-cover opacity-40 mix-blend-luminosity scale-105"
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/40 to-[#0a0908]" />
         </div>
-        <h2 className="font-heading text-[28vw] sm:text-[22vw] leading-[0.8] tracking-[-0.04em] text-[#e6e0d3] opacity-[0.03] text-center">
-          SHE’D
-          <br />
-          BE <span className="text-[#d99065]">PROUD.</span>
-        </h2>
       </div>
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-10 lg:px-16 pt-[80vh] pb-32">
-        <div className="flex flex-col">
-          {POEM_LINES.map((line, i) =>
-            !line ? (
-              <div key={i} className="h-10 sm:h-16 md:h-20" aria-hidden="true" />
-            ) : (
-              <ScrollLine key={i} text={line} />
-            )
-          )}
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-10 lg:px-16 pt-[30vh] pb-32">
+
+        {/* Intro Header */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5 }}
+          className="flex flex-col items-center justify-center mb-32 sm:mb-48"
+        >
+          <div className="flex items-center gap-4 sm:gap-6 mb-8 opacity-60">
+            <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#d99065]">
+              For the person still becoming
+            </p>
+          </div>
+          <h2
+            id="shed-be-proud-title"
+            className="font-heading text-[18vw] sm:text-[14vw] md:text-[120px] leading-[0.85] tracking-[-0.04em] text-[#e6e0d3] text-center"
+          >
+            SHE’D
+            <br />
+            BE <span className="text-[#d99065] italic">PROUD.</span>
+          </h2>
+        </motion.div>
+
+        {/* Poem Stanzas */}
+        <div className="flex flex-col items-center">
+          {POEM_STANZAS.map((stanza, i) => (
+            <Stanza key={i} lines={stanza} />
+          ))}
         </div>
 
-        <div className="mt-40 md:mt-56 flex justify-center pb-20">
-          <div className="flex flex-col items-center text-center">
-            <div className="relative h-28 w-28 sm:h-36 sm:w-36 overflow-hidden rounded-full grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all duration-700 border border-[#e6e0d3]/10 mb-6 sm:mb-8 shadow-xl">
-              <Image 
-                src={resolveAsset("nivedya.png")} 
-                alt="Author portrait of Nivedya" 
-                fill 
-                sizes="144px" 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+          className="mt-20 md:mt-32 flex justify-center pb-12"
+        >
+          <div className="flex flex-col sm:flex-row items-center gap-6 border-t border-[#e6e0d3]/10 pt-16 w-full max-w-md justify-center">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ring-1 ring-[#e6e0d3]/20 shrink-0 shadow-lg bg-black/40">
+              <Image
+                src={resolveAsset("nivedya.webp")}
+                alt="Portrait of Nivedya"
+                fill
+                sizes="96px"
                 unoptimized
-                className="object-cover" 
+                className="object-cover hover:scale-110 transition-transform duration-700 ease-out"
               />
             </div>
-            <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#d99065] mb-3 sm:mb-4">
-              Written by
-            </span>
-            <span className="font-sans text-4xl sm:text-5xl lg:text-[64px] tracking-tight text-[#e6e0d3] mb-2 sm:mb-4 leading-none">
-              Nivedya
-            </span>
-            <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-[#e6e0d3]/40">
-              First year · Electronics & Communication
-            </span>
+            <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#d99065] mb-2">
+                Written by
+              </span>
+              <span className="font-sans text-3xl sm:text-4xl tracking-tight text-[#e6e0d3] mb-2 leading-none">
+                Nivedya
+              </span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#e6e0d3]/40">
+                First year · Electronics & Communication
+              </span>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      <footer className="relative z-10 w-full border-t border-[#e6e0d3]/5 bg-[#1b1915]/50 backdrop-blur-md">
-        <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.14em] text-[#e6e0d3]/30 sm:flex-row sm:items-center sm:justify-between">
+      <footer className="relative z-10 w-full border-t border-[#e6e0d3]/10 bg-[#0a0908]">
+        <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.14em] text-[#e6e0d3]/40 sm:flex-row sm:items-center sm:justify-between">
           <span>Author · Nivedya</span>
-          <span>College Union 2026–27 · Source page 22</span>
         </div>
       </footer>
     </section>
