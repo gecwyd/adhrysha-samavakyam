@@ -56,7 +56,8 @@ const BOOKMARKS = [
 const TAPE_TOP = ["Read", "Write", "Imagine", "Quote", "Bookmark", "Wonder"];
 const TAPE_BOTTOM = ["Create", "Inspire", "Story", "Verse", "Page", "Turn"];
 
-const OUTLINE = "[-webkit-text-stroke:2px_currentColor] text-transparent";
+// Fill-color (not color) is made transparent so currentColor still paints the stroke.
+const OUTLINE = "[-webkit-text-stroke:2px_currentColor] [-webkit-text-fill-color:transparent]";
 
 /** Scrolling word tape. Two identical tracks translate by their own width for a seamless loop. */
 function Marquee({

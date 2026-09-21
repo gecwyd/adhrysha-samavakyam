@@ -1,5 +1,6 @@
 .track {
   animation: marquee var(--marquee-duration, 36s) linear infinite;
+  will-change: transform;
 }
 
 .reverse {
@@ -24,34 +25,14 @@
   opacity: 0.85;
 }
 
+/* Static grain tile: rasterised once, never animated. */
 .grain {
   position: absolute;
-  inset: -50%;
+  inset: 0;
   pointer-events: none;
-  opacity: 0.16;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  animation: grain 0.9s steps(6) infinite;
-}
-
-@keyframes grain {
-  0% {
-    transform: translate(0, 0);
-  }
-  20% {
-    transform: translate(-6%, 4%);
-  }
-  40% {
-    transform: translate(5%, -7%);
-  }
-  60% {
-    transform: translate(-4%, -3%);
-  }
-  80% {
-    transform: translate(7%, 5%);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
 }
 
 .scan {
@@ -77,9 +58,104 @@
   );
 }
 
+/* Leader: the sweep spins once a second, each digit is visible for one second of a five second loop. */
+.sweep {
+  background: conic-gradient(from 0deg, transparent 0deg 270deg, rgb(241 241 238 / 0.2) 360deg);
+  animation: spin 1s linear infinite;
+  will-change: transform;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.count {
+  opacity: 0;
+  animation: tick 5s steps(1, end) infinite;
+  animation-delay: calc(var(--i) * 1s);
+}
+
+@keyframes tick {
+  0% {
+    opacity: 1;
+  }
+  20%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Title drift as the hero scrolls away: scroll-driven, runs off the main thread where supported. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .driftRight {
+      animation: driftRight linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    .driftLeft {
+      animation: driftLeft linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+@keyframes driftRight {
+  to {
+    transform: translate3d(16%, 0, 0);
+  }
+}
+
+@keyframes driftLeft {
+  to {
+    transform: translate3d(-16%, 0, 0);
+  }
+}
+
+/* Swipeable strip: hide the scrollbar on touch sizes, show a slim one from lg where a mouse needs it. */
+.strip {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.strip::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .strip {
+    scrollbar-width: thin;
+    scrollbar-color: #f1f1ee #141414;
+  }
+
+  .strip::-webkit-scrollbar {
+    display: block;
+    height: 8px;
+  }
+
+  .strip::-webkit-scrollbar-thumb {
+    background: #f1f1ee;
+  }
+}
+
+@media (min-width: 1280px) {
+  .strip {
+    scrollbar-width: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .track,
-  .grain {
+  .sweep,
+  .count {
     animation: none;
+  }
+
+  .count:first-of-type {
+    opacity: 1;
   }
 }
