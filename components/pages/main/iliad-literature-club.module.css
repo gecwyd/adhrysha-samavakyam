@@ -1,0 +1,57 @@
+.track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.reverse {
+  animation-direction: reverse;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.spin {
+  animation: spin 24s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Die-cut bookmark: V-notch at the foot. Shadow lives on a wrapper because clip-path would cut it. */
+.bookmark {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 2.25rem), 0 100%);
+}
+
+.lift {
+  filter: drop-shadow(0 22px 20px rgb(38 24 26 / 0.28));
+}
+
+.dots {
+  background-image: radial-gradient(circle at 1px 1px, rgb(245 239 227 / 0.14) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 47px,
+    rgb(245 239 227 / 0.1) 47px,
+    rgb(245 239 227 / 0.1) 48px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .spin {
+    animation: none;
+  }
+}
