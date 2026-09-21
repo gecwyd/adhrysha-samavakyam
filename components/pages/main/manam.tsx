@@ -58,76 +58,72 @@ export function Manam() {
       className="w-full bg-[#e6e0d3] text-[#1b1915] relative"
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
-         
-         <div className="flex flex-col lg:flex-row items-start gap-16 lg:gap-24 pt-20 pb-32">
-            
-            <div className="lg:sticky lg:top-32 lg:w-5/12 flex flex-col shrink-0">
-               <motion.div 
-                 initial={{ opacity: 0, y: 15 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true, amount: 0.5 }}
-                 className="flex items-center gap-3 mb-6 sm:mb-10"
-               >
-                 <div className="w-2 h-2 rounded-full bg-[#a84e2a]" />
-                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#a84e2a]">
-                   A story about what cannot be recreated
-                 </p>
-               </motion.div>
 
-               <motion.h2
-                  id="manam-title"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 }}
-                  className="font-heading text-[28vw] sm:text-[22vw] md:text-[18vw] lg:text-[160px] xl:text-[200px] leading-[0.7] tracking-[-0.04em] text-[#1b1915]"
-                  lang="ml"
-               >
-                  മണം
-               </motion.h2>
-               
-               <motion.div 
-                 initial={{ opacity: 0 }}
-                 whileInView={{ opacity: 1 }}
-                 viewport={{ once: true }}
-                 transition={{ delay: 0.3 }}
-                 className="mt-12 sm:mt-20 pt-10 border-t border-[#1b1915]/15"
-               >
-                 <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
-                   <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-full grayscale mix-blend-multiply opacity-80 hover:opacity-100 hover:grayscale-0 transition-all duration-500">
-                     <Image 
-                       src={resolveAsset("sefana-elizabeth-manam.png")} 
-                       alt="Author portrait of Sefana Elizabeth" 
-                       fill 
-                       sizes="96px"
-                       unoptimized
-                       className="object-cover" 
-                     />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.25em] text-[#a84e2a] mb-2 sm:mb-3">
-                       Written by
-                     </span>
-                     <span className="font-sans text-3xl sm:text-4xl lg:text-5xl tracking-tight text-[#1b1915] mb-2 sm:mb-3 leading-none">
-                       Sefana Elizabeth
-                     </span>
-                     <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#1b1915]/40">
-                       First year · Electronics & Communication Engineering
-                     </span>
-                   </div>
-                 </div>
-               </motion.div>
+        <div className="flex flex-col lg:flex-row items-start gap-16 lg:gap-24 pt-20 pb-32">
+
+          <div className="lg:sticky lg:top-32 lg:w-5/12 flex flex-col shrink-0">
+            <div
+              className="flex items-center gap-3 mb-6 sm:mb-10"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#a84e2a]">
+                A story about what cannot be recreated
+              </p>
             </div>
 
-            <div className="lg:w-7/12 flex flex-col gap-12 sm:gap-16 lg:pt-16">
-               {STORY_PARAGRAPHS.map((para, i) => (
-                  <ScrollParagraph key={i} para={para} index={i} />
-               ))}
-            </div>
+            <motion.h2
+              id="manam-title"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="font-heading text-[28vw] sm:text-[22vw] md:text-[18vw] lg:text-[160px] xl:text-[200px] leading-[0.7] tracking-[-0.04em] text-[#1b1915]"
+              lang="ml"
+            >
+              മണം
+            </motion.h2>
 
-         </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="mt-12 sm:mt-20 pt-10 border-t border-[#1b1915]/15"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
+                <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-full grayscale mix-blend-multiply opacity-80 hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+                  <Image
+                    src={resolveAsset("sefana-elizabeth-manam.png")}
+                    alt="Author portrait of Sefana Elizabeth"
+                    fill
+                    sizes="96px"
+                    unoptimized
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.25em] text-[#a84e2a] mb-2 sm:mb-3">
+                    Written by
+                  </span>
+                  <span className="font-sans text-3xl sm:text-4xl lg:text-5xl tracking-tight text-[#1b1915] mb-2 sm:mb-3 leading-none">
+                    Sefana Elizabeth
+                  </span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#1b1915]/40">
+                    First year · Electronics & Communication Engineering
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="lg:w-7/12 flex flex-col gap-12 sm:gap-16 lg:pt-16">
+            {STORY_PARAGRAPHS.map((para, i) => (
+              <ScrollParagraph key={i} para={para} index={i} />
+            ))}
+          </div>
+
+        </div>
       </div>
-      
+
       <footer className="w-full border-t border-[#1b1915]/10">
         <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#1b1915]/45 sm:flex-row sm:items-center sm:justify-between sm:text-[9px]">
           <span>Author · Sefana Elizabeth</span>

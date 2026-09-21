@@ -100,13 +100,13 @@ export function VersionZero() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
               transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-              className="mt-16 mb-16 relative w-full max-w-lg mx-auto aspect-[912/988] rounded-2xl overflow-hidden border border-[#191713]/15 shadow-2xl bg-[#d0cbbd]"
+              className="mt-16 mb-16 relative w-full max-w-lg mx-auto aspect-[912/988] overflow-hidden"
             >
               <Image
                 src={resolveAsset("version-zero-art.webp")}
                 alt="Illustration of student at desk"
                 fill
-                className="object-cover object-top mix-blend-multiply opacity-90 hover:opacity-100 transition-opacity duration-500"
+                className="object-cover object-top mix-blend-multiply opacity-90"
                 unoptimized
               />
             </motion.div>

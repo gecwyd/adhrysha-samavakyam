@@ -190,8 +190,8 @@ export function ClockEssay() {
       {/* Outer div sets the total scroll height */}
       <div
         ref={containerRef}
-        style={{ height: `${N * 120}vh` }}
-        className="relative"
+        style={{ height: `calc(${N} * var(--scroll-step, 120vh))` }}
+        className="relative [--scroll-step:50vh] sm:[--scroll-step:80vh] md:[--scroll-step:120vh]"
       >
         {/* Sticky viewport */}
         <div
@@ -262,15 +262,15 @@ export function ClockEssay() {
 
           {/* ── CHAPTER CONTENT ───────────────────────────────────────── */}
           <div className="absolute inset-0 z-20 flex items-center justify-center pl-6 pr-10 md:px-16">
-            <div className="w-full max-w-2xl">
-              <AnimatePresence mode="wait">
+            <div className="w-full max-w-2xl h-full relative">
+              <AnimatePresence>
                 <motion.div
                   key={active}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex flex-col"
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex flex-col absolute inset-0 justify-center w-full h-fit m-auto"
                 >
                   {/* Chapter label */}
                   {chapter.label && (

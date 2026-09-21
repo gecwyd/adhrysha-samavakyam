@@ -68,11 +68,50 @@ export function WritingEraAi() {
            </motion.h2>
          </div>
 
-         {/* Core Reading Experience - Single Narrow Column */}
-         <div className="relative w-full max-w-[760px] mx-auto flex flex-col gap-12 sm:gap-16 pb-20">
-            {ARTICLE_PARAGRAPHS.map((para, i) => (
-               <ArticleParagraph key={i} text={para} isFirst={i === 0} />
-            ))}
+         {/* Core Reading Experience - Two Column Editorial */}
+         <div className="relative w-full max-w-[1300px] mx-auto lg:grid lg:grid-cols-12 gap-10 lg:gap-20 pb-20">
+            {/* Left Column: Sticky Image */}
+            <div className="lg:col-span-5 hidden lg:block">
+               <div className="sticky top-32 w-full h-[75vh] rounded-xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-[1.5s] border border-[#d9d4c7]/10">
+                 <img
+                   src="/writing-era-ai-art.jpg"
+                   alt="Typewriter merging with digital fibers"
+                   className="w-full h-full object-cover"
+                 />
+                 <div className="absolute inset-0 bg-[#12110e]/30 mix-blend-overlay" />
+               </div>
+            </div>
+
+            {/* Right Column: Essay Text */}
+            <div className="lg:col-span-7 flex flex-col gap-10 sm:gap-14">
+              {/* Mobile Image (Visible only on small screens) */}
+              <div className="w-full aspect-[4/5] rounded-xl overflow-hidden grayscale border border-[#d9d4c7]/10 lg:hidden mb-6">
+                 <img
+                   src="/writing-era-ai-art.jpg"
+                   alt="Typewriter merging with digital fibers"
+                   className="w-full h-full object-cover"
+                 />
+              </div>
+
+              {ARTICLE_PARAGRAPHS.map((para, i) => (
+                 <div key={`group-${i}`} className="flex flex-col gap-10 sm:gap-14">
+                   {i === 3 && (
+                     <motion.blockquote 
+                       initial={{ opacity: 0, x: -20 }}
+                       whileInView={{ opacity: 1, x: 0 }}
+                       viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+                       transition={{ duration: 0.8 }}
+                       className="border-l-[3px] border-[#d99065] pl-6 sm:pl-8 my-4 py-2"
+                     >
+                       <p className="font-heading text-[28px] sm:text-[34px] md:text-[40px] text-[#d99065] leading-[1.1] tracking-tight">
+                         "AI should never be filling the bill of thinking or spawning ideas for you."
+                       </p>
+                     </motion.blockquote>
+                   )}
+                   <ArticleParagraph text={para} isFirst={i === 0} />
+                 </div>
+              ))}
+            </div>
          </div>
 
          {/* Minimal Author Lockup (No Image per User Request) */}
