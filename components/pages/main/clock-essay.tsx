@@ -183,17 +183,6 @@ export function ClockEssay() {
             <span className="text-[#c96a45]">പറയാത്ത</span><br />
             സമയം
           </motion.h2>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1.1 }}
-            className="mt-10 flex items-center gap-3"
-          >
-            <div className="w-6 h-px bg-white/40" />
-            <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-white/40">
-              Scroll to read
-            </span>
-          </motion.div>
         </div>
       </div>
 
