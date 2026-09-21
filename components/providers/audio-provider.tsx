@@ -466,6 +466,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       }
 
       currentAudio.play().then(() => {
+        if (activeAudioRef.current !== currentAudio) {
+          currentAudio.pause()
+          return
+        }
         if (isIntentionallyPausedRef.current) {
           currentAudio.pause()
           setIsPlaying(false)
@@ -474,6 +478,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         setIsPlaying(true)
         fadeAudio(currentAudio, currentAudio.volume, targetVol, fadeDuration)
       }).catch(() => {
+        if (activeAudioRef.current !== currentAudio) return
         if (!isIntentionallyPausedRef.current) {
           pendingPlayRef.current = () => playbg(url, options)
         }
@@ -529,6 +534,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     const startPlayback = () => {
       newAudio.play().then(() => {
+        if (activeAudioRef.current !== newAudio) {
+          newAudio.pause()
+          return
+        }
         if (isIntentionallyPausedRef.current) {
           newAudio.pause()
           setIsPlaying(false)
@@ -537,6 +546,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         setIsPlaying(true)
         fadeAudio(newAudio, 0, targetVol, fadeDuration)
       }).catch(() => {
+        if (activeAudioRef.current !== newAudio) return
         if (!isIntentionallyPausedRef.current) {
           pendingPlayRef.current = startPlayback
         }

@@ -98,7 +98,7 @@ function DignitaryRow({ item, index }: { item: DignitaryItem; index: number }) {
         viewport={{ once: true, amount: 0.15 }}
         transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "w-full max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 sm:gap-10 md:gap-14 lg:gap-20",
+          "w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-8 sm:gap-10 md:gap-16 lg:gap-24",
           index % 2 === 1 && "md:flex-row-reverse"
         )}
       >
@@ -107,7 +107,7 @@ function DignitaryRow({ item, index }: { item: DignitaryItem; index: number }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-sm sm:max-w-md md:max-w-none md:w-5/12 lg:w-[38vw] aspect-[3/4] sm:aspect-[4/5] md:h-[62vh] max-h-[580px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl relative bg-black/5 shrink-0 border border-black/10"
+          className="w-full max-w-sm sm:max-w-md md:max-w-none md:w-5/12 lg:w-5/12 aspect-[3/4] sm:aspect-[4/5] md:h-[62vh] max-h-[600px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl relative bg-black/5 shrink-0 border border-black/10"
         >
           {!imgError ? (
             <img
@@ -133,14 +133,14 @@ function DignitaryRow({ item, index }: { item: DignitaryItem; index: number }) {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="flex-1 flex flex-col justify-center text-left"
+          className="flex-1 flex flex-col justify-center text-left lg:px-4"
         >
           <div className="flex items-center gap-2.5 text-black/50 font-mono text-[11px] sm:text-xs tracking-[0.25em] uppercase mb-4 sm:mb-6">
             <span className="w-2 h-2 rounded-full bg-black/60" />
             <span className="font-bold">{item.category || "Voices of Support"}</span>
           </div>
 
-          <blockquote className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-serif text-black/90 leading-relaxed md:leading-relaxed tracking-tight">
+          <blockquote className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-black/90 leading-relaxed md:leading-snug tracking-tight">
             &ldquo;{item.message}&rdquo;
           </blockquote>
 
