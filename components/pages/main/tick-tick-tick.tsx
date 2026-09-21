@@ -35,21 +35,38 @@ const STANZAS = [
   ]
 ];
 
+function ScrollLine({ children, isTick }: { children: React.ReactNode, isTick: boolean }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 90%", "end 10%"]
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.85, 1, 1, 0.85]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.15, 1, 1, 0.15]);
+  const y = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [15, 0, 0, -15]);
+
+  return (
+    <motion.p 
+      ref={ref}
+      style={{ scale, opacity, y, transformOrigin: "left center" }}
+      className={`font-sans font-light text-[24px] sm:text-[30px] md:text-[38px] lg:text-[46px] leading-[1.5] sm:leading-[1.6] tracking-tight ${isTick ? 'text-[#c96a45] font-normal italic' : 'text-[#e0ddd6]'}`} 
+      lang="ml"
+    >
+      {children}
+    </motion.p>
+  );
+}
+
 function StanzaBlock({ lines, index }: { lines: string[], index: number }) {
   return (
-    <div 
-      className={`mb-24 sm:mb-32 flex flex-col gap-4 sm:gap-6 items-start ${index === STANZAS.length - 1 ? 'mt-16 sm:mt-24' : ''}`}
-    >
+    <div className={`mb-24 sm:mb-32 flex flex-col gap-4 sm:gap-6 items-start ${index === STANZAS.length - 1 ? 'mt-16 sm:mt-24' : ''}`}>
       {lines.map((line, i) => {
         const isTick = line.includes("ടിക്");
         return (
-          <p 
-            key={i} 
-            className={`font-sans font-light text-[24px] sm:text-[30px] md:text-[38px] lg:text-[46px] leading-[1.5] sm:leading-[1.6] tracking-tight ${isTick ? 'text-[#c96a45] font-normal italic' : 'text-[#e0ddd6]'}`} 
-            lang="ml"
-          >
+          <ScrollLine key={i} isTick={isTick}>
             {line}
-          </p>
+          </ScrollLine>
         );
       })}
     </div>
@@ -67,6 +84,17 @@ export function TickTickTick() {
   const rotate = useTransform(smoothProgress, [0, 1], [0, 1080]);
   const yParallax = useTransform(smoothProgress, [0, 1], [0, -120]);
   const imageScale = useTransform(smoothProgress, [0, 1], [1, 1.1]);
+
+  const stickyOpacity = useTransform(scrollYProgress, [0, 0.15], [0, 1]);
+  const stickyY = useTransform(scrollYProgress, [0, 0.15], [30, 0]);
+
+  const authorRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: authorProgress } = useScroll({
+    target: authorRef,
+    offset: ["start 95%", "center 70%"]
+  });
+  const authorScale = useTransform(authorProgress, [0, 1], [0.9, 1]);
+  const authorOpacity = useTransform(authorProgress, [0, 1], [0.3, 1]);
 
   return (
     <section
@@ -95,7 +123,7 @@ export function TickTickTick() {
         
         {/* Left Sticky Column */}
         <div className="lg:w-5/12 lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center pt-8 lg:pt-0 pb-16 lg:pb-0 z-10">
-           <div>
+           <motion.div style={{ opacity: stickyOpacity, y: stickyY }}>
              <div className="flex items-center mb-6 lg:mb-10">
                <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.4em] text-[#c96a45]">
                  A Poem About Time
@@ -129,7 +157,7 @@ export function TickTickTick() {
                   unoptimized
                 />
              </div>
-           </div>
+           </motion.div>
         </div>
 
         {/* Right Scroll Column */}
@@ -139,7 +167,9 @@ export function TickTickTick() {
            ))}
 
            {/* Minimal Author Block */}
-           <div 
+           <motion.div 
+             ref={authorRef}
+             style={{ scale: authorScale, opacity: authorOpacity, transformOrigin: "left center" }}
              className="mt-12 lg:mt-32 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-sm flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 hover:bg-white/[0.04] transition-colors duration-500"
            >
              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ring-1 ring-white/10 shrink-0 shadow-lg">
@@ -163,7 +193,7 @@ export function TickTickTick() {
                   First year · Electronics & Communication
                 </span>
              </div>
-           </div>
+           </motion.div>
         </div>
       </div>
       
@@ -171,7 +201,6 @@ export function TickTickTick() {
       <footer className="w-full border-t border-white/5 bg-[#080705] relative z-10">
         <div className="mx-auto max-w-[1440px] px-6 py-8 sm:px-10 lg:px-16 flex flex-col gap-4 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-white/20 sm:flex-row sm:items-center sm:justify-between">
           <span>Author · R S Sreelakshmi</span>
-          <span>College Union 2026–27 · Source page 19</span>
         </div>
       </footer>
     </section>

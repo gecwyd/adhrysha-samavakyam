@@ -135,7 +135,6 @@ export function VersionZero() {
       <footer className="w-full border-t border-[#191713]/10">
         <div className="mx-auto max-w-[1440px] px-6 py-6 sm:px-10 lg:px-16 flex flex-col gap-2 font-mono text-[8px] uppercase tracking-[0.14em] text-[#191713]/40 sm:flex-row sm:items-center sm:justify-between sm:text-[9px]">
           <span>Author · Sefana Elizabeth</span>
-          <span>College Union 2026–27 · Source page 18</span>
         </div>
       </footer>
     </section>
