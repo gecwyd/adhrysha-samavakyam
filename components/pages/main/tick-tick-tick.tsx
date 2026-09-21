@@ -35,18 +35,23 @@ const STANZAS = [
   ]
 ];
 
-function StanzaBlock({ lines }: { lines: string[] }) {
+function StanzaBlock({ lines, index }: { lines: string[], index: number }) {
   return (
-    <div className="mb-20 sm:mb-24 flex flex-col gap-3 items-start">
-      {lines.map((line, i) => (
-        <p 
-          key={i} 
-          className="font-sans font-light text-[22px] sm:text-[26px] md:text-[34px] lg:text-[40px] leading-[1.6] sm:leading-[1.7] text-white/90 tracking-tight drop-shadow-sm" 
-          lang="ml"
-        >
-          {line}
-        </p>
-      ))}
+    <div 
+      className={`mb-24 sm:mb-32 flex flex-col gap-4 sm:gap-6 items-start ${index === STANZAS.length - 1 ? 'mt-16 sm:mt-24' : ''}`}
+    >
+      {lines.map((line, i) => {
+        const isTick = line.includes("ടിക്");
+        return (
+          <p 
+            key={i} 
+            className={`font-sans font-light text-[24px] sm:text-[30px] md:text-[38px] lg:text-[46px] leading-[1.5] sm:leading-[1.6] tracking-tight ${isTick ? 'text-[#c96a45] font-normal italic' : 'text-[#e0ddd6]'}`} 
+            lang="ml"
+          >
+            {line}
+          </p>
+        );
+      })}
     </div>
   );
 }
@@ -58,99 +63,97 @@ export function TickTickTick() {
     offset: ["start end", "end start"]
   });
 
-  const smoothProgress = useSpring(scrollYProgress, { damping: 30, stiffness: 100 });
-  const rotate = useTransform(smoothProgress, [0, 1], [0, 720]);
+  const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 80 });
+  const rotate = useTransform(smoothProgress, [0, 1], [0, 1080]);
+  const yParallax = useTransform(smoothProgress, [0, 1], [0, -120]);
+  const imageScale = useTransform(smoothProgress, [0, 1], [1, 1.1]);
 
   return (
     <section
       ref={containerRef}
       id="sec-tick"
-      className="relative w-full bg-[#030303] text-white selection:bg-white/20"
+      className="relative w-full bg-[#080705] text-[#e0ddd6] selection:bg-[#c96a45]/30 selection:text-white"
     >
       {/* Ambient background image */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
-        <Image 
-          src={resolveAsset("tick-tick-art.webp")}
-          alt="Time Background"
-          fill
-          className="object-cover object-center opacity-15 filter blur-[2px] brightness-50"
-          priority
-          unoptimized
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-[#030303]" />
+        <motion.div style={{ scale: imageScale, y: yParallax }} className="absolute inset-0 w-full h-[120%] -top-[10%]">
+          <Image 
+            src={resolveAsset("tick-tick-art.webp")}
+            alt="Time Background"
+            fill
+            className="object-cover object-center opacity-10 filter blur-[4px] mix-blend-luminosity"
+            priority
+            unoptimized
+          />
+        </motion.div>
+        {/* Soft vignette & gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#080705] via-[#080705]/80 to-[#080705]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(8,7,5,0)_0%,#080705_100%)] opacity-80" />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 pt-20 pb-32 flex flex-col lg:flex-row relative">
+      <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 pt-24 pb-32 flex flex-col lg:flex-row relative">
         
         {/* Left Sticky Column */}
-        <div className="lg:w-5/12 lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center pt-8 lg:pt-0 pb-12 lg:pb-0 z-10">
-           <motion.div 
-             initial={{ opacity: 0, x: -30 }}
-             whileInView={{ opacity: 1, x: 0 }}
-             viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-             transition={{ duration: 1, ease: "easeOut" }}
-           >
-             <div className="flex items-center mb-6 lg:mb-8">
-               <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.4em] text-white/50">
+        <div className="lg:w-5/12 lg:sticky lg:top-0 lg:h-screen flex flex-col justify-center pt-8 lg:pt-0 pb-16 lg:pb-0 z-10">
+           <div>
+             <div className="flex items-center mb-6 lg:mb-10">
+               <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.4em] text-[#c96a45]">
                  A Poem About Time
                </p>
              </div>
              
              <h2 
-                className="font-heading text-[16vw] sm:text-[12vw] lg:text-[96px] xl:text-[110px] leading-[0.85] tracking-tight text-[#f5f5f5] mb-6" 
+                className="font-heading text-[18vw] sm:text-[14vw] lg:text-[100px] xl:text-[120px] leading-[0.8] tracking-tight text-[#f5f5f5] mb-8 lg:mb-12" 
                 lang="ml"
              >
-                ടിക്...<br />ടിക്...
+                ടിക്...<br />
+                <span className="text-white/40">ടിക്...</span>
              </h2>
              
-             <div className="flex items-center gap-4 text-white/40 border-l border-white/10 pl-5 ml-1 mb-8">
-               <motion.div style={{ rotate }} className="origin-center">
+             <div className="flex items-center gap-4 text-white/50 pl-2 mb-10">
+               <motion.div style={{ rotate }} className="origin-center text-[#c96a45]">
                  <Clock className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.5]" />
                </motion.div>
-               <span className="font-mono text-[10px] sm:text-xs tracking-[0.2em] uppercase">
+               <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] uppercase">
                  Time passes in silence
                </span>
              </div>
 
              {/* Illustration Card */}
-             <div className="relative w-full max-w-[340px] aspect-[16/10] rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-black/40">
+             <div className="relative w-full max-w-[340px] aspect-[16/10] overflow-hidden">
                 <Image 
                   src={resolveAsset("tick-tick-art.webp")}
                   alt="Illustration of woman listening to the clock"
                   fill
-                  className="object-cover grayscale contrast-110 hover:grayscale-0 transition-all duration-700"
+                  className="object-cover grayscale contrast-[1.15] brightness-90"
                   unoptimized
                 />
              </div>
-           </motion.div>
+           </div>
         </div>
 
         {/* Right Scroll Column */}
-        <div className="lg:w-7/12 flex flex-col lg:pt-[35vh] pb-[10vh] relative z-10 pl-0 lg:pl-16 xl:pl-24">
+        <div className="lg:w-7/12 flex flex-col lg:pt-[45vh] pb-[10vh] relative z-10 pl-0 lg:pl-16 xl:pl-32 mt-12 lg:mt-0">
            {STANZAS.map((stanza, i) => (
-             <StanzaBlock key={i} lines={stanza} />
+             <StanzaBlock key={i} lines={stanza} index={i} />
            ))}
 
            {/* Minimal Author Block */}
-           <motion.div 
-             initial={{ opacity: 0, y: 30 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-             transition={{ duration: 1, ease: "easeOut" }}
-             className="mt-20 lg:mt-32 pt-16 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8"
+           <div 
+             className="mt-12 lg:mt-32 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-sm flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 hover:bg-white/[0.04] transition-colors duration-500"
            >
-             <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ring-1 ring-white/10 shrink-0">
+             <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 ring-1 ring-white/10 shrink-0 shadow-lg">
                 <Image 
                   src={resolveAsset("avani-manoj.png")} 
                   alt="Author portrait of R S Sreelakshmi" 
                   fill 
                   sizes="96px" 
                   unoptimized
-                  className="object-cover" 
+                  className="object-cover hover:scale-110 transition-transform duration-700 ease-out" 
                 />
              </div>
              <div className="flex flex-col">
-                <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-white/40 mb-3">
+                <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#c96a45] mb-3">
                   Written by
                 </span>
                 <span className="font-sans text-2xl sm:text-3xl tracking-tight text-white/90 mb-2">
@@ -160,12 +163,12 @@ export function TickTickTick() {
                   First year · Electronics & Communication
                 </span>
              </div>
-           </motion.div>
+           </div>
         </div>
       </div>
       
       {/* Footer minimal */}
-      <footer className="w-full border-t border-white/5 bg-[#030303] relative z-10">
+      <footer className="w-full border-t border-white/5 bg-[#080705] relative z-10">
         <div className="mx-auto max-w-[1440px] px-6 py-8 sm:px-10 lg:px-16 flex flex-col gap-4 font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-white/20 sm:flex-row sm:items-center sm:justify-between">
           <span>Author · R S Sreelakshmi</span>
           <span>College Union 2026–27 · Source page 19</span>
