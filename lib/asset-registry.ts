@@ -1,4 +1,5 @@
 const GITHUB_RELEASE_BASE = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets"
+const GITHUB_RELEASE_V2_BASE = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.2-assets"
 
 const ASSET_MAP: Record<string, string> = {
   "indro.mp3": `${GITHUB_RELEASE_BASE}/intro-v2.mp3`,
@@ -43,6 +44,13 @@ const ASSET_MAP: Record<string, string> = {
   "clock-memory-art.jpg": `${GITHUB_RELEASE_BASE}/clock-memory-art.jpg`,
   "clock-essay-summary.wav": `${GITHUB_RELEASE_BASE}/clock-essay-summary.wav`,
   "clock-essay-summary.xml": `${GITHUB_RELEASE_BASE}/clock-essay-summary.xml`,
+  "gecw-mist.webm": `${GITHUB_RELEASE_V2_BASE}/gecw-mist.webm`,
+  "gecw-mist.mp4": `${GITHUB_RELEASE_V2_BASE}/gecw-mist.mp4`,
+  "gecw-mist-poster.webp": `${GITHUB_RELEASE_V2_BASE}/gecw-mist-poster.webp`,
+  "time-dilation.mp3": `${GITHUB_RELEASE_V2_BASE}/time-dilation.mp3`,
+  "tick-tick-bg.jpg": `${GITHUB_RELEASE_V2_BASE}/tick-tick-bg.jpg`,
+  "tick-tick-art.webp": `${GITHUB_RELEASE_V2_BASE}/tick-tick-art.webp`,
+  "version-zero-art.webp": `${GITHUB_RELEASE_V2_BASE}/version-zero-art.webp`,
 }
 
 export function resolveAsset(path: string): string {

@@ -10,18 +10,14 @@ export function travelerYears(speedFraction: number, earthYears = 10) {
   return earthYears * Math.sqrt(1 - speedFraction * speedFraction);
 }
 
-const TIME_DILATION_BG = "https://youtu.be/m3zvVGJrTP8?si=4n9m6nylINfXnXh6"
+const TIME_DILATION_BG = resolveAsset("time-dilation.mp3");
 
 export function TimeDilation() {
   const containerRef = useRef<HTMLElement>(null);
-  const { playbg, prebufferbg } = useAudio();
+  const { playbg } = useAudio();
 
   useEffect(() => {
-    prebufferbg(TIME_DILATION_BG);
-  }, [prebufferbg]);
-
-  useEffect(() => {
-    preload(TIME_DILATION_BG, "youtube");
+    preload(TIME_DILATION_BG, "audio");
   }, []);
 
   const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" });

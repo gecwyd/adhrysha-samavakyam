@@ -23,6 +23,7 @@ import { Iruttu } from "@/components/pages/main/iruttu";
 import { Nanmayude } from "@/components/pages/main/nanmayude";
 import { TheGirlWhoDances } from "@/components/pages/main/the-girl-who-dances";
 import { ShadowOfWar } from "@/components/pages/main/shadow-of-war";
+import { GecwMist } from "@/components/pages/main/gecw-mist";
 import { MistyPathsStory } from "@/components/pages/main/misty-paths-story";
 import { LastBenchStory } from "@/components/pages/main/last-bench-story";
 import { RootsAndWings } from "@/components/pages/main/roots-and-wings";
@@ -38,6 +39,7 @@ import { QuantumEntanglementStory } from "@/components/pages/main/quantum-entang
 import { Wormhole } from "@/components/pages/main/wormhole";
 import { WormholeStory } from "@/components/pages/main/wormhole-story";
 import { WormholeEssay } from "@/components/pages/main/wormhole-essay";
+import { ArtworksGallery } from "@/components/pages/main/artworks-gallery";
 
 export default function Home() {
   if (process.env.NODE_ENV === "development") {
@@ -82,6 +84,8 @@ export default function Home() {
         <BloodlessReligion />
         <LastTree />
         <PromiseWeMustKeep />
+        <ArtworksGallery />
+        <GecwMist />
       </main>
     );
   }

@@ -67,29 +67,48 @@ export function VersionZero() {
               transition={{ delay: 0.4, duration: 0.8 }}
               className="mt-16 sm:mt-24 border-t border-[#191713]/20 pt-10"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
-                <div className="relative h-24 w-24 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-full grayscale mix-blend-multiply opacity-80">
-                  <Image
-                    src={resolveAsset("sefana-elizabeth.png")}
-                    alt="Author portrait of Sefana Elizabeth"
-                    fill
-                    sizes="128px"
-                    unoptimized
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-col text-left">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#a84e2a] mb-3">
-                    Written by
-                  </span>
-                  <span className="font-sans text-3xl sm:text-5xl tracking-tight text-[#191713] leading-none mb-4">
-                    Sefana Elizabeth
-                  </span>
-                  <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-[#191713]/50">
-                    ECE · First year
-                  </span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-10">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
+                  <div className="relative h-24 w-24 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-full grayscale mix-blend-multiply opacity-80">
+                    <Image
+                      src={resolveAsset("sefana-elizabeth.png")}
+                      alt="Author portrait of Sefana Elizabeth"
+                      fill
+                      sizes="128px"
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#a84e2a] mb-3">
+                      Written by
+                    </span>
+                    <span className="font-sans text-3xl sm:text-5xl tracking-tight text-[#191713] leading-none mb-4">
+                      Sefana Elizabeth
+                    </span>
+                    <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-[#191713]/50">
+                      ECE · First year
+                    </span>
+                  </div>
                 </div>
               </div>
+            </motion.div>
+
+            {/* Story Artwork */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+              transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+              className="mt-16 mb-16 relative w-full max-w-lg mx-auto aspect-[912/988] rounded-2xl overflow-hidden border border-[#191713]/15 shadow-2xl bg-[#d0cbbd]"
+            >
+              <Image
+                src={resolveAsset("version-zero-art.webp")}
+                alt="Illustration of student at desk"
+                fill
+                className="object-cover object-top mix-blend-multiply opacity-90 hover:opacity-100 transition-opacity duration-500"
+                unoptimized
+              />
             </motion.div>
           </header>
 

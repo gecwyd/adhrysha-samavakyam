@@ -6,8 +6,9 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useAudio } from "@/context/audio.context";
 import { preload } from "@/lib/preload";
+import { resolveAsset } from "@/lib/asset-registry";
 
-const TIME_DILATION_BG = "https://youtu.be/m3zvVGJrTP8?si=4n9m6nylINfXnXh6";
+const TIME_DILATION_BG = resolveAsset("time-dilation.mp3");
 
 const QUOTES = [
   {
@@ -34,12 +35,11 @@ const QUOTES = [
 
 export function ClockEssay() {
   const containerRef = useRef<HTMLElement>(null);
-  const { playbg, prebufferbg } = useAudio();
+  const { playbg } = useAudio();
 
   useEffect(() => {
-    prebufferbg(TIME_DILATION_BG);
-    preload(TIME_DILATION_BG, "youtube");
-  }, [prebufferbg]);
+    preload(TIME_DILATION_BG, "audio");
+  }, []);
 
   const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" });
 
