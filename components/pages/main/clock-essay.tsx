@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion, useScroll, useSpring, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useAudio } from "@/context/audio.context";
 import { preload } from "@/lib/preload";
 import { resolveAsset } from "@/lib/asset-registry";
@@ -19,76 +19,155 @@ const IMAGES = {
   campus: resolveAsset("clock-essay-campus.webp"),
 };
 
-function FadeIn({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+interface Chapter {
+  label?: string;
+  text: string;
+  image: keyof typeof IMAGES;
+  dark?: boolean;
+}
+
+const CHAPTERS: Chapter[] = [
+  {
+    label: "ആദ്യം",
+    text: clockEssay[0].malayalam,
+    image: "hero",
+  },
+  {
+    label: "ഘടികാരം",
+    text: clockEssay[1].malayalam,
+    image: "clock",
+  },
+  {
+    label: "മനസ്സ്",
+    text: clockEssay[2].malayalam,
+    image: "mind",
+  },
+  {
+    label: "ആപേക്ഷികത",
+    text: clockEssay[3].malayalam,
+    image: "depth",
+    dark: true,
+  },
+  {
+    text: clockEssay[4].malayalam,
+    image: "depth",
+    dark: true,
+  },
+  {
+    label: "ജീവിതം",
+    text: clockEssay[5].malayalam,
+    image: "life",
+  },
+  {
+    label: "ആഴം",
+    text: clockEssay[6].malayalam,
+    image: "depth",
+    dark: true,
+  },
+  {
+    label: "നാല് വർഷം",
+    text: clockEssay[7].malayalam,
+    image: "campus",
+  },
+  {
+    label: "ഓർമ്മ",
+    text: clockEssay[8].malayalam,
+    image: "rain",
+  },
+  {
+    text: clockEssay[9].malayalam,
+    image: "rain",
+  },
+  {
+    label: "ഉപസംഹാരം",
+    text: clockEssay[10].malayalam,
+    image: "hero",
+  },
+];
+
+const N = CHAPTERS.length;
+
+function ProgressDots({ active, total, dark }: { active: number; total: number; dark: boolean }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-8%" }}
-      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <div className="flex flex-col gap-2 items-center">
+      {Array.from({ length: total }).map((_, i) => (
+        <motion.div
+          key={i}
+          animate={{
+            height: i === active ? 20 : 4,
+            opacity: i === active ? 1 : i < active ? 0.5 : 0.2,
+          }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="w-[2px] rounded-full"
+          style={{ backgroundColor: dark ? "rgba(217,212,199,0.8)" : "rgba(25,23,19,0.7)" }}
+        />
+      ))}
+    </div>
   );
 }
 
 export function ClockEssay() {
-  const containerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const { playbg } = useAudio();
+  const [active, setActive] = useState(0);
+  const [hasEntered, setHasEntered] = useState(false);
 
   useEffect(() => {
     preload(TIME_DILATION_BG, "audio");
+    Object.values(IMAGES).forEach((src) => preload(src, "image"));
   }, []);
 
-  const isInView = useInView(containerRef, { amount: 0.05, margin: "150px 0px" });
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
   useEffect(() => {
-    if (isInView) {
-      playbg(TIME_DILATION_BG, { loop: true, volume: 0.3, startSeconds: 10 });
-    }
-  }, [isInView, playbg]);
+    const unsub = scrollYProgress.on("change", (v) => {
+      const idx = Math.min(Math.floor(v * N), N - 1);
+      setActive(idx);
+      if (v > 0.01 && !hasEntered) {
+        setHasEntered(true);
+        playbg(TIME_DILATION_BG, { loop: true, volume: 0.3, startSeconds: 10 });
+      }
+    });
+    return unsub;
+  }, [scrollYProgress, playbg, hasEntered]);
 
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
-  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 20, mass: 0.8 });
+  const chapter = CHAPTERS[active];
+  const isDark = chapter?.dark ?? false;
+  const textColor = isDark ? "rgba(217,212,199,0.92)" : "rgba(25,23,19,0.88)";
+  const labelColor = isDark ? "rgba(201,106,69,0.9)" : "rgba(168,78,42,0.85)";
+  const dividerColor = isDark ? "rgba(217,212,199,0.2)" : "rgba(25,23,19,0.15)";
+
+  const progressText = `${String(active + 1).padStart(2, "0")} / ${String(N).padStart(2, "0")}`;
 
   return (
     <section
-      ref={containerRef}
       id="sec-i"
       aria-labelledby="clock-essay-title"
-      className="relative w-full bg-[#d9d4c7] text-[#191713] font-sans"
     >
+      {/* Hero screen — full viewport before sticky scroll begins */}
+      <div className="relative w-full h-[100dvh] overflow-hidden flex flex-col bg-[#0d0b09]">
+        <img
+          src={IMAGES.hero}
+          alt="Ancient sundial at sunrise"
+          className="absolute inset-0 w-full h-full object-cover object-center grayscale"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/40 to-[#0d0b09]" />
 
-      {/* ─── CHAPTER 0: HERO ─────────────────────────────────────────── */}
-      <div className="relative w-full h-[100dvh] overflow-hidden flex flex-col">
-        {/* Full bleed image */}
-        <div className="absolute inset-0">
-          <img
-            src={IMAGES.hero}
-            alt="Sundial in light"
-            className="w-full h-full object-cover object-center grayscale"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#d9d4c7]" />
-        </div>
-
-        {/* Top nav bar */}
-        <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
-          <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/60">
-            Inquation · Reflection
-          </div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/60">
-            02
-          </div>
+        <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-14">
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/50">Inquation · Reflection</span>
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/50">02</span>
         </header>
 
-        {/* Hero Title — bottom anchored */}
-        <div className="relative z-10 mt-auto px-6 pb-16 md:px-16 md:pb-24">
+        <div className="relative z-10 mt-auto px-6 pb-16 md:px-14 md:pb-24">
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, delay: 0.3 }}
-            className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#a84e2a] mb-5"
+            transition={{ duration: 1.5, delay: 0.4 }}
+            className="font-mono text-[10px] tracking-[0.35em] uppercase text-[#c96a45] mb-5"
           >
             ഒരു ചിന്ത
           </motion.p>
@@ -96,203 +175,192 @@ export function ClockEssay() {
             id="clock-essay-title"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="font-heading text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[7.5vw] leading-[0.88] tracking-tight text-white"
+            transition={{ duration: 1.2, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="font-heading leading-[0.88] tracking-tight text-white"
+            style={{ fontSize: "clamp(3.2rem, 12vw, 8rem)" }}
           >
-            THE TIME<br />
-            A CLOCK<br />
-            <span className="text-[#c96a45]">DOESN&apos;T TELL.</span>
+            ഘടികാരം<br />
+            <span className="text-[#c96a45]">പറയാത്ത</span><br />
+            സമയം
           </motion.h2>
-        </div>
-      </div>
-
-
-      {/* ─── CHAPTER 1: OPENING PARAGRAPH ───────────────────────────── */}
-      <div className="relative w-full py-28 md:py-40 px-6 md:px-16 flex justify-center">
-        <FadeIn className="max-w-3xl text-center">
-          <p className="text-2xl md:text-3xl lg:text-[2.2rem] leading-[1.75] text-[#191713]/85" lang="ml">
-            {clockEssay[0].malayalam}
-          </p>
-        </FadeIn>
-      </div>
-
-
-      {/* ─── CHAPTER 2: THE CLOCK (image right, text left) ───────────── */}
-      <div className="relative w-full min-h-[80vh] flex flex-col md:flex-row overflow-hidden">
-        {/* Text column */}
-        <div className="relative z-10 w-full md:w-[45%] flex flex-col justify-center px-6 py-20 md:px-16 md:py-32 bg-[#d9d4c7]">
-          <FadeIn>
-            <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#191713]/40 block mb-8">ഘടികാരം</span>
-            <p className="text-xl md:text-2xl leading-[1.8] text-[#191713]/80" lang="ml">
-              {clockEssay[1].malayalam}
-            </p>
-          </FadeIn>
-        </div>
-        {/* Image column — overlaps slightly */}
-        <motion.div
-          initial={{ opacity: 0, scale: 1.04 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full md:w-[58%] md:-ml-[3%] h-72 md:h-auto md:min-h-[70vh] flex-shrink-0 relative overflow-hidden"
-        >
-          <img src={IMAGES.clock} alt="Pocket watch" className="w-full h-full object-cover object-center grayscale" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#d9d4c7] via-transparent to-transparent md:block hidden" />
-        </motion.div>
-      </div>
-
-
-      {/* ─── CHAPTER 3: THE MIND (image left, text right) ────────────── */}
-      <div className="relative w-full min-h-[80vh] flex flex-col md:flex-row-reverse overflow-hidden">
-        {/* Text column */}
-        <div className="relative z-10 w-full md:w-[45%] flex flex-col justify-center px-6 py-20 md:px-16 md:py-32 bg-[#d9d4c7]">
-          <FadeIn>
-            <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#191713]/40 block mb-8">മനസ്സ്</span>
-            <p className="text-xl md:text-2xl leading-[1.8] text-[#191713]/80" lang="ml">
-              {clockEssay[2].malayalam}
-            </p>
-          </FadeIn>
-        </div>
-        {/* Image column */}
-        <motion.div
-          initial={{ opacity: 0, scale: 1.04 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full md:w-[58%] md:-mr-[3%] h-72 md:h-auto md:min-h-[70vh] flex-shrink-0 relative overflow-hidden"
-        >
-          <img src={IMAGES.mind} alt="Window corridor light" className="w-full h-full object-cover object-center grayscale" />
-          <div className="absolute inset-0 bg-gradient-to-l from-[#d9d4c7] via-transparent to-transparent md:block hidden" />
-        </motion.div>
-      </div>
-
-
-      {/* ─── CHAPTER 4: EINSTEIN / FULL-WIDTH TEXT BREAK ─────────────── */}
-      <div className="relative w-full py-28 md:py-40 px-6 md:px-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_2px_1fr] gap-10 md:gap-16 items-start">
-          <FadeIn>
-            <p className="text-xl md:text-2xl leading-[1.85] text-[#191713]/75" lang="ml">
-              {clockEssay[3].malayalam}
-            </p>
-          </FadeIn>
-          {/* Divider */}
-          <div className="hidden md:block w-px bg-[#191713]/20 self-stretch" />
-          <FadeIn delay={0.2}>
-            <p className="text-xl md:text-2xl leading-[1.85] text-[#191713]/75" lang="ml">
-              {clockEssay[4].malayalam}
-            </p>
-          </FadeIn>
-        </div>
-      </div>
-
-
-      {/* ─── CHAPTER 5: DEPTH PULL QUOTE (dark full-bleed) ───────────── */}
-      <div className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={IMAGES.depth} alt="Deep space" className="w-full h-full object-cover object-center" />
-          <div className="absolute inset-0 bg-[#191713]/80" />
-        </div>
-        <FadeIn className="relative z-10 px-6 py-32 md:px-20 text-center max-w-5xl">
-          <p className="font-heading text-[8vw] sm:text-[6vw] md:text-[5vw] lg:text-[4.2vw] leading-[1.25] tracking-tight text-[#d9d4c7]" lang="ml">
-            {clockEssay[6].malayalam}
-          </p>
-        </FadeIn>
-      </div>
-
-
-      {/* ─── CHAPTER 6: LIFE & FRIENDS (portrait image + two columns) ── */}
-      <div className="relative w-full py-28 md:py-40 px-6 md:px-16">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-16 items-start">
-          {/* Tall portrait image */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full md:w-[38%] flex-shrink-0 overflow-hidden"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.1 }}
+            className="mt-10 flex items-center gap-3"
           >
-            <img src={IMAGES.life} alt="Friends together" className="w-full aspect-[3/4] object-cover object-center grayscale" />
+            <div className="w-6 h-px bg-white/40" />
+            <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-white/40">
+              Scroll to read
+            </span>
           </motion.div>
-          {/* Two text blocks stacked */}
-          <div className="flex-1 flex flex-col gap-14 pt-4 md:pt-12">
-            <FadeIn>
-              <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#191713]/40 block mb-5">ജീവിതം</span>
-              <p className="text-xl md:text-2xl leading-[1.8] text-[#191713]/80" lang="ml">
-                {clockEssay[5].malayalam}
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.15}>
-              <div className="w-12 h-px bg-[#191713]/25" />
-              <p className="text-xl md:text-2xl leading-[1.8] text-[#191713]/80 mt-8" lang="ml">
-                {clockEssay[7].malayalam}
-              </p>
-            </FadeIn>
-          </div>
         </div>
       </div>
 
-
-      {/* ─── CHAPTER 7: RAIN GHOST IMAGE ─────────────────────────────── */}
-      <div className="relative w-full overflow-hidden">
-        {/* Full bleed ghost image */}
-        <div className="absolute inset-0">
-          <img src={IMAGES.rain} alt="Rain" className="w-full h-full object-cover object-center grayscale opacity-20" />
-        </div>
-        <div className="relative z-10 py-28 md:py-48 px-6 md:px-20 flex justify-center">
-          <FadeIn className="max-w-3xl text-center">
-            <p className="text-2xl md:text-3xl lg:text-[2.2rem] leading-[1.75] text-[#191713]/90" lang="ml">
-              {clockEssay[8].malayalam}
-            </p>
-          </FadeIn>
-        </div>
-      </div>
-
-
-      {/* ─── CHAPTER 8: CAMPUS (image right, text left) ──────────────── */}
-      <div className="relative w-full min-h-[70vh] flex flex-col md:flex-row overflow-hidden">
-        <div className="relative z-10 w-full md:w-[50%] flex flex-col justify-center px-6 py-20 md:px-16 md:py-32 bg-[#d9d4c7]">
-          <FadeIn>
-            <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#191713]/40 block mb-8">ഓർമ്മ</span>
-            <p className="text-xl md:text-2xl leading-[1.8] text-[#191713]/80" lang="ml">
-              {clockEssay[9].malayalam}
-            </p>
-          </FadeIn>
-        </div>
-        <motion.div
-          initial={{ opacity: 0, scale: 1.04 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full md:w-[55%] md:-ml-[5%] h-64 md:h-auto md:min-h-[60vh] flex-shrink-0 relative overflow-hidden"
+      {/* ── STICKY SCROLL SECTION ─────────────────────────────────────── */}
+      {/* Outer div sets the total scroll height */}
+      <div
+        ref={containerRef}
+        style={{ height: `${N * 100}vh` }}
+        className="relative"
+      >
+        {/* Sticky viewport */}
+        <div
+          ref={stickyRef}
+          className="sticky top-0 w-full overflow-hidden"
+          style={{ height: "100dvh" }}
         >
-          <img src={IMAGES.campus} alt="College campus" className="w-full h-full object-cover object-center grayscale" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#d9d4c7] via-transparent to-transparent md:block hidden" />
-        </motion.div>
-      </div>
+          {/* ── Background images ─────────────────────────────────────── */}
+          <div className="absolute inset-0">
+            {(Object.keys(IMAGES) as (keyof typeof IMAGES)[]).map((key) => {
+              const isActive = IMAGES[key] === IMAGES[chapter.image];
+              return (
+                <motion.div
+                  key={key}
+                  className="absolute inset-0"
+                  animate={{ opacity: isActive ? 1 : 0 }}
+                  transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  <img
+                    src={IMAGES[key]}
+                    alt=""
+                    aria-hidden
+                    className="w-full h-full object-cover object-center"
+                    style={{ filter: isDark ? "grayscale(20%) brightness(0.4)" : "grayscale(60%) brightness(0.65)" }}
+                  />
+                </motion.div>
+              );
+            })}
+            {/* Color overlay */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={isDark ? "dark" : "light"}
+                className="absolute inset-0 backdrop-blur-md"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8 }}
+                style={{
+                  background: isDark
+                    ? "linear-gradient(to bottom, rgba(10,8,6,0.85) 0%, rgba(10,8,6,0.75) 100%)"
+                    : "linear-gradient(to bottom, rgba(217,212,199,0.88) 0%, rgba(217,212,199,0.82) 100%)",
+                }}
+              />
+            </AnimatePresence>
+          </div>
 
+          {/* ── UI CHROME ─────────────────────────────────────────────── */}
+          {/* Top bar */}
+          <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-6 py-6 md:px-12">
+            <span
+              className="font-mono text-[9px] tracking-[0.28em] uppercase transition-colors duration-700"
+              style={{ color: isDark ? "rgba(217,212,199,0.4)" : "rgba(25,23,19,0.35)" }}
+            >
+              Inquation · Reflection
+            </span>
+            <span
+              className="font-mono text-[9px] tracking-[0.28em] uppercase tabular-nums transition-colors duration-700"
+              style={{ color: isDark ? "rgba(217,212,199,0.4)" : "rgba(25,23,19,0.35)" }}
+            >
+              {progressText}
+            </span>
+          </div>
 
-      {/* ─── CONCLUSION ───────────────────────────────────────────────── */}
-      <div className="w-full py-40 md:py-64 px-6 text-center border-t border-[#191713]/15">
-        <FadeIn className="max-w-3xl mx-auto">
-          <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#191713]/40 block mb-10">
-            ഉപസംഹാരം
-          </span>
-          <p className="font-heading text-[8vw] sm:text-[6vw] md:text-[4.5vw] lg:text-[3.8vw] leading-[1.3] text-[#191713]" lang="ml">
-            {clockEssay[10].malayalam}
-          </p>
-        </FadeIn>
-      </div>
+          {/* Right side progress bar */}
+          <div className="absolute right-5 top-1/2 -translate-y-1/2 z-30">
+            <ProgressDots active={active} total={N} dark={isDark} />
+          </div>
 
-      {/* Footer */}
-      <footer className="flex items-center justify-between px-6 py-6 md:px-12 md:py-8 border-t border-[#191713]/10">
-        <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#191713]/40">
-          GEC Wayanad · 2025-26
+          {/* ── CHAPTER CONTENT ───────────────────────────────────────── */}
+          <div className="absolute inset-0 z-20 flex items-center justify-center px-6 md:px-16">
+            <div className="w-full max-w-2xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, y: 28 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex flex-col"
+                >
+                  {/* Chapter label */}
+                  {chapter.label && (
+                    <div className="flex items-center gap-3 mb-7">
+                      <div
+                        className="w-5 h-px transition-colors duration-700"
+                        style={{ backgroundColor: labelColor }}
+                      />
+                      <span
+                        className="font-mono text-[10px] tracking-[0.35em] uppercase transition-colors duration-700"
+                        style={{ color: labelColor }}
+                      >
+                        {chapter.label}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Text */}
+                  <p
+                    lang="ml"
+                    className="leading-[1.85] transition-colors duration-700"
+                    style={{
+                      color: textColor,
+                      fontFamily: "Georgia, serif",
+                      fontSize: "clamp(1.1rem, 2.2vw, 1.5rem)",
+                    }}
+                  >
+                    {chapter.text}
+                  </p>
+
+                  {/* Bottom divider */}
+                  <motion.div
+                    className="mt-10 h-px w-10 transition-colors duration-700"
+                    style={{ backgroundColor: dividerColor }}
+                    initial={{ scaleX: 0, originX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Bottom scroll nudge — only on first chapter */}
+          <AnimatePresence>
+            {active === 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
+              >
+                <motion.div
+                  animate={{ y: [0, 6, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+                  className="w-px h-8 rounded-full"
+                  style={{ backgroundColor: isDark ? "rgba(217,212,199,0.3)" : "rgba(25,23,19,0.25)" }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        <div className="font-sans text-[10px] text-[#191713]/40" lang="ml">
+      </div>
+
+      {/* ── POST-SCROLL FOOTER ────────────────────────────────────────── */}
+      <div
+        className="w-full flex items-center justify-between px-6 py-6 md:px-14 md:py-8 border-t"
+        style={{
+          backgroundColor: "#d9d4c7",
+          borderColor: "rgba(25,23,19,0.1)",
+        }}
+      >
+        <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#191713]/35">
+          GEC Wayanad · 2025–26
+        </span>
+        <span className="font-mono text-[9px] text-[#191713]/35" lang="ml">
           ഘടികാരം പറയാത്ത സമയം
-        </div>
-      </footer>
-
+        </span>
+      </div>
     </section>
   );
 }
