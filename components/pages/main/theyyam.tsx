@@ -164,11 +164,10 @@ function Paragraph({ text, ordinal, lede }: { text: string; ordinal: number; led
         {String(ordinal).padStart(2, "0")}
       </span>
       <p
-        className={`font-sans tracking-tight text-pretty ${
-          lede
+        className={`font-sans tracking-tight text-pretty ${lede
             ? "text-[21px] leading-[1.85] text-[#efe3d0] sm:text-[24px] md:text-[27px] md:leading-[1.8]"
             : "text-[18px] leading-[1.95] text-[#efe3d0]/80 sm:text-[20px] md:text-[22px] md:leading-[1.9]"
-        }`}
+          }`}
       >
         {text}
       </p>
@@ -397,36 +396,44 @@ export function Theyyam() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: EASE }}
-          className="relative -mx-6 my-20 flex flex-col items-center overflow-hidden rounded-lg border border-[#efe3d0]/10 bg-[#1a1814] sm:-mx-10 lg:my-28 lg:rounded-2xl"
+          className="relative -mx-6 my-12 sm:-mx-10 lg:my-16 flex flex-col items-center"
         >
-          <div className="relative h-64 w-full overflow-hidden sm:h-80 lg:h-[500px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Theyyam_of_Kerala_3.jpg"
-              alt="Theyyam performer in traditional attire with red and gold makeup"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#12100e]/80 via-transparent to-transparent" />
+          {/* Image frame with sophisticated treatment */}
+          <div className="relative w-full max-w-3xl overflow-hidden">
+            {/* Outer frame border with subtle glow */}
+            <div className="absolute -inset-[3px] rounded-xl lg:rounded-2xl bg-gradient-to-b from-[#e0a35e]/20 via-[#d3452b]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
+
+            <div className="relative h-64 sm:h-80 md:h-96 lg:h-[540px] overflow-hidden rounded-lg lg:rounded-xl border border-[#efe3d0]/15 bg-[#0c0b09] group shadow-2xl shadow-[#d3452b]/10 hover:shadow-[#d3452b]/20 transition-shadow duration-700">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Theyyam_of_Kerala_3.jpg"
+                alt="Theyyam performer in traditional attire with red and gold makeup"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              {/* Refined gradient overlay — darker at bottom for caption readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#12100e]/90 via-[#12100e]/20 to-transparent" />
+              {/* Subtle vignette for depth */}
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#12100e/40_100%)]" />
+            </div>
           </div>
-          <figcaption className="px-6 py-8 text-center text-[13px] leading-relaxed text-[#efe3d0]/50 sm:px-10 sm:text-[14px]">
-            <span className="font-mono tracking-[0.2em]">THEYYAM OF KERALA</span>
-            <p className="mt-3">Photograph by Shagil Kannur · Creative Commons Attribution-Share Alike 4.0</p>
+
+          {/* Caption */}
+          <figcaption className="mt-5 sm:mt-6 max-w-lg px-6 sm:px-0 text-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
+            >
+              <p className="font-sans text-[15px] sm:text-[16px] leading-[1.6] text-[#efe3d0]/70">
+                A ritual art form of North Malabar, embodying stories of resistance and survival.
+              </p>
+              <p className="mt-3 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#efe3d0]/35">
+                Shagil Kannur · CC BY-SA 4.0
+              </p>
+            </motion.div>
           </figcaption>
         </motion.figure>
-
-        {/* Closing mark */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.6 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: EASE }}
-          aria-hidden
-          className="mt-20 flex items-center justify-center gap-3"
-        >
-          <span className="h-px w-10 bg-[#efe3d0]/15" />
-          <span className="h-1.5 w-1.5 rotate-45 bg-[#d3452b]" />
-          <span className="h-px w-10 bg-[#efe3d0]/15" />
-        </motion.div>
 
         {/* Author */}
         <motion.div
@@ -434,38 +441,38 @@ export function Theyyam() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
           transition={{ duration: 0.9, ease: EASE }}
-          className="mt-20 flex flex-col items-center gap-6 border-t border-[#efe3d0]/10 pt-14 sm:flex-row sm:items-center sm:gap-8"
+          className="relative mt-16 flex flex-col gap-8 sm:mt-20 sm:flex-row sm:items-center"
         >
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-[#efe3d0]/10 grayscale transition-all duration-700 hover:grayscale-0 sm:h-24 sm:w-24">
-            <Image
-              src={resolveAsset("asika-k.png")}
-              alt="Author portrait of Asika K"
-              fill
-              sizes="96px"
-              unoptimized
-              className="object-cover"
-            />
-          </div>
-          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
-            <span className="mb-2 font-mono text-[9px] uppercase tracking-[0.3em] text-[#e0a35e]">
-              Written by
-            </span>
-            <span className="font-sans text-3xl leading-none tracking-tight text-[#efe3d0] sm:text-4xl lg:text-[44px]">
-              Asika K
-            </span>
-            <span className="mt-3 font-mono text-[9px] uppercase tracking-[0.15em] text-[#efe3d0]/40">
-              Second year · Electronics &amp; Communication
-            </span>
+          <span
+            aria-hidden
+            className="absolute left-0 top-0 hidden h-full w-px bg-gradient-to-b from-[#d3452b] via-[#e0a35e]/40 to-transparent sm:block"
+          />
+
+          <div className="flex items-center gap-5 sm:pl-8">
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#efe3d0]/10 grayscale transition-all duration-700 hover:grayscale-0 sm:h-20 sm:w-20">
+              <Image
+                src={resolveAsset("asika-k.png")}
+                alt="Author portrait of Asika K"
+                fill
+                sizes="80px"
+                unoptimized
+                className="object-cover"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#e0a35e]">
+                Written by
+              </span>
+              <span className="mt-1 font-sans text-2xl leading-none tracking-tight text-[#efe3d0] sm:text-3xl lg:text-[32px]">
+                Asika K
+              </span>
+              <span className="mt-2 font-mono text-[9px] uppercase tracking-[0.15em] text-[#efe3d0]/40">
+                Second year · Electronics &amp; Communication
+              </span>
+            </div>
           </div>
         </motion.div>
       </div>
-
-      <footer className="relative w-full border-t border-[#efe3d0]/5">
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-2 px-6 py-6 font-mono text-[8px] uppercase tracking-[0.14em] text-[#efe3d0]/30 sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:text-[9px] lg:px-16">
-          <span>Author · Asika K</span>
-          <span>College Union 2026–27 · Source pages 23–24</span>
-        </div>
-      </footer>
     </section>
   );
 }
