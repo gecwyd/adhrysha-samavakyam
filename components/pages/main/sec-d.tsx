@@ -4,8 +4,6 @@ import { motion, useScroll, useTransform, useSpring, useInView } from "framer-mo
 import { useRef, useState, useEffect } from "react"
 import { YouTubePlayer, type YTPlayerInstance } from "@/components/ui/youtube-player"
 import { preload } from "@/lib/preload"
-import { useAudio } from "@/context/audio.context"
-import { resolveAsset } from "@/lib/asset-registry"
 import { Volume2, VolumeX } from "lucide-react"
 
 const AD_VIDEO_URL = "https://youtu.be/x4_ahwTAS-I?si=Bql57JpEvL-rmQ84"
@@ -15,7 +13,6 @@ export function SecD() {
   const playerRef = useRef<YTPlayerInstance | null>(null)
   const hasEnteredRef = useRef(false)
   const [isUserMuted, setIsUserMuted] = useState(false)
-  const { pauseBg, playbg } = useAudio()
 
   useEffect(() => {
     preload(AD_VIDEO_URL, "youtube")
@@ -32,7 +29,6 @@ export function SecD() {
   useEffect(() => {
     if (isInView) {
       hasEnteredRef.current = true
-      pauseBg?.(300)
       if (playerRef.current) {
         try {
           if (!isUserMuted) {
@@ -49,7 +45,7 @@ export function SecD() {
         } catch {}
       }
     }
-  }, [isInView, isUserMuted, pauseBg])
+  }, [isInView, isUserMuted])
 
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 24 })
 
@@ -71,7 +67,6 @@ export function SecD() {
     setIsUserMuted((prev) => {
       const next = !prev
       if (!next) {
-        pauseBg?.(200)
         try {
           playerRef.current?.unMute()
           playerRef.current?.setVolume(100)

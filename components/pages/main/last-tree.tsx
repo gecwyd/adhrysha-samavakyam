@@ -17,9 +17,9 @@ const STORY_PARAGRAPHS = [
 ];
 
 /*
- * IMAGES — every photo below is a placeholder until its real file is uploaded to the release assets.
- * To replace one: upload the file named in `file` (webp) and it swaps in automatically. Nothing else to change.
- * `alt` is the full brief for the picture, so it can be handed straight to an image generator.
+ * IMAGES — four visual beats carry the story from isolation, through loss, into renewal.
+ * The files are release-backed WebP assets so the section stays lightweight in production.
+ * `alt` keeps the visual intent documented alongside the story beat it supports.
  */
 const mock = (from: string, to: string, beam: string) =>
   "data:image/svg+xml;utf8," +
@@ -175,7 +175,7 @@ export function LastTree() {
   return (
     <section ref={root} id="sec-last-tree" aria-labelledby="last-tree-title" className={styles.page}>
       <header className={styles.head}>
-        <p className={styles.kicker}>Inquation · Short Story</p>
+        <p className={styles.kicker}>Short Story</p>
         <h2 id="last-tree-title" className={styles.title} lang="ml">
           ക്യാമ്പസിലെ<span>അവസാന മരം</span>
         </h2>

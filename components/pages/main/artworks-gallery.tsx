@@ -78,7 +78,7 @@ export function ArtworksGallery() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-8">
           <div>
             <p className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-white/30 mb-3 sm:mb-5">
-              Inquation 2025–26 · Visual Arts
+              2025–26 · Visual Arts
             </p>
             <h2 className="font-heading text-[18vw] sm:text-[9vw] lg:text-[7vw] font-light uppercase leading-none tracking-tight text-white">
               ART
@@ -149,7 +149,7 @@ export function ArtworksGallery() {
           GEC Wayanad
         </p>
         <p className="text-white/40 font-serif italic text-sm sm:text-base">
-          Inquation Annual Magazine · Visual Arts Edition
+          Annual Magazine · Visual Arts Edition
         </p>
       </div>
 

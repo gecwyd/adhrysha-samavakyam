@@ -6,7 +6,7 @@ import styles from "@/components/pages/main/time-editorial.module.css";
 import EssayReader from "./essay-reader";
 
 export const metadata: Metadata = {
-  title: "The Time a Clock Doesn't Tell | Inquation",
+  title: "The Time a Clock Doesn't Tell",
   description: "A bilingual reflection on measured time, experienced time, and the memories that give it depth.",
 };
 

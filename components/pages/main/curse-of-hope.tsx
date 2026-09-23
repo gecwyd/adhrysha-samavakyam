@@ -37,7 +37,7 @@ export function CurseOfHope() {
           
           <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:p-24">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#d98fa6]">
-              Inquation / Poetry · 05
+              Poetry · 05
             </p>
             <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#d5c7e8] uppercase lg:text-7xl">
               The Curse<br />

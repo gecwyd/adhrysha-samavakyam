@@ -41,18 +41,18 @@ export function OruMudanthan() {
             <div className="absolute inset-0 bg-[#e6ba95]/10 mix-blend-color z-10" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#1c1814] via-[#1c1814]/40 to-transparent z-10 lg:bg-gradient-to-r lg:from-transparent lg:via-[#1c1814]/60 lg:to-[#1c1814]" />
             <Image
-              src={resolveAsset("misty-paths-bg.webp")} // Using existing moody asset
-              alt="Misty conceptual path"
+              src={resolveAsset("story-of-the-lame-man.webp")}
+              alt="A man resting beside a Kerala roadside and sharing food with a stray dog at sunset"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-1000"
+              className="object-cover opacity-75 transition-all duration-1000"
               unoptimized
             />
           </div>
           
           <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#e6ba95]">
-              Inquation / Short Story · 06
+              Short Story · 06
             </p>
             <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#e8dac7] uppercase xl:text-7xl">
               Story Of<br />

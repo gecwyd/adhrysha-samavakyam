@@ -1,0 +1,65 @@
+.track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.reverse {
+  animation-direction: reverse;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.spin {
+  animation: spin 50s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dossier tab: a cut lower-left corner, like a filed folder tab. */
+.tab {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 14% 100%, 0 76%);
+}
+
+.medal {
+  filter: drop-shadow(0 14px 16px rgb(21 25 61 / 0.26));
+}
+
+/* Ribbon tail behind a medallion. */
+.ribbon {
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+}
+
+/* Spiral-bound punch holes running down the ledger's edge. */
+.punch {
+  background-image: radial-gradient(circle at 4px 4px, var(--ink) 3px, transparent 0);
+  background-size: 100% 34px;
+  background-repeat: repeat-y;
+  opacity: 0.16;
+}
+
+.ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 47px,
+    rgb(243 238 228 / 0.14) 47px,
+    rgb(243 238 228 / 0.14) 48px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .spin {
+    animation: none;
+  }
+}

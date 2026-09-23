@@ -1,9 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion"
-import { useRef, useEffect, useState } from "react"
-import { useAudio } from "@/context/audio.context"
+import { motion, useScroll, useTransform, useSpring } from "framer-motion"
+import { useRef, useEffect } from "react"
 import { resolveAsset } from "@/lib/asset-registry"
 import { preload } from "@/lib/preload"
 import { YouTubePlayer, extractYouTubeId } from "@/components/ui/youtube-player"
@@ -36,27 +35,11 @@ const UNION_CREW = [
 export type SecFProps = React.HTMLAttributes<HTMLElement>
 
 export function SecF({ className, ...props }: SecFProps) {
-    const { pauseBg, playbg } = useAudio()
     const containerRef = useRef<HTMLElement>(null)
-    const hasEnteredRef = useRef(false)
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
     useEffect(() => {
         preload(UNION_VIDEO_URL, "youtube")
     }, [])
-
-    const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" })
-
-    useEffect(() => {
-        if (isInView) {
-            hasEnteredRef.current = true
-            if (isVideoPlaying) {
-                pauseBg?.(300)
-            } else {
-                playbg?.(resolveAsset("bg-piano.mp3"), { loop: true, volume: 0.35 })
-            }
-        }
-    }, [isInView, isVideoPlaying, playbg, pauseBg])
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -174,9 +157,6 @@ export function SecF({ className, ...props }: SecFProps) {
                                 url={UNION_VIDEO_URL}
                                 showFloatingMute={false}
                                 className="w-full h-full object-cover"
-                                onPlay={() => setIsVideoPlaying(true)}
-                                onPause={() => setIsVideoPlaying(false)}
-                                onEnd={() => setIsVideoPlaying(false)}
                             />
                         ) : (
                             <video
@@ -185,9 +165,6 @@ export function SecF({ className, ...props }: SecFProps) {
                                 controls
                                 playsInline
                                 onContextMenu={(e) => e.preventDefault()}
-                                onPlay={() => setIsVideoPlaying(true)}
-                                onPause={() => setIsVideoPlaying(false)}
-                                onEnded={() => setIsVideoPlaying(false)}
                             />
                         )}
                     </div>

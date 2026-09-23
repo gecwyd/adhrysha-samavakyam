@@ -70,8 +70,6 @@ const CLOSING = {
 
 type Crop = { pos: string; zoom: number; hue: number };
 
-// Until a card's own image is uploaded, show a different crop of the vortex so no card is ever empty.
-const FALLBACK_SRC = "prabanchathinte-kurukkuvazhi.webp";
 const CLOSING_CROP: Crop = { pos: "12% 78%", zoom: 1.5, hue: 0 };
 
 const CARD_SIZES = "(max-width: 1000px) 100vw, 960px";
@@ -104,20 +102,20 @@ function FoldDiagram() {
   );
 }
 
-/** Image behind a card. Falls back to a crop of the vortex, then to the card's own gradient. */
+/** Image behind a card. If it fails, the card's own gradient remains visible. */
 function Backdrop({ src, alt, crop }: { src: string; alt: string; crop: Crop }) {
-  const [stage, setStage] = useState<"own" | "crop" | "none">("own");
-  if (stage === "none") return null;
-  const style = { "--pos": crop.pos, "--zoom": stage === "crop" ? crop.zoom : 1, "--hue": `${crop.hue}deg` } as CSSProperties;
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  const style = { "--pos": crop.pos, "--zoom": crop.zoom, "--hue": `${crop.hue}deg` } as CSSProperties;
   return (
     <div className={styles.media} data-drift style={style}>
       <Image
-        src={resolveAsset(stage === "own" ? src : FALLBACK_SRC)}
-        alt={stage === "own" ? alt : ""}
+        src={resolveAsset(src)}
+        alt={alt}
         fill
         sizes={CARD_SIZES}
-        className={stage === "own" ? styles.mediaImage : `${styles.mediaImage} ${styles.mediaCrop}`}
-        onError={() => setStage(stage === "own" ? "crop" : "none")}
+        className={`${styles.mediaImage} ${styles.mediaCrop}`}
+        onError={() => setFailed(true)}
       />
     </div>
   );
@@ -201,7 +199,7 @@ export function WormholeEssay() {
         </div>
         <div className={styles.heroShade} aria-hidden="true" />
         <div className={styles.heroBody}>
-          <p className={styles.kicker}>Inquation · Essay</p>
+          <p className={styles.kicker}>Essay</p>
           <h2 id="wormhole-essay-title" className={styles.heroTitle} lang="ml">പ്രപഞ്ചത്തിന്റെ കുറുക്കുവഴി</h2>
         </div>
       </header>

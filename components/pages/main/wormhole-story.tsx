@@ -113,7 +113,7 @@ export function WormholeStory() {
 
           <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
             <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25">
-              Inquation / Memory
+              Memory
             </div>
             <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/25 text-right">
               04

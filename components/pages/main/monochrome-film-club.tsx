@@ -316,7 +316,7 @@ export function MonochromeFilmClub() {
           <div aria-hidden className={styles.grain} />
           <div aria-hidden className={styles.scan} />
 
-          <Leader className="pointer-events-none absolute -right-[18vmin] top-6 w-[86vmin] text-[color:var(--ink)] opacity-[0.18] sm:top-0" />
+
 
           <div aria-hidden className="pointer-events-none absolute inset-3 z-20 sm:inset-6">
             <Bracket pos="left-0 top-0 border-l-2 border-t-2" />

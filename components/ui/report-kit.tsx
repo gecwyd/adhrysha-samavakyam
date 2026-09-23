@@ -100,7 +100,7 @@ export function Reveal({
 export function Rail({ left, right }: { left: string; right: string }) {
   return (
     <header className="flex items-center justify-between border-b border-[color:var(--rule)] pb-5 pt-6 font-mono text-[9px] uppercase tracking-[0.24em] text-[color:var(--muted)] sm:pt-8">
-      <span>Inquation · 2025—26</span>
+      <span>2025—26</span>
       <span>{left}</span>
       <span className="hidden sm:inline">{right}</span>
     </header>

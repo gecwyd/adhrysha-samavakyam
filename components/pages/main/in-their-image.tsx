@@ -137,28 +137,9 @@ function Convergence({ sep, meOpacity }: { sep: MotionValue<number>; meOpacity: 
   );
 }
 
-/* A hairline above each stanza, paid out from the left as the stanza scrolls into place. */
-function Rule() {
-  const reduce = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 92%", "start 58%"] });
+function Stanza({ lines, last }: { lines: string[]; last: boolean }) {
   return (
-    <div ref={ref} aria-hidden className="mb-8 h-px w-full bg-[#17352f]/10">
-      <motion.div
-        style={{ scaleX: reduce ? 1 : scrollYProgress, transformOrigin: "left" }}
-        className="h-full w-full bg-[#df674d]"
-      />
-    </div>
-  );
-}
-
-function Stanza({ lines, index, last }: { lines: string[]; index: number; last: boolean }) {
-  return (
-    <section className="flex min-h-[65dvh] flex-col justify-center py-14">
-      <Rule />
-      <Label className="mb-6 block text-[#17352f]/45">
-        {String(index + 1).padStart(2, "0")} / {String(POEM_STANZAS.length).padStart(2, "0")}
-      </Label>
+    <section className="flex flex-col justify-center py-8 sm:py-12">
       <p className="text-[1.7rem] font-light leading-[1.5] text-[#17352f] sm:text-[2.1rem] sm:leading-[1.45]">
         {lines.map((line, i) => {
           const closing = last && i > 2;
@@ -204,25 +185,37 @@ export function InTheirImage() {
   return (
     <section
       id="sec-in-their-image"
-      className={`${serif.className} relative w-full bg-[#f4f0e8] text-[#17352f] selection:bg-[#df674d] selection:text-[#fffaf2]`}
+      className={`${serif.className} relative isolate w-full overflow-hidden bg-[#f4f0e8] text-[#17352f] selection:bg-[#df674d] selection:text-[#fffaf2]`}
     >
-      <div className="mx-auto max-w-2xl px-6 sm:px-10">
-        <header className="flex min-h-[80dvh] flex-col justify-center py-20">
-          <p className="mb-6 flex items-center gap-3 text-[#df674d]">
-            <span aria-hidden className="h-px w-8 bg-[#df674d]" />
-            <Label>A poem on inheritance</Label>
-          </p>
-          <h2 className="font-heading text-[clamp(4.5rem,15vw,9rem)] uppercase leading-[0.8] tracking-[-0.01em] text-[#17352f]">
-            In their
-            <span className="block text-[#df674d]">image</span>
-          </h2>
+      <div className="relative z-10 mx-auto max-w-2xl px-6 sm:px-10">
+        <header className="relative isolate -mx-6 flex min-h-[80dvh] flex-col justify-center overflow-hidden py-20 sm:mx-0">
+          <Image
+            src={resolveAsset("in-their-image-background.webp")}
+            alt=""
+            fill
+            sizes="(max-width: 672px) 100vw, 672px"
+            unoptimized
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-[center_68%] opacity-[0.62] mix-blend-multiply"
+          />
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-0 bg-[#f4f0e8]/35" />
+
+          <div className="relative z-10 px-6 sm:px-0">
+            <p className="mb-6 flex items-center gap-3 text-[#df674d]">
+              <Label>A poem on inheritance</Label>
+            </p>
+            <h2 className="font-heading text-[clamp(4.5rem,15vw,9rem)] uppercase leading-[0.8] tracking-[-0.01em] text-[#17352f]">
+              In their
+              <span className="block text-[#df674d]">image</span>
+            </h2>
+          </div>
         </header>
 
           {POEM_STANZAS.map((lines, i) => (
             <Fragment key={lines[0]}>
-              <Stanza lines={lines} index={i} last={i === POEM_STANZAS.length - 1} />
+              <Stanza lines={lines} last={i === POEM_STANZAS.length - 1} />
               {i < MEMORY_IMAGES.length && (
-                <figure className="mb-16 overflow-hidden border-y border-[#17352f]/10 py-6 lg:mb-24 lg:py-8">
+                <figure className="-mx-6 mb-10 overflow-hidden py-4 sm:mx-0 sm:mb-16 sm:py-6 lg:mb-24 lg:py-8">
                   <div className="relative aspect-[4/3] w-full max-w-3xl overflow-hidden bg-[#e8e1d5]">
                     <Image
                       src={resolveAsset(MEMORY_IMAGES[i].file)}
@@ -233,7 +226,7 @@ export function InTheirImage() {
                       className="object-cover"
                     />
                   </div>
-                  <figcaption className="mt-3 text-sm italic text-[#17352f]/55">
+                  <figcaption className="mt-3 px-6 text-sm italic text-[#17352f]/55 sm:px-0">
                     {MEMORY_IMAGES[i].caption}
                   </figcaption>
                 </figure>
@@ -243,7 +236,7 @@ export function InTheirImage() {
 
         <Figure />
 
-        <div className="flex flex-col gap-5 border-t border-[#17352f]/15 py-16 sm:flex-row sm:items-end sm:justify-between lg:py-24">
+        <div className="flex flex-col gap-5 py-16 sm:flex-row sm:items-end sm:justify-between lg:py-24">
           <div>
             <Label className="mb-2 block text-[#17352f]/45">Words by</Label>
             <p className="text-3xl font-medium tracking-[-0.02em] sm:text-4xl">Fathima Aslam</p>

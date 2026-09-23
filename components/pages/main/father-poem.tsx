@@ -126,14 +126,48 @@ function Plate({
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+/** Image panel that drifts on scroll instead of fading in — the picture is always visible, the motion is the reveal. */
+function ParallaxPlate({
+  shot,
+  sizes = "100vw",
+  ratioClassName = "aspect-[16/9]",
+  imgClassName = "object-cover",
+  strength = 10,
+  className = "",
+  overlay,
+}: {
+  shot: Shot;
+  sizes?: string;
+  ratioClassName?: string;
+  imgClassName?: string;
+  strength?: number;
+  className?: string;
+  overlay?: ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [`-${strength}%`, `${strength}%`]);
+
+  return (
+    <div ref={ref} className={`relative w-full overflow-hidden ${ratioClassName} ${className}`}>
+      <motion.div style={reduce ? undefined : { y, scale: 1.18 }} className="absolute inset-0">
+        <Plate shot={shot} sizes={sizes} className={imgClassName} />
+      </motion.div>
+      {overlay}
+    </div>
+  );
+}
+
+/** Entrance kept short and used sparingly — most movement in this piece comes from scroll position, not opacity. */
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const reduce = useReducedMotion();
   return (
     <motion.div
-      initial={reduce ? false : { opacity: 0, y: 24 }}
+      initial={reduce ? false : { opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 1.1, ease: EASE, delay }}
+      transition={{ duration: 0.7, ease: EASE, delay }}
       className={className}
     >
       {children}
@@ -145,6 +179,7 @@ function Label({ children, className = "" }: { children: ReactNode; className?: 
   return <span className={`font-mono text-[10px] uppercase tracking-[0.3em] ${className}`}>{children}</span>;
 }
 
+/** A single hairline that fills as its stanza crosses the viewport — the page marking its own place, not fading text in line by line. */
 function Stanza({
   text,
   index,
@@ -160,39 +195,56 @@ function Stanza({
   numberColor: string;
   className?: string;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.9", "start 0.3"] });
+  const fill = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [0, 1]);
   const lines = text.split("\n");
+
   return (
-    <div className={className}>
+    <div ref={ref} className={`relative ${className}`}>
+      <div aria-hidden className="absolute -left-6 top-1 hidden h-[calc(100%-0.75rem)] w-px bg-current/10 md:block">
+        <motion.div style={{ background: accentColor, scaleY: fill }} className="h-full w-full origin-top" />
+      </div>
+
       <Label className="mb-6 block">
         <span style={{ color: numberColor }}>
           {String(index + 1).padStart(2, "0")} / {String(POEM_STANZAS.length).padStart(2, "0")}
         </span>
       </Label>
-      <p lang="ml" className="text-[1.35rem] font-light leading-[2] sm:text-[1.55rem] md:text-[1.8rem] md:leading-[2.05]">
+
+      <motion.p
+        lang="ml"
+        initial={reduce ? false : { opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+        transition={{ duration: 0.7, ease: EASE }}
+        className="text-[1.35rem] font-light leading-[2] sm:text-[1.55rem] md:text-[1.8rem] md:leading-[2.05]"
+      >
         {lines.map((line, i) => (
-          <motion.span
+          <span
             key={i}
-            initial={reduce ? false : { opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px -8% 0px" }}
-            transition={{ duration: 0.9, ease: EASE, delay: i * 0.1 }}
             className="block"
             style={accentLast && i === lines.length - 1 ? { color: accentColor } : undefined}
           >
             {line}
-          </motion.span>
+          </span>
         ))}
-      </p>
+      </motion.p>
     </div>
   );
 }
 
 export function FatherPoem() {
   const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
   const coverRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress: readProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
+
   const { scrollYProgress } = useScroll({ target: coverRef, offset: ["start start", "end start"] });
-  const plateY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+  const plateY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+  const plateScale = useTransform(scrollYProgress, [0, 1], [1.16, 1.04]);
   const titleY = useTransform(scrollYProgress, [0, 1], ["0%", "-12%"]);
 
   const closing = POEM_STANZAS[3].split("\n");
@@ -200,10 +252,21 @@ export function FatherPoem() {
 
   return (
     <section
+      ref={sectionRef}
       id="sec-father-poem"
       className={`${serif.className} relative w-full selection:bg-[#a8552a] selection:text-[#f6f2ea]`}
       style={{ backgroundColor: PAPER, color: INK }}
     >
+      {/* A quiet reading-line pinned to the margin: it only fills, it never fades. */}
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-3 hidden w-px md:block lg:left-6">
+        <div className="sticky top-0 h-screen w-px bg-current/10">
+          <motion.div
+            style={{ scaleY: reduce ? 0 : readProgress, background: `linear-gradient(${ACCENT}, ${EMBER})` }}
+            className="h-full w-full origin-top"
+          />
+        </div>
+      </div>
+
       {/* ───────── Cover ───────── */}
       <header ref={coverRef} className="relative mx-auto grid min-h-[100dvh] max-w-6xl items-center gap-12 px-6 py-24 md:px-10 lg:grid-cols-12 lg:gap-16 lg:px-16">
         <motion.div style={reduce ? undefined : { y: titleY }} className="lg:col-span-7">
@@ -221,13 +284,11 @@ export function FatherPoem() {
           </Reveal>
         </motion.div>
 
-        <Reveal delay={0.15} className="lg:col-span-5">
-          <div className="relative aspect-[4/5] w-full overflow-hidden">
-            <motion.div style={reduce ? undefined : { y: plateY, scale: 1.1 }} className="absolute inset-0">
-              <Plate shot={SHOTS.hands} priority sizes="(max-width: 1024px) 100vw, 40vw" />
-            </motion.div>
-          </div>
-        </Reveal>
+        <div className="relative aspect-[4/5] w-full overflow-hidden lg:col-span-5">
+          <motion.div style={reduce ? undefined : { y: plateY, scale: plateScale }} className="absolute inset-0">
+            <Plate shot={SHOTS.hands} priority sizes="(max-width: 1024px) 100vw, 40vw" />
+          </motion.div>
+        </div>
       </header>
 
       {/* ───────── I · Eyes and ears ───────── */}
@@ -243,11 +304,11 @@ export function FatherPoem() {
 
       {/* ───────── II · Memories ───────── */}
       <div className="mx-auto max-w-6xl px-6 pb-24 md:px-10 md:pb-40 lg:px-16">
-        <Reveal>
-          <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-[16/9]">
-            <Plate shot={SHOTS.path} sizes="(max-width: 1152px) 100vw, 1152px" />
-          </div>
-        </Reveal>
+        <ParallaxPlate
+          shot={SHOTS.path}
+          sizes="(max-width: 1152px) 100vw, 1152px"
+          ratioClassName="aspect-[4/3] md:aspect-[16/9]"
+        />
         <Stanza
           text={POEM_STANZAS[1]}
           index={1}
@@ -260,11 +321,11 @@ export function FatherPoem() {
       {/* ───────── III · Shadow ───────── */}
       <div className="mx-auto max-w-6xl px-6 pb-28 md:px-10 md:pb-44 lg:px-16">
         <div className="grid gap-16 lg:grid-cols-12 lg:gap-20">
-          <Reveal className="lg:col-span-5">
+          <div className="lg:col-span-5">
             <div className="relative aspect-[4/5] w-full overflow-hidden lg:sticky lg:top-24">
               <Plate shot={SHOTS.shadow} sizes="(max-width: 1024px) 100vw, 40vw" />
             </div>
-          </Reveal>
+          </div>
           <Stanza
             text={POEM_STANZAS[2]}
             index={2}
@@ -278,18 +339,19 @@ export function FatherPoem() {
 
       {/* ───────── IV · The magician ───────── */}
       <div className="relative" style={{ backgroundColor: NIGHT, color: "#f1e8da" }}>
-        <div className="relative isolate h-[56svh] min-h-[320px] w-full overflow-hidden md:h-[70svh]">
-          <Plate
-            shot={SHOTS.ocean}
-            overlay={
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{ background: `linear-gradient(to bottom, ${PAPER} 0%, transparent 22%, transparent 65%, ${NIGHT} 100%)` }}
-              />
-            }
-          />
-        </div>
+        <ParallaxPlate
+          shot={SHOTS.ocean}
+          ratioClassName="h-[56svh] min-h-[320px] md:h-[70svh]"
+          strength={6}
+          className="isolate"
+          overlay={
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: `linear-gradient(to bottom, ${PAPER} 0%, transparent 22%, transparent 65%, ${NIGHT} 100%)` }}
+            />
+          }
+        />
 
         <div className="mx-auto max-w-4xl px-6 pb-28 pt-12 text-center md:px-10 md:pb-40">
           <Reveal>

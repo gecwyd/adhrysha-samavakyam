@@ -1,0 +1,82 @@
+.track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.reverse {
+  animation-direction: reverse;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.spin {
+  animation: spin 20s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sweep {
+  animation: sweep 3.6s linear infinite;
+}
+
+@keyframes sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.scanline {
+  animation: scan 5.5s ease-in-out infinite;
+}
+
+@keyframes scan {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(calc(100% - 2px));
+    opacity: 0.35;
+  }
+}
+
+.blink {
+  animation: blink 1.7s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.grid {
+  background-image: linear-gradient(rgb(244 239 232 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 239 232 / 0.07) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .spin,
+  .sweep,
+  .scanline,
+  .blink {
+    animation: none;
+  }
+}

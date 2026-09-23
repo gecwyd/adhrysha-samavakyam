@@ -146,7 +146,7 @@ export function LastBench() {
         <div className={styles.heroShade} aria-hidden="true" />
         <div className={styles.dust} aria-hidden="true" />
         <div className={styles.heroBody}>
-          <p className={styles.kicker}>Inquation · Memoir</p>
+          <p className={styles.kicker}>Memoir</p>
           <h2 id="last-bench-title" className={styles.title} lang="ml">ലാസ്റ്റ്<span>ബെഞ്ച്</span></h2>
           <p className={styles.byline}>Anjali Krishna · ECE 3rd Year</p>
         </div>

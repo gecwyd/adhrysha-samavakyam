@@ -1,0 +1,51 @@
+.track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.reverse {
+  animation-direction: reverse;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.spin {
+  animation: spin 26s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Leaf tag: one squared corner, three rounded — a nursery plant-marker silhouette. */
+.leaf {
+  border-radius: 0 45% 45% 45%;
+}
+
+.lift {
+  filter: drop-shadow(0 16px 18px rgb(18 38 26 / 0.22));
+}
+
+.polaroid {
+  filter: drop-shadow(0 20px 24px rgb(18 38 26 / 0.25));
+}
+
+.grain {
+  background-image: radial-gradient(circle at 1px 1px, rgb(233 240 223 / 0.16) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .spin {
+    animation: none;
+  }
+}

@@ -77,7 +77,7 @@ export function RuiningRumours() {
 
           <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#fb923c]">
-              Inquation / Short Fiction
+              Short Fiction
             </p>
             <h2
               id="rumours-title"

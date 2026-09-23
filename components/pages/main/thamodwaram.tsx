@@ -1,17 +1,10 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import Image from "next/image";
 import { Noto_Serif_Malayalam } from "next/font/google";
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { motion } from "framer-motion";
 import { resolveAsset } from "@/lib/asset-registry";
-import { BlackHole } from "./black-hole";
 
 const malayalam = Noto_Serif_Malayalam({
   subsets: ["malayalam", "latin"],
@@ -45,9 +38,21 @@ const Label = ({ children, className = "" }: { children: ReactNode; className?: 
   </span>
 );
 
+/* One-time reveal on scroll-into-view — no scroll-position tracking, fires once via IntersectionObserver. */
+const reveal = {
+  initial: { opacity: 0, y: 18 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-10% 0px" },
+  transition: { duration: 0.6, ease: "easeOut" as const },
+};
+
 function Chapter({ no, title, children }: { no: string; title: string; children: ReactNode }) {
   return (
-    <section data-ch={no} data-title={title} className="pt-16 first:pt-0 md:pt-24">
+    <section
+      data-ch={no}
+      data-title={title}
+      className="pt-16 first:pt-0 md:pt-24 [content-visibility:auto] [contain-intrinsic-size:auto_1200px]"
+    >
       <div className="mb-10 flex items-center gap-4 md:mb-14">
         <Label>
           {no} · {title}
@@ -62,28 +67,15 @@ function Chapter({ no, title, children }: { no: string; title: string; children:
 
 
 export function Thamodwaram() {
-  const coverRef = useRef<HTMLElement>(null);
-  const readRef = useRef<HTMLDivElement>(null);
-
-  /* Cover picture drifts a little; nothing in the reading area moves. */
-  const { scrollYProgress: coverP } = useScroll({
-    target: coverRef,
-    offset: ["start start", "end start"],
-  });
-  const coverY = useTransform(coverP, [0, 1], ["0%", "12%"]);
-  const coverScale = useTransform(coverP, [0, 1], [1.05, 1.15]);
-
   return (
     <section
       id="sec-q"
-      aria-labelledby="black-hole-title"
+      aria-labelledby="thamodwaram-title"
       className={`${malayalam.className} relative w-full bg-black text-[#e6e0d3]`}
     >
-      <BlackHole />
-
       {/* ───────── Cover ───────── */}
-      <header ref={coverRef} className="relative isolate flex min-h-[100dvh] items-end overflow-hidden">
-        <motion.div style={{ y: coverY, scale: coverScale }} className="absolute inset-0 -z-10">
+      <header className="relative isolate flex min-h-[100dvh] items-end overflow-hidden">
+        <div className="absolute inset-0 -z-10 [animation:kenburns_20s_ease-out_forwards]">
           <Image
             src={resolveAsset("thamodwaram-horizon.webp")}
             alt="A black hole ringed by a thin amber accretion disc"
@@ -93,12 +85,12 @@ export function Thamodwaram() {
             unoptimized
             className="object-cover"
           />
-        </motion.div>
+        </div>
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-black/10" />
 
         <div className="mx-auto w-full max-w-5xl px-6 pb-14 md:px-8 md:pb-24">
-          <Label>A Philosophical Essay · Inquation</Label>
-          <h2 lang="ml" className="mt-6 text-[2.25rem] font-light leading-[1.3] text-[#f0eadc] sm:text-[3.5rem] md:text-[5.5rem] md:leading-[1.2]">
+          <Label>A Philosophical Essay</Label>
+          <h2 id="thamodwaram-title" lang="ml" className="mt-6 text-[2.25rem] font-light leading-[1.3] text-[#f0eadc] sm:text-[3.5rem] md:text-[5.5rem] md:leading-[1.2]">
             അഗാധതയുടെ
             <br />
             <span className="text-[#d99065]">അപ്പുറം</span>
@@ -106,7 +98,35 @@ export function Thamodwaram() {
         </div>
       </header>
 
-      <div ref={readRef} className="relative">
+      {/* ───────── Threshold ───────── */}
+      <div className="relative flex flex-col items-center overflow-hidden px-6 py-24 text-center md:py-32">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_70%_at_50%_50%,#1a0f08_0%,#000000_75%)]"
+        />
+        <motion.p {...reveal} lang="en" className="relative font-mono text-[10px] uppercase tracking-[0.4em] text-[#d99065]">
+          Beyond the darkness
+        </motion.p>
+        <motion.p
+          {...reveal}
+          transition={{ ...reveal.transition, delay: 0.1 }}
+          lang="en"
+          className="relative mt-6 font-heading text-[16vw] font-black leading-[0.85] text-[#e6e0d3] sm:text-[13vw] md:text-[90px] lg:text-[110px]"
+        >
+          BLACK <span className="text-[#d99065]">HOLE.</span>
+        </motion.p>
+        <motion.p
+          {...reveal}
+          transition={{ ...reveal.transition, delay: 0.2 }}
+          lang="en"
+          className="relative mt-6 max-w-lg font-mono text-sm leading-relaxed tracking-wide text-[#a39b8c] md:text-base"
+        >
+          A region of spacetime where gravity is so intense that{" "}
+          <span className="font-semibold text-[#d99065]">nothing</span>, not even light, can escape its grasp.
+        </motion.p>
+      </div>
+
+      <div className="relative">
         <article
           lang="ml"
           className="mx-auto max-w-[40rem] px-6 pb-32 pt-8 text-[1.25rem] md:px-8 md:pt-12"

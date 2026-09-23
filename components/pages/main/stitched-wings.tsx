@@ -78,7 +78,7 @@ export function StitchedWings() {
           
           <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#d4b483]">
-              Inquation / Poetry · 07
+              Poetry · 07
             </p>
             <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#f0ede6] uppercase xl:text-7xl">
               Stitched<br />

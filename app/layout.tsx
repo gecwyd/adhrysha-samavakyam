@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Geist, Geist_Mono, Noto_Sans_Malayalam } from "next/font/google";
 import "./globals.css";
 import { PreloadProvider } from "@/components/ui/preloader";
-import { AudioProvider } from "@/components/providers/audio-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,11 +49,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://www.google.com" />
       </head>
       <body className="min-h-full flex flex-col">
-        <AudioProvider>
-          <PreloadProvider>
-            {children}
-          </PreloadProvider>
-        </AudioProvider>
+        <PreloadProvider>
+          {children}
+        </PreloadProvider>
       </body>
     </html>
   );

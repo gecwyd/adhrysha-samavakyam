@@ -47,7 +47,7 @@ export function Dowry() {
           
           <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#fb7185]">
-              Inquation / Opinion · 08
+              Opinion · 08
             </p>
             <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#f8fafc] uppercase xl:text-7xl">
               Dowry<br />

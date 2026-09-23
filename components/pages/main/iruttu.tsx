@@ -45,7 +45,7 @@ export function Iruttu() {
           
           <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#fef08a]/70">
-              Inquation / Reflection · 11
+              Reflection · 11
             </p>
             <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#fef08a] opacity-90 uppercase xl:text-7xl" lang="ml">
               ഇരുട്ട്

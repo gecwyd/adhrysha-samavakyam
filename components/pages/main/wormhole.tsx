@@ -73,7 +73,7 @@ export function Wormhole() {
         {/* Header */}
         <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
           <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">
-            Inquation / Gateway
+            Gateway
           </div>
           <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30 text-right">
             00
@@ -108,7 +108,7 @@ export function Wormhole() {
               style={{ y: subY, opacity: subOpacity }}
               className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-white/25 uppercase mt-7 max-w-xs"
             >
-              Inquation 2025–26 · GEC Wayanad
+              2025–26 · GEC Wayanad
             </motion.p>
           </motion.div>
 

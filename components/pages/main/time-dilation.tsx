@@ -1,28 +1,11 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
-import { useAudio } from "@/context/audio.context";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { resolveAsset } from "@/lib/asset-registry";
-import { preload } from "@/lib/preload";
-
-const TIME_DILATION_BG = resolveAsset("time-dilation.mp3");
 
 export function TimeDilation() {
   const containerRef = useRef<HTMLElement>(null);
-  const { playbg } = useAudio();
-
-  useEffect(() => {
-    preload(TIME_DILATION_BG, "audio");
-  }, []);
-
-  const isInView = useInView(containerRef, { amount: "some", margin: "150px 0px" });
-
-  useEffect(() => {
-    if (isInView) {
-      playbg(TIME_DILATION_BG, { loop: true, volume: 0.3 });
-    }
-  }, [isInView, playbg]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,

@@ -3,7 +3,6 @@
 import * as React from "react"
 import { motion, useInView, useScroll, useTransform, useSpring } from "framer-motion"
 import { useRef, useEffect, useState, useCallback } from "react"
-import { useAudio } from "@/context/audio.context"
 import { resolveAsset } from "@/lib/asset-registry"
 import { preload } from "@/lib/preload"
 import { cn } from "@/lib/utils"
@@ -14,7 +13,6 @@ const MISS_MINUTES_VIDEO_URL = "miss-minute-intro.webm"
 export type SecGProps = React.HTMLAttributes<HTMLElement>
 
 export function SecG({ className, ...props }: SecGProps) {
-    const { pauseBg, playbg } = useAudio()
     const containerRef = useRef<HTMLElement>(null)
     const videoRef = useRef<HTMLVideoElement>(null)
     const hasEnteredRef = useRef(false)
@@ -41,7 +39,6 @@ export function SecG({ className, ...props }: SecGProps) {
 
     useEffect(() => {
         if (isInView) {
-            pauseBg?.(0)
             if (videoRef.current && !hasEnteredRef.current) {
                 hasEnteredRef.current = true
                 videoRef.current.muted = false
@@ -59,12 +56,11 @@ export function SecG({ className, ...props }: SecGProps) {
                 setIsVideoPlaying(false)
             }
         }
-    }, [isInView, hasVideoEnded, pauseBg])
+    }, [isInView, hasVideoEnded])
 
     const handleVideoEnd = useCallback(() => {
         setIsVideoPlaying(false)
         setHasVideoEnded(true)
-        playbg?.(resolveAsset("bg-piano.mp3"), { loop: true, volume: 0.35 })
 
         setTimeout(() => {
             const nextEl = containerRef.current?.nextElementSibling
@@ -74,7 +70,7 @@ export function SecG({ className, ...props }: SecGProps) {
                 window.scrollBy({ top: window.innerHeight, behavior: "smooth" })
             }
         }, 200)
-    }, [playbg])
+    }, [])
 
     const handleSkip = useCallback((e?: React.MouseEvent) => {
         if (e) e.stopPropagation()
@@ -83,7 +79,6 @@ export function SecG({ className, ...props }: SecGProps) {
         }
         setIsVideoPlaying(false)
         setHasVideoEnded(true)
-        playbg?.(resolveAsset("bg-piano.mp3"), { loop: true, volume: 0.35 })
 
         setTimeout(() => {
             const nextEl = containerRef.current?.nextElementSibling
@@ -93,14 +88,13 @@ export function SecG({ className, ...props }: SecGProps) {
                 window.scrollBy({ top: window.innerHeight, behavior: "smooth" })
             }
         }, 100)
-    }, [playbg])
+    }, [])
 
     const togglePlay = useCallback((e?: React.MouseEvent) => {
         if (e) e.stopPropagation()
         if (!videoRef.current) return
         if (hasVideoEnded) {
             videoRef.current.currentTime = 0
-            pauseBg?.(0)
             videoRef.current.play().then(() => {
                 setIsVideoPlaying(true)
                 setHasVideoEnded(false)
@@ -108,7 +102,6 @@ export function SecG({ className, ...props }: SecGProps) {
             return
         }
         if (videoRef.current.paused) {
-            pauseBg?.(0)
             videoRef.current.play().then(() => {
                 setIsVideoPlaying(true)
                 setHasVideoEnded(false)
@@ -116,9 +109,8 @@ export function SecG({ className, ...props }: SecGProps) {
         } else {
             videoRef.current.pause()
             setIsVideoPlaying(false)
-            playbg?.(resolveAsset("bg-piano.mp3"), { loop: true, volume: 0.35 })
         }
-    }, [hasVideoEnded, pauseBg, playbg])
+    }, [hasVideoEnded])
 
     const toggleMute = useCallback((e?: React.MouseEvent) => {
         if (e) e.stopPropagation()
@@ -189,7 +181,7 @@ export function SecG({ className, ...props }: SecGProps) {
                         muted={isMuted}
                         playsInline
                         onContextMenu={(e) => e.preventDefault()}
-                        onPlay={() => { setIsVideoPlaying(true); pauseBg?.(0); setHasVideoEnded(false); }}
+                        onPlay={() => { setIsVideoPlaying(true); setHasVideoEnded(false); }}
                         onPause={() => setIsVideoPlaying(false)}
                         onEnded={handleVideoEnd}
                     />

@@ -137,7 +137,7 @@ export function LastBenchStory() {
         {/* Header (Static) */}
         <header className="absolute top-0 w-full z-20 flex items-center justify-between px-6 py-8 md:px-12 md:py-10 pointer-events-none">
           <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#d9cca5]/30">
-            Inquation / Memoir
+            Memoir
           </div>
           <div className="font-sans text-[10px] text-[#d9cca5]/30" lang="ml">
             ലാസ്റ്റ് ബെഞ്ച്

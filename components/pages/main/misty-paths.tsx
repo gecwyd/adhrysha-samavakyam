@@ -1,11 +1,15 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
 import { ArrowUpRight, Droplets } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { resolveAsset } from "@/lib/asset-registry";
+import { preload } from "@/lib/preload";
+
+const VIDEO_SRC = resolveAsset("gecw-mist.webm");
+const POSTER_SRC = resolveAsset("gecw-mist-poster.webp");
 
 const SUMMARY = [
   {
@@ -27,6 +31,22 @@ const SUMMARY = [
 
 export function MistyPaths() {
   const containerRef = useRef<HTMLElement>(null);
+  const mainVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    preload(VIDEO_SRC, "video");
+    preload(POSTER_SRC, "image");
+  }, []);
+
+  const isInView = useInView(containerRef, { amount: 0.1 });
+
+  useEffect(() => {
+    if (isInView) {
+      mainVideoRef.current?.play().catch(() => {});
+    } else {
+      mainVideoRef.current?.pause();
+    }
+  }, [isInView]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -58,21 +78,26 @@ export function MistyPaths() {
     >
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-between">
         
-        {/* Background Visual: Image, Fog and Rain overlay */}
+        {/* Background Visual: Video, Fog and Rain overlay */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.15]">
-          <motion.div 
-            style={{ 
+          <motion.div
+            style={{
               opacity: useTransform(smooth, [0, 1], [0.6, 1]),
               scale: useTransform(smooth, [0, 1], [1, 1.2]),
             }}
             className="absolute inset-0 w-full h-full"
           >
-            <Image
-              src={resolveAsset("misty-paths-bg.jpg")}
-              alt="Misty background"
-              fill
-              className="object-cover object-center grayscale contrast-125 opacity-70"
-            />
+            <video
+              ref={mainVideoRef}
+              loop
+              muted
+              playsInline
+              preload="auto"
+              poster={POSTER_SRC}
+              className="absolute inset-0 w-full h-full object-cover object-center grayscale contrast-125 opacity-70"
+            >
+              <source src={VIDEO_SRC} type="video/webm" />
+            </video>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#38bdf8_0%,transparent_50%)] blur-[100px] opacity-30 mix-blend-screen" />
           </motion.div>
           {/* Noise/Dust texture representing rain/mist */}
@@ -86,13 +111,37 @@ export function MistyPaths() {
         />
 
         {/* Header */}
-        <header className="relative z-10 flex items-center justify-between px-6 py-8 md:px-12 md:py-10">
+        <header className="relative z-10 flex items-start justify-between px-6 py-8 md:px-12 md:py-10">
           <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#e0e7ff]/40">
-            Inquation / Memoir
+            Memoir
           </div>
-          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#e0e7ff]/40 text-right flex items-center gap-2">
-            <Droplets className="w-3 h-3 text-[#38bdf8]" />
-            15
+          <div className="flex flex-col items-end gap-3">
+            <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#e0e7ff]/40 text-right flex items-center gap-2">
+              <Droplets className="w-3 h-3 text-[#38bdf8]" />
+              15
+            </div>
+            <a
+              href="https://www.instagram.com/aadhiii_diaries/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-[#e0e7ff]/10 text-[#e0e7ff]/90 hover:text-[#e0e7ff] transition-all duration-300 shadow-2xl group hover:border-[#38bdf8]/40 pointer-events-auto"
+            >
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 p-[1.5px] flex items-center justify-center shadow-md">
+                <div className="w-full h-full bg-[#040e16] rounded-full flex items-center justify-center">
+                  <svg className="w-3 h-3 text-[#e0e7ff] group-hover:scale-110 transition-transform fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </div>
+              </div>
+              <div className="flex flex-col text-left leading-tight pr-1">
+                <span className="font-mono text-[8px] uppercase tracking-widest text-[#e0e7ff]/50">Captured by</span>
+                <span className="font-sans text-xs font-medium tracking-wide flex items-center gap-1">
+                  Adithya
+                  <span className="text-[#e0e7ff]/50 font-normal">@aadhiii_diaries</span>
+                  <ArrowUpRight className="w-3 h-3 text-[#e0e7ff]/60 group-hover:text-[#e0e7ff] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </span>
+              </div>
+            </a>
           </div>
         </header>
 

@@ -1,0 +1,71 @@
+.track {
+  animation: marquee var(--marquee-duration, 34s) linear infinite;
+  will-change: transform;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.spin {
+  animation: spin 26s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Graph-paper backdrop for the hero, tinted from the section ink. */
+.blueprint {
+  background-image:
+    linear-gradient(rgb(23 40 42 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(23 40 42 / 0.07) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+/* IC-chip pin marks tiled along the top and bottom edge of a module card. */
+.pins {
+  height: 9px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='9'><rect x='11' y='0' width='6' height='9' fill='%2317282a'/></svg>");
+  background-repeat: repeat-x;
+  background-position: 14px 0;
+  background-size: 28px 9px;
+  opacity: 0.22;
+}
+
+/* Vertical circuit trace running behind the activity nodes. */
+.trace {
+  position: relative;
+}
+
+.trace::before {
+  content: "";
+  position: absolute;
+  left: 1.375rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-image: linear-gradient(to bottom, currentColor 0 6px, transparent 6px 10px);
+  background-size: 1px 10px;
+  opacity: 0.5;
+}
+
+@media (min-width: 640px) {
+  .trace::before {
+    left: 1.875rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .spin {
+    animation: none;
+  }
+}

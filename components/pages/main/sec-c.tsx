@@ -2,7 +2,6 @@
 
 import { motion, useInView } from "framer-motion"
 import { useState, useEffect, useRef } from "react"
-import { useAudio } from "@/context/audio.context"
 import { resolveAsset } from "@/lib/asset-registry"
 import { preload } from "@/lib/preload"
 import { cn } from "@/lib/utils"
@@ -35,7 +34,7 @@ const DIGNITARIES: DignitaryItem[] = [
     initials: "PG",
   },
   {
-    id: "krishi_minister",
+    id: "siddique",
     name: "Shri. T. Siddique",
     title: "MLA, Kalpetta",
     message: "It brings great pride to see the technical excellence of our students taking a creative form. This initiative is a testament to the vibrant community at GECW.",
@@ -58,6 +57,24 @@ const DIGNITARIES: DignitaryItem[] = [
     message: "True education extends beyond classrooms and laboratories into boundless imagination. This magazine stands as a powerful mirror to our students' intellect, artistic voice, and academic excellence.",
     image: resolveAsset("rajeev.webp"),
     initials: "VRR",
+  },
+  {
+    id: "former_principal",
+    name: "Dr. Pradeep V",
+    title: "Former Principal, GEC Wayanad",
+    category: "Former Principal's Note",
+    message: "This magazine truly represents the technical and creative minds of a vibrant campus. I congratulate SATHVA , the students’ union, the faculty & staff advisors and the entire editorial board for this felicitous initiative.",
+    image: resolveAsset("pradeep.webp"),
+    initials: "PV",
+  },
+  {
+    id: "anas_editorial",
+    name: "Anas M. M.",
+    title: "Staff Magazine Editor",
+    category: "Staff Editor's Note",
+    message: "‘Adhrysha Samavakyam’ is an intuitive journey into the mysteries of the universe and time—making concepts like time dilation, quantum entanglement, and wormholes accessible alongside student creativity and shared memories. May it inspire curiosity and wonder in every reader.",
+    image: resolveAsset("anas.webp"),
+    initials: "AMM",
   },
   {
     id: "staff_advisor",
@@ -87,9 +104,6 @@ function FeaturedCard({ item, index }: { item: DignitaryItem; index: number }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
       className={cn(
         "group relative w-full flex flex-col md:flex-row overflow-hidden border-b border-black/10 last:border-b-0",
         index % 2 === 1 && "md:flex-row-reverse"
@@ -111,8 +125,8 @@ function FeaturedCard({ item, index }: { item: DignitaryItem; index: number }) {
         <div className={cn(
           "absolute inset-0 pointer-events-none",
           index % 2 === 0
-            ? "bg-gradient-to-r from-transparent to-[#d9d4c7] hidden md:block"
-            : "bg-gradient-to-l from-transparent to-[#d9d4c7] hidden md:block"
+            ? "bg-gradient-to-r from-transparent from-[70%] to-[#d9d4c7] hidden md:block"
+            : "bg-gradient-to-l from-transparent from-[70%] to-[#d9d4c7] hidden md:block"
         )} />
         <div className="absolute bottom-0 left-0 right-0 p-4 md:hidden bg-gradient-to-t from-black/60 to-transparent">
           <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-white/70">
@@ -162,8 +176,6 @@ function FeaturedCard({ item, index }: { item: DignitaryItem; index: number }) {
 }
 
 export function SecC() {
-  const { playAudio } = useAudio()
-
   useEffect(() => {
     DIGNITARIES.forEach((item) => {
       preload(item.image, "image")
@@ -176,7 +188,6 @@ export function SecC() {
       className="relative w-full bg-[#d9d4c7] text-black z-20 overflow-hidden"
     >
       <motion.div
-        onViewportEnter={() => playAudio?.(resolveAsset("intro.mp3"), 2)}
         className="relative z-10 w-full"
       >
         <div className="w-full px-6 md:px-16 pt-20 pb-12 md:pt-28 md:pb-16 border-b border-black/10">

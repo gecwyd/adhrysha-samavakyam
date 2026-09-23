@@ -38,33 +38,21 @@ export function VersionZero() {
       <div className="mx-auto max-w-[1440px] px-6 py-12 sm:px-10 lg:px-16">
         <article className="mt-16 sm:mt-24 lg:mt-32 max-w-5xl mx-auto pb-24 sm:pb-32">
           <header className="mb-20 md:mb-28">
-            <motion.h2
+            <h2
               id="version-zero-title"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ delay: 0.1, duration: 0.7, ease: "easeOut" }}
               className="font-heading text-[18vw] sm:text-[14vw] md:text-[11vw] lg:text-[9.5vw] leading-[0.8] tracking-[-0.02em] text-[#191713]"
             >
               VERSION
               <br />
               <span className="relative inline-block text-[#a84e2a]">
                 ZERO.
-                <motion.div 
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+                <div
                   className="absolute -bottom-2 md:-bottom-4 left-0 w-full h-[3px] md:h-1 bg-[#a84e2a] origin-left rounded-full"
                 />
               </span>
-            </motion.h2>
-            
-            <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.8 }}
+            </h2>
+
+            <div
               className="mt-16 sm:mt-24 border-t border-[#191713]/20 pt-10"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-10">
@@ -92,14 +80,10 @@ export function VersionZero() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Story Artwork */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-              transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+            <div
               className="mt-16 mb-16 relative w-full max-w-lg mx-auto aspect-[912/988] overflow-hidden"
             >
               <Image
@@ -109,7 +93,7 @@ export function VersionZero() {
                 className="object-cover object-top mix-blend-multiply opacity-90"
                 unoptimized
               />
-            </motion.div>
+            </div>
           </header>
 
           <div className="relative pl-6 md:pl-10">

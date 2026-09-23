@@ -1,25 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useAudio } from "@/context/audio.context";
 import { preload } from "@/lib/preload";
 import { resolveAsset } from "@/lib/asset-registry";
 import { clockEssay } from "@/lib/clock-essay";
-
-const TIME_DILATION_BG = resolveAsset("time-dilation.mp3");
 
 const HERO_IMAGE = resolveAsset("clock-essay-hero.webp");
 
 function ArticleParagraph({ text, isFirst }: { text: string; isFirst?: boolean }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 25 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-      transition={{ duration: 0.8 }}
-      className="relative"
-    >
+    <div className="relative">
       <p
         lang="ml"
         className={`font-serif leading-[1.85] text-[#e0ddd6]/90 ${
@@ -30,26 +21,16 @@ function ArticleParagraph({ text, isFirst }: { text: string; isFirst?: boolean }
       >
         {text}
       </p>
-    </motion.div>
+    </div>
   );
 }
 
 export function ClockEssay() {
   const containerRef = useRef<HTMLElement>(null);
-  const { playbg } = useAudio();
-  const [hasEntered, setHasEntered] = useState(false);
 
   useEffect(() => {
-    preload(TIME_DILATION_BG, "audio");
     preload(HERO_IMAGE, "image");
   }, []);
-
-  const handleViewportEnter = () => {
-    if (!hasEntered) {
-      setHasEntered(true);
-      playbg(TIME_DILATION_BG, { loop: true, volume: 0.3, startSeconds: 10 });
-    }
-  };
 
   return (
     <section
@@ -60,28 +41,16 @@ export function ClockEssay() {
     >
       <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 pt-28 sm:pt-36 pb-12 sm:pb-16">
         <motion.div
-          onViewportEnter={handleViewportEnter}
-          viewport={{ margin: "-10% 0px -10% 0px" }}
           className="flex flex-col items-center text-center mb-20 sm:mb-28"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="flex items-center gap-3 mb-6 sm:mb-8"
-          >
+          <div className="flex items-center gap-3 mb-6 sm:mb-8">
             <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.35em] text-[#c96a45]">
               ഒരു ചിന്ത · Reflection
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
+          <h2
             id="clock-essay-title"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15, duration: 1 }}
             className="font-heading text-[16vw] sm:text-[13vw] md:text-[100px] lg:text-[120px] leading-[0.9] tracking-tight text-[#f5f1e8]"
           >
             ഘടികാരം
@@ -89,7 +58,7 @@ export function ClockEssay() {
             <span className="text-[#c96a45] italic">പറയാത്ത</span>
             <br />
             സമയം
-          </motion.h2>
+          </h2>
         </motion.div>
 
         <div className="relative w-full max-w-[1300px] mx-auto lg:grid lg:grid-cols-12 gap-10 lg:gap-20 pb-0">
@@ -116,37 +85,25 @@ export function ClockEssay() {
             {clockEssay.map((item, i) => (
               <div key={i} className="flex flex-col gap-10 sm:gap-14">
                 {i === 6 && (
-                  <motion.blockquote
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                    transition={{ duration: 0.8 }}
-                    className="border-l-[3px] border-[#c96a45] pl-6 sm:pl-8 my-4 py-2"
-                  >
+                  <blockquote className="border-l-[3px] border-[#c96a45] pl-6 sm:pl-8 my-4 py-2">
                     <p
                       lang="ml"
                       className="font-serif text-[24px] sm:text-[30px] md:text-[34px] text-[#f5f1e8] leading-[1.4] tracking-tight"
                     >
-                      "അളക്കാൻ കഴിയുന്നത് സമയത്തിന്റെ ദൈർഘ്യമാണ്; എന്നാൽ അതിന്റെ ആഴമല്ല. ആ ആഴം സൃഷ്ടിക്കുന്നത് അനുഭവങ്ങളാണ്."
+                      "അള�ക്കാൻ കഴിയുന്നത് സമയത്തിന്റെ ദൈർഘ്യമാണ്; എന്നാൽ അതിന്റെ ആഴമല്ല. ആ ആഴം സൃഷ്ടിക്കുന്നത് അനുഭവങ്ങളാണ്."
                     </p>
-                  </motion.blockquote>
+                  </blockquote>
                 )}
 
                 {i === 10 && (
-                  <motion.blockquote
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                    transition={{ duration: 0.8 }}
-                    className="border-l-[3px] border-[#c96a45] pl-6 sm:pl-8 my-4 py-2"
-                  >
+                  <blockquote className="border-l-[3px] border-[#c96a45] pl-6 sm:pl-8 my-4 py-2">
                     <p
                       lang="ml"
                       className="font-serif text-[24px] sm:text-[30px] md:text-[34px] text-[#c96a45] leading-[1.4] tracking-tight"
                     >
                       "ഒടുവിൽ, സമയം അളക്കുന്നത് ഘടികാരമാണ്. പക്ഷേ സമയത്തിന്റെ യഥാർത്ഥ കഥ എഴുതുന്നത് മനുഷ്യജീവിതമാണ്."
                     </p>
-                  </motion.blockquote>
+                  </blockquote>
                 )}
 
                 {i !== 6 && i !== 10 && (

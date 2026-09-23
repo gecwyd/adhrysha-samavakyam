@@ -101,7 +101,7 @@ export function MistyPathsStory() {
           />
         </div>
         <div className={styles.heroBody}>
-          <p className={styles.kicker}>Inquation · Memoir</p>
+          <p className={styles.kicker}>Memoir</p>
           <h2 id="misty-paths-title" className={styles.title} lang="ml">മഞ്ഞിറങ്ങിയ<br />വഴികൾ</h2>
           <p className={styles.byline}>Anjali Krishna · ECE 3rd Year</p>
           <p className={styles.lede} lang="ml">{P[0]}</p>

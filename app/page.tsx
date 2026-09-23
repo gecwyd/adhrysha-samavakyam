@@ -2,6 +2,8 @@ import { ComingSoon } from "@/components/pages/main/coming-soon";
 import { SecA } from "@/components/pages/main/sec-a";
 import { SecB } from "@/components/pages/main/sec-b";
 import { SecC } from "@/components/pages/main/sec-c";
+import { SayNoToDrugs } from "@/components/pages/main/say-no-to-drugs";
+import { AdrishyaBhasha } from "@/components/pages/main/adrishya-bhasha";
 import { TimeDilation } from "@/components/pages/main/time-dilation";
 import { ClockEssay } from "@/components/pages/main/clock-essay";
 import { TickTickTick } from "@/components/pages/main/tick-tick-tick";
@@ -23,8 +25,8 @@ import { Iruttu } from "@/components/pages/main/iruttu";
 import { Nanmayude } from "@/components/pages/main/nanmayude";
 import { TheGirlWhoDances } from "@/components/pages/main/the-girl-who-dances";
 import { ShadowOfWar } from "@/components/pages/main/shadow-of-war";
-import { GecwMist } from "@/components/pages/main/gecw-mist";
 import { MistyPathsStory } from "@/components/pages/main/misty-paths-story";
+import { MistyPaths } from "@/components/pages/main/misty-paths";
 import { LastBench } from "@/components/pages/main/last-bench";
 import { RootsAndWings } from "@/components/pages/main/roots-and-wings";
 import { InTheirImage } from "@/components/pages/main/in-their-image";
@@ -57,6 +59,9 @@ import { BhoomithraSena } from "@/components/pages/main/bhoomithra-sena";
 import { Thrive } from "@/components/pages/main/thrive";
 import { StudentProjects } from "@/components/pages/main/student-projects";
 import { Sports } from "@/components/pages/main/sports";
+import { CheruvayalRaman } from "@/components/pages/main/cheruvayal-raman";
+import { NonTeachingStaff } from "@/components/pages/main/non-teaching-staff";
+import { Closing } from "@/components/pages/main/closing";
 
 export default function Home() {
   if (process.env.NODE_ENV === "development") {
@@ -65,6 +70,9 @@ export default function Home() {
         <SecA />
         <SecB />
         <SecC />
+        <SayNoToDrugs />
+        <AdrishyaBhasha />
+        <CheruvayalRaman />
         <TimeDilation />
         <ClockEssay />
         <TickTickTick />
@@ -90,6 +98,7 @@ export default function Home() {
         <WormholeStory />
         <WormholeEssay />
         <MistyPathsStory />
+        <MistyPaths />
         <LastBench />
         <RootsAndWings />
         <ChipHappens />
@@ -102,7 +111,7 @@ export default function Home() {
         <LastTree />
         <PromiseWeMustKeep />
         <ArtworksGallery />
-        <GecwMist />
+        <NonTeachingStaff />
         <Decibel />
         <DrawingClub />
         <IliadLiteratureClub />
@@ -120,6 +129,7 @@ export default function Home() {
         <Thrive />
         <StudentProjects />
         <Sports />
+        <Closing />
       </main>
     );
   }

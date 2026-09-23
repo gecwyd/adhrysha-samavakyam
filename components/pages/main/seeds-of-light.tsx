@@ -88,9 +88,9 @@ const NIGHT = PARAGRAPHS.slice(0, 6);
 const MORNING = PARAGRAPHS[6];
 
 /*
- * IMAGES — each picture below is a placeholder until its real file is uploaded to the release assets.
- * To replace one: upload the file named in `file` (webp) and it swaps in automatically. Nothing else to change.
- * `alt` is the full brief for the picture, so it can be handed straight to an image generator.
+ * IMAGES — three visual beats carry the story from night, through touch, into morning.
+ * The files are release-backed WebP assets so the section stays lightweight in production.
+ * `alt` keeps the visual intent documented alongside the story beat it supports.
  */
 const mock = (from: string, to: string, glow: string, gx: number, gy: number) =>
   "data:image/svg+xml;utf8," +

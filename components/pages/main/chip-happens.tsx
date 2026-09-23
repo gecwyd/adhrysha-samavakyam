@@ -59,7 +59,7 @@ export function ChipHappens() {
       className="relative w-full bg-[#050505] text-[#fafafa] font-sans selection:bg-white selection:text-black"
     >
       {/* Editorial Intro */}
-      <div className="min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-32 py-32 border-b border-white/5">
+      <div className="min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-32 pt-32 pb-0">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -98,9 +98,9 @@ export function ChipHappens() {
       {/* Sections */}
       <div className="w-full">
         {CHIP_PARTS.map((part, index) => (
-          <div key={index} className="min-h-screen flex flex-col lg:flex-row items-center border-b border-white/5">
+          <div key={index} className={`min-h-screen flex flex-col lg:flex-row items-center ${index === 0 ? '-mt-20' : ''}`}>
             {/* Left: Text Content */}
-            <div className="w-full lg:w-1/2 px-6 md:px-16 lg:px-32 py-24 lg:py-0">
+            <div className={`w-full lg:w-1/2 px-6 md:px-16 lg:px-32 ${index === 0 ? 'pt-0 pb-12' : 'py-12'} lg:py-0`}>
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}

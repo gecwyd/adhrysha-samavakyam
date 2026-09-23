@@ -66,7 +66,7 @@ export function SocialMedia() {
 
         <div className="relative z-10 flex flex-col items-center px-6 text-center">
           <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.3em] text-[#78a890]">
-            Inquation / Perspective · 04
+            Perspective · 04
           </p>
           <h2 className="mb-8 font-heading text-4xl leading-[1.2] tracking-tight text-[#e0e1dd] md:text-6xl lg:text-7xl" lang="ml">
             സോഷ്യൽ മീഡിയ,<br />

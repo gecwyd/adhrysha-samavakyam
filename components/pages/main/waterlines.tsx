@@ -82,7 +82,7 @@ export function Waterlines() {
           
           <div className="relative z-20 flex h-full flex-col justify-end p-8 md:p-16 lg:px-16 lg:py-24">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-[#38bdf8]">
-              Inquation / Poetry · 10
+              Poetry · 10
             </p>
             <h2 className="font-heading text-6xl leading-[1.1] tracking-widest text-[#e0f2fe] uppercase xl:text-7xl">
               Water<br />

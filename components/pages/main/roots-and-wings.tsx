@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { Cormorant_Garamond } from "next/font/google";
 import {
   motion,
   useReducedMotion,
   useScroll,
-  useSpring,
   useTransform,
 } from "framer-motion";
 import { resolveAsset } from "@/lib/asset-registry";
@@ -159,26 +158,19 @@ function Label({ children, className = "" }: { children: ReactNode; className?: 
 
 function Stanza({
   text,
-  index,
   accent,
   className = "",
   accentClass,
-  numberClass,
 }: {
   text: string;
-  index: number;
   accent: boolean;
   className?: string;
   accentClass: string;
-  numberClass: string;
 }) {
   const reduce = useReducedMotion();
   const lines = text.split("\n");
   return (
     <div className={className}>
-      <Label className={`mb-6 block ${numberClass}`}>
-        {String(index + 1).padStart(2, "0")} / {String(POEM_PARTS.length).padStart(2, "0")}
-      </Label>
       <p className="text-[1.75rem] font-light leading-[1.5] sm:text-[2.1rem] md:text-[2.6rem] md:leading-[1.45]">
         {lines.map((line, i) => {
           const isAccent = accent && i === lines.length - 1;
@@ -188,7 +180,7 @@ function Stanza({
               initial={reduce ? false : { opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "0px 0px -8% 0px" }}
-              transition={{ duration: 0.9, ease: EASE, delay: i * 0.12 }}
+              transition={{ duration: 0.65, ease: EASE, delay: i * 0.06 }}
               className={`block ${isAccent ? `italic ${accentClass}` : ""}`}
             >
               {line}
@@ -260,18 +252,22 @@ export function RootsAndWings() {
       </header>
 
       {/* ───────── I · Roots ───────── */}
-      <section ref={rootsRef} className="relative bg-[#16110d] text-[#efe4d2]">
-        <div className="mx-auto max-w-6xl px-6 py-28 md:px-10 md:py-44 lg:px-16">
+      <section ref={rootsRef} className="relative overflow-hidden bg-[#16110d] text-[#efe4d2]">
+        <div className="pointer-events-none absolute inset-0 opacity-20">
+          <Plate
+            shot={SHOTS.roots}
+            overlay={<div aria-hidden className="absolute inset-0 bg-gradient-to-b from-[#16110d]/20 via-[#16110d]/80 to-[#16110d]" />}
+          />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-6 py-28 md:px-10 md:py-44 lg:px-16">
           <ActHeading no="I" title="Roots" className="text-[#c98a4b]" />
-          <div className="mt-20 max-w-2xl space-y-32 md:mt-32 md:space-y-52">
+          <div className="mt-20 max-w-2xl space-y-16 md:mt-32 md:space-y-28">
             {POEM_PARTS.slice(0, 3).map((text, i) => (
               <Stanza
                 key={i}
                 text={text}
-                index={i}
                 accent={ACCENT_LAST.has(i)}
                 accentClass="text-[#c98a4b]"
-                numberClass="text-[#c98a4b]/70"
                 className={i % 2 ? "md:ml-[14%]" : ""}
               />
             ))}
@@ -280,99 +276,90 @@ export function RootsAndWings() {
       </section>
 
       {/* ───────── II · Storm ───────── */}
-      <section className="relative bg-gradient-to-b from-[#16110d] via-[#10161d] to-[#10161d] text-[#dbe4ec]">
-        <div className="mx-auto max-w-6xl px-6 pb-28 pt-12 md:px-10 md:pb-44 lg:px-16">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#16110d] via-[#10161d] to-[#10161d] text-[#dbe4ec]">
+        <div className="pointer-events-none absolute inset-0 opacity-30">
+          <Plate
+            shot={SHOTS.cave}
+            overlay={<div aria-hidden className="absolute inset-0 bg-gradient-to-b from-[#16110d]/60 via-[#10161d]/80 to-[#10161d]" />}
+          />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-12 md:px-10 md:pb-24 lg:px-16">
           <ActHeading no="II" title="Storm" className="text-[#8fb0c9]" />
-          <div className="mt-20 grid gap-16 md:mt-28 lg:grid-cols-12 lg:gap-20">
-            <Reveal className="lg:col-span-5">
-              <div className="relative aspect-[4/5] w-full overflow-hidden lg:sticky lg:top-24">
-                <Plate
-                  shot={SHOTS.cave}
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  overlay={<div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#10161d]/60 via-transparent to-transparent" />}
-                />
-              </div>
-            </Reveal>
-            <div className="space-y-32 md:space-y-52 lg:col-span-7 lg:pt-16">
-              {POEM_PARTS.slice(3, 6).map((text, i) => (
-                <Stanza
-                  key={i}
-                  text={text}
-                  index={i + 3}
-                  accent={ACCENT_LAST.has(i + 3)}
-                  accentClass="text-[#8fb0c9]"
-                  numberClass="text-[#8fb0c9]/70"
-                />
-              ))}
-            </div>
+          <div className="relative mt-20 max-w-2xl space-y-16 md:mt-28 md:space-y-28 lg:ml-[42%] lg:pt-16">
+            {POEM_PARTS.slice(3, 6).map((text, i) => (
+              <Stanza
+                key={i}
+                text={text}
+                accent={ACCENT_LAST.has(i + 3)}
+                accentClass="text-[#8fb0c9]"
+              />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ───────── Turn: tears become feathers ───────── */}
-      <div className="relative isolate h-[70svh] min-h-[420px] overflow-hidden bg-[#10161d]">
-        <Plate
-          shot={SHOTS.feathers}
-          overlay={
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-b from-[#10161d] via-transparent to-[#f6efe4]"
-            />
-          }
-        />
-      </div>
-
       {/* ───────── III · Wings ───────── */}
-      <section className="relative bg-[#f6efe4] text-[#2a2018] selection:bg-[#b5561f] selection:text-[#f6efe4]">
-        <div className="mx-auto max-w-6xl px-6 pb-28 pt-8 md:px-10 md:pb-44 lg:px-16">
+      <section className="relative overflow-hidden bg-[#f6efe4] text-[#2a2018] selection:bg-[#b5561f] selection:text-[#f6efe4]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[300px] bg-[#10161d] md:h-[380px]">
+          <Plate
+            shot={SHOTS.feathers}
+            className="object-cover opacity-[0.65]"
+            overlay={
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-b from-[#10161d] via-[#f6efe4]/80 to-[#f6efe4]"
+              />
+            }
+          />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-6 pb-10 pt-16 md:px-10 md:pb-16 md:pt-20 lg:px-16">
           <ActHeading no="III" title="Wings" className="text-[#b5561f]" />
-          <div className="mt-20 max-w-2xl space-y-32 md:mt-32 md:space-y-52 lg:ml-[8%]">
+          <div className="mt-16 max-w-2xl space-y-16 md:mt-20 md:space-y-28 lg:ml-[8%]">
             {POEM_PARTS.slice(6, 9).map((text, i) => (
               <Stanza
                 key={i}
                 text={text}
-                index={i + 6}
                 accent={ACCENT_LAST.has(i + 6)}
                 accentClass="text-[#b5561f]"
-                numberClass="text-[#b5561f]/70"
               />
             ))}
           </div>
         </div>
 
         {/* Finale */}
-        <div className="relative isolate h-[80svh] min-h-[440px] overflow-hidden">
+        <div className="relative isolate min-h-[760px] overflow-hidden md:min-h-[900px]">
           <Plate
             shot={SHOTS.flight}
             overlay={
-              <div
-                aria-hidden
-                className="absolute inset-0 bg-gradient-to-b from-[#f6efe4] via-transparent to-[#f6efe4]"
-              />
+              <>
+                <div aria-hidden className="absolute inset-0 bg-[#f6efe4]/35" />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-b from-[#f6efe4] via-transparent to-[#f6efe4]"
+                />
+              </>
             }
           />
-        </div>
-
-        <div className="mx-auto max-w-4xl px-6 pb-28 text-center md:px-10 md:pb-40">
-          {(() => {
-            const lines = POEM_PARTS[9].split("\n");
-            const closing = lines[lines.length - 1];
-            return (
-              <Reveal>
-                <Label className="mb-8 block text-[#b5561f]/70">10 / 10</Label>
-                <p className="text-[1.6rem] font-light leading-[1.6] text-[#2a2018]/80 md:text-[2.25rem]">
-                  {lines.slice(0, -1).map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))}
-                </p>
-                <p className="mx-auto mt-10 max-w-3xl text-[2.25rem] font-light italic leading-[1.25] text-[#b5561f] sm:text-[3.25rem] md:text-[4.5rem]">
-                  {closing}
-                </p>
-              </Reveal>
-            );
-          })()}
+          <div className="relative mx-auto flex min-h-[760px] max-w-4xl items-start px-6 pb-28 pt-12 text-center md:min-h-[900px] md:px-10 md:pb-40 md:pt-16">
+            {(() => {
+              const lines = POEM_PARTS[9].split("\n");
+              const closing = lines[lines.length - 1];
+              return (
+                <Reveal>
+                  <p className="text-[1.6rem] font-normal leading-[1.6] text-[#211810] [text-shadow:0_1px_2px_rgba(246,239,228,0.95)] md:text-[2.25rem]">
+                    {lines.slice(0, -1).map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </p>
+                  <p className="mx-auto mt-6 max-w-3xl text-[2.25rem] font-normal italic leading-[1.25] text-[#9f4317] [text-shadow:0_1px_2px_rgba(246,239,228,0.95)] sm:text-[3.25rem] md:text-[4.5rem]">
+                    {closing}
+                  </p>
+                </Reveal>
+              );
+            })()}
+          </div>
         </div>
 
         {/* Author */}
