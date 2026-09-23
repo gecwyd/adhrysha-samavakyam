@@ -307,7 +307,7 @@ export function NonTeachingStaff() {
             അതിലെ ചില ഘടകങ്ങൾ നമുക്ക് കാണാം. ചിലത് കാണാതെ പോകും.
           </p>
           <p lang="ml" className="pt-4 text-2xl font-medium leading-tight text-[#1a1512] sm:text-3xl">
-            അവിടെയാണ് — <span className="text-[#9a6a1f]">അദൃശ്യ സമവാക്യം</span>.
+            അവിടെയാണ് <span className="text-[#9a6a1f]">അദൃശ്യ സമവാക്യം</span>.
           </p>
         </motion.div>
       </div>

@@ -187,7 +187,7 @@ function Hero() {
             style={{ y: reduceMotion ? 0 : subY }}
             className="mx-auto mt-8 max-w-lg font-serif text-lg leading-[1.6] text-[color:var(--muted)] sm:text-xl"
           >
-            Three working prototypes, engineered and defended inside a single academic year — read the story
+            Three working prototypes, engineered and defended inside a single academic year. Read the story
             behind each below.
           </motion.p>
         </motion.div>

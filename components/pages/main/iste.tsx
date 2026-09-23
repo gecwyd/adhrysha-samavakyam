@@ -57,7 +57,7 @@ const TAPE_WORDS = ["Build", "Solder", "Pitch", "Code", "Design", "Lead", "Prese
 const MODULES = [
   {
     tag: "Why it's worth joining",
-    body: "Being part of ISTE isn't just a line on your resume. It's where you pick up the things engineering courses don't always teach directly: how to work in a team, speak in front of a crowd, pitch an idea, or lead a project. Members get access to hands-on sessions, guidance from alumni and faculty advisors, and a network of peers across departments and even other colleges. It's also a place to lead, not just attend — every year, students step into roles like Forum Head, Design Lead, Media Lead, or Documentation Lead, running real events from planning to execution.",
+    body: "Being part of ISTE isn't just a line on your resume. It's where you pick up the things engineering courses don't always teach directly: how to work in a team, speak in front of a crowd, pitch an idea, or lead a project. Members get access to hands-on sessions, guidance from alumni and faculty advisors, and a network of peers across departments and even other colleges. It's also a place to lead, not just attend. Every year, students step into roles like Forum Head, Design Lead, Media Lead, or Documentation Lead, running real events from planning to execution.",
   },
   {
     tag: "Who can join",
@@ -219,7 +219,7 @@ export function Iste() {
             <ReportPhoto
               id="iste-1"
               alt="Students attending an ISTE session in a lecture hall"
-              caption="Fig. 01 — Session in progress"
+              caption="Fig. 01: Session in progress"
               ratio="4 / 3"
               sizes="(max-width: 640px) 100vw, 50vw"
             />
@@ -228,7 +228,7 @@ export function Iste() {
             <ReportPhoto
               id="iste-2"
               alt="Students working at computers during an ISTE workshop"
-              caption="Fig. 02 — Hands-on workshop"
+              caption="Fig. 02: Hands-on workshop"
               ratio="4 / 3"
               sizes="(max-width: 640px) 100vw, 50vw"
             />
@@ -260,7 +260,7 @@ export function Iste() {
           <div className="flex flex-col items-start gap-10 py-20 sm:flex-row sm:items-end sm:justify-between sm:py-28">
             <Reveal>
               <p className="max-w-xl font-serif text-2xl italic leading-[1.4] sm:text-3xl">
-                Come for a single workshop, or stay to help run the chapter — ISTE is what you make of it.
+                Come for a single workshop, or stay to help run the chapter. ISTE is what you make of it.
               </p>
               <p className="mt-8 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.34em] text-[color:var(--accent)]">
                 <span className="h-px w-10 bg-[color:var(--accent)]" />

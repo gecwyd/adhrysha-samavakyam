@@ -21,7 +21,7 @@ export const clockEssay = [
     "malayalam": "എന്നാൽ ഈ ആശയം ഭൗതികശാസ്ത്രത്തിന്റെ അതിരുകൾക്കുള്ളിൽ മാത്രം ഒതുങ്ങുന്നില്ല. ഓരോ മനുഷ്യജീവിതവും അതിന്റെ നിശ്ശബ്ദ സാക്ഷ്യമാണ്. ചില ദിവസങ്ങൾ ജീവിതത്തെ മാറ്റിമറിക്കുന്നു. ചില വർഷങ്ങൾ ഓർമ്മയിൽ പോലും അവശേഷിക്കുന്നില്ല. ചില കൂടിക്കാഴ്ചകൾ നിമിഷങ്ങൾ മാത്രമേ നീണ്ടുനിൽക്കൂ; പക്ഷേ അവയുടെ പ്രതിധ്വനി ഒരു ജീവിതകാലം മുഴുവൻ കേൾക്കാം. ചില വിടപറച്ചിലുകൾ ഏതാനും വാക്കുകൾ മാത്രമായിരിക്കും; എങ്കിലും അവയ്ക്ക് വർഷങ്ങളുടെ ഭാരം ഉണ്ടാകും."
   },
   {
-    "english": "Perhaps that is why time seems to travel through more than the hands of a clock. It moves through our memories, relationships and hopes. The same calendar, the same date, the same year—yet each of us inhabits a different time. Some live in the past, some in dreams of the future, and only some in this moment.",
+    "english": "Perhaps that is why time seems to travel through more than the hands of a clock. It moves through our memories, relationships and hopes. The same calendar, the same date, the same year, yet each of us inhabits a different time. Some live in the past, some in dreams of the future, and only some in this moment.",
     "malayalam": "അതുകൊണ്ടാണ് സമയം ഘടികാരത്തിന്റെ സൂചികളിലൂടെ മാത്രം സഞ്ചരിക്കുന്നതല്ലെന്ന് തോന്നുന്നത്. അത് മനുഷ്യരുടെ ഓർമ്മകളിലൂടെയും ബന്ധങ്ങളിലൂടെയും പ്രതീക്ഷകളിലൂടെയും സഞ്ചരിക്കുന്നു. ഒരേ കലണ്ടർ, ഒരേ തീയതി, ഒരേ വർഷം-എന്നിട്ടും ഓരോ മനുഷ്യനും ജീവിക്കുന്നത് വ്യത്യസ്ത സമയങ്ങളിലാണ്; ചിലർ ഭൂതകാലത്തിൽ, ചിലർ ഭാവിയുടെ സ്വപ്നങ്ങളിൽ, ചിലർ മാത്രം ഈ നിമിഷത്തിൽ."
   },
   {
@@ -33,7 +33,7 @@ export const clockEssay = [
     "malayalam": "അതുകൊണ്ടാണ് ഒരേ നാല് വർഷം ഒരു കോളേജിൽ ചെലവഴിച്ച നൂറുകണക്കിന് വിദ്യാർത്ഥികൾ, പുറത്തേക്ക് ഇറങ്ങുമ്പോൾ നൂറുകണക്കിന് വ്യത്യസ്ത കാലങ്ങളാണ് മനസ്സിൽ കൊണ്ടുപോകുന്നത്. അവർ പഠിച്ചത് ഒരേ പാഠപുസ്തകങ്ങളായിരിക്കാം; പക്ഷേ അവർ ജീവിച്ച സമയം ഒരിക്കലും ഒരുപോലെയായിരുന്നില്ല."
   },
   {
-    "english": "Perhaps that is also why a clock cannot record life’s most precious moments. A glance, a smile, rain, a journey, a friendship, a loss—none can be contained by a measure of time. They live in the calendar of the mind.",
+    "english": "Perhaps that is also why a clock cannot record life’s most precious moments. A glance, a smile, rain, a journey, a friendship, a loss, none can be contained by a measure of time. They live in the calendar of the mind.",
     "malayalam": "ഒരുപക്ഷേ, അതുകൊണ്ടാവാം ജീവിതത്തിലെ ഏറ്റവും വിലപ്പെട്ട നിമിഷങ്ങൾ ഘടികാരം രേഖപ്പെടുത്താത്തത്. ഒരു നോട്ടം, ഒരു ചിരി, ഒരു മഴ, ഒരു യാത്ര, ഒരു സൗഹൃദം, ഒരു നഷ്ടം-ഇവയൊന്നും സമയത്തിന്റെ അളവിൽ ഒതുങ്ങുന്നില്ല. അവ മനസ്സിന്റെ കലണ്ടറിലാണ് ജീവിക്കുന്നത്."
   },
   {

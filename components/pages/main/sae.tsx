@@ -67,7 +67,7 @@ const STATS = [
   { value: "03", label: "Workshop Days" },
   { value: "04", label: "Flagship Events" },
   { value: "01", label: "SAE Chapter" },
-  { value: "25—26", label: "Academic Year" },
+  { value: "25/26", label: "Academic Year" },
 ];
 
 const TAPE_TOP = ["Torque", "Chassis", "Ignition", "Velocity", "Gearbox", "Grid"];

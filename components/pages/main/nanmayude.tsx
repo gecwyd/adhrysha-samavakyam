@@ -24,28 +24,16 @@ const STANZAS = [
   ["പറയൂ പകരൂ നീ നന്മതൻ പ്രിയസ്വപ്നങ്ങൾ", "ക്വാണമോടംബര ഛായയിൽ", "വളരും മൊട്ടുകൾ വിടരട്ടേ നന്മയാൽ"],
 ];
 
-function ScrollLine({ children, accent }: { children: React.ReactNode; accent: boolean }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 90%", "end 15%"],
-  });
-
-  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.88, 1, 1, 0.88]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.15, 1, 1, 0.15]);
-  const y = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [18, 0, 0, -18]);
-
+function PoemLine({ children, accent }: { children: React.ReactNode; accent: boolean }) {
   return (
-    <motion.p
-      ref={ref}
-      style={{ scale, opacity, y, transformOrigin: "left center" }}
+    <p
       className={`font-light italic tracking-wide text-[22px] leading-[1.7] sm:text-[26px] md:text-[32px] md:leading-[1.75] ${
         accent ? "text-[#bef264]" : "text-[#ecfccb]"
       }`}
       lang="ml"
     >
       {children}
-    </motion.p>
+    </p>
   );
 }
 
@@ -53,9 +41,9 @@ function StanzaBlock({ lines, accent }: { lines: string[]; accent: boolean }) {
   return (
     <div className="mb-16 flex flex-col items-start gap-3 sm:mb-20 sm:gap-4">
       {lines.map((line, i) => (
-        <ScrollLine key={i} accent={accent}>
+        <PoemLine key={i} accent={accent}>
           {line}
-        </ScrollLine>
+        </PoemLine>
       ))}
     </div>
   );

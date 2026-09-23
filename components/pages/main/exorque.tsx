@@ -43,7 +43,7 @@ const CHAPTERS: {
 }[] = [
   {
     code: "EXH",
-    title: "Exhibition — All Kerala Technology Fair",
+    title: "Exhibition: All Kerala Technology Fair",
     date: "5–6 Jan 2024",
     venue: "Govt. Technical High School, Sulthanbathery",
     body: "EXORQUE participated in the Science Fair held on January 5 and 6, 2024, at Government Technical High School, Sulthanbathery. The exhibition showcased automotive technology, sustainability and engineering principles through various displays and demonstrations. A working model of an internal combustion engine helped visitors understand components such as pistons, crankshafts and camshafts. Interactive sessions also gave students an opportunity to assemble and disassemble small engine parts. The exhibition received positive feedback and encouraged students to explore automotive engineering and mechanics.",
@@ -343,7 +343,7 @@ export function Exorque() {
               <Reveal>
                 <Kicker>From the workshop floor</Kicker>
                 <p className="max-w-3xl font-heading text-3xl uppercase leading-[1.05] sm:text-4xl lg:text-5xl">
-                  Every teardown, every rebuild, every quiz answered —{" "}
+                  Every teardown, every rebuild, every quiz answered. {" "}
                   <span className="text-[color:var(--accent)]">a lesson learned beyond the syllabus.</span>
                 </p>
               </Reveal>

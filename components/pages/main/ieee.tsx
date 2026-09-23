@@ -292,7 +292,7 @@ function StatBlock({ value, label }: { value: string; label: string }) {
 }
 
 export function Ieee() {
-  const span = `${EVENTS[0].date.split(" ").slice(-2).join(" ")} — ${EVENTS[EVENTS.length - 1].date.split(" ").slice(-2).join(" ")}`;
+  const span = `${EVENTS[0].date.split(" ").slice(-2).join(" ")} to ${EVENTS[EVENTS.length - 1].date.split(" ").slice(-2).join(" ")}`;
 
   return (
     <ReportSection id="sec-ieee" tone={TONE}>

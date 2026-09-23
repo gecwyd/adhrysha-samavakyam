@@ -73,7 +73,7 @@ export default function ArtworksPage() {
               </span>
             </h1>
             <p className="text-white/60 font-serif text-lg sm:text-xl max-w-2xl leading-relaxed">
-              Explore the spectrum of artistic talents from Government Engineering College Wayanad — featuring fine sketches, dynamic inks, oil paintings, and digital masterworks.
+              Explore the spectrum of artistic talents from Government Engineering College Wayanad, featuring fine sketches, dynamic inks, oil paintings, and digital masterworks.
             </p>
           </div>
         </section>

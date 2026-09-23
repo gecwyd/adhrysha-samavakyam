@@ -1,62 +1,53 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
-declare global {
-  interface Window {
-    instgrm?: { Embeds: { process: () => void } };
+interface InstagramEmbedProps {
+  url: string;
+  caption?: string;
+  className?: string;
+}
+
+function getInstagramEmbedUrl(url: string) {
+  const match = url.match(/\/(p|reel|tv)\/([^/?#]+)/i);
+  if (!match) return null;
+  return `https://www.instagram.com/${match[1]}/${match[2]}/embed/captioned/`;
+}
+
+export function InstagramEmbed({ url, caption, className }: InstagramEmbedProps) {
+  const embedUrl = getInstagramEmbedUrl(url);
+
+  if (!embedUrl) {
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn(
+          "flex aspect-[4/5] w-full items-center justify-center bg-[#161616] px-6 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-[#f2ecdb]/60",
+          className
+        )}
+      >
+        View on Instagram &nearr;
+      </a>
+    );
   }
-}
-
-const SCRIPT_ID = "instagram-embed-script";
-
-function loadInstagramScript(): Promise<void> {
-  return new Promise((resolve) => {
-    if (window.instgrm) {
-      resolve();
-      return;
-    }
-    const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-    if (existing) {
-      existing.addEventListener("load", () => resolve(), { once: true });
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = SCRIPT_ID;
-    script.src = "https://www.instagram.com/embed.js";
-    script.async = true;
-    script.onload = () => resolve();
-    document.body.appendChild(script);
-  });
-}
-
-/** Renders a public Instagram post/reel via Instagram's own oEmbed widget (instagram.com/embed.js). */
-export function InstagramEmbed({ url, caption }: { url: string; caption?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    loadInstagramScript().then(() => {
-      if (!cancelled) window.instgrm?.Embeds.process();
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [url]);
 
   return (
-    <div ref={containerRef} className="w-full">
-      <blockquote
-        className="instagram-media"
-        data-instgrm-permalink={url}
-        data-instgrm-version="14"
-        style={{ background: "#000", border: 0, margin: 0, width: "100%", minWidth: "270px" }}
+    <div className={cn("relative w-full overflow-hidden bg-white", className)}>
+      <iframe
+        src={embedUrl}
+        title={caption ? `Instagram post: ${caption}` : "Instagram post"}
+        loading="lazy"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        className="block h-[620px] w-full border-0 sm:h-[680px]"
       />
-      {caption && (
-        <p className="mt-2 font-mono text-[9px] uppercase leading-relaxed tracking-[0.18em] text-[color:var(--muted)]">
-          {caption}
-        </p>
-      )}
+      <noscript>
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          View this post on Instagram
+        </a>
+      </noscript>
     </div>
   );
 }

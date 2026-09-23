@@ -35,26 +35,14 @@ const STANZAS = [
   ]
 ];
 
-function ScrollLine({ children, isTick }: { children: React.ReactNode, isTick: boolean }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 90%", "end 10%"]
-  });
-
-  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.85, 1, 1, 0.85]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.15, 1, 1, 0.15]);
-  const y = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [15, 0, 0, -15]);
-
+function PoemLine({ children, isTick }: { children: React.ReactNode, isTick: boolean }) {
   return (
-    <motion.p 
-      ref={ref}
-      style={{ scale, opacity, y, transformOrigin: "left center" }}
+    <p
       className={`font-sans font-light text-[24px] sm:text-[30px] md:text-[38px] lg:text-[46px] leading-[1.5] sm:leading-[1.6] tracking-tight ${isTick ? 'text-[#c96a45] font-normal italic' : 'text-[#e0ddd6]'}`} 
       lang="ml"
     >
       {children}
-    </motion.p>
+    </p>
   );
 }
 
@@ -64,9 +52,9 @@ function StanzaBlock({ lines, index }: { lines: string[], index: number }) {
       {lines.map((line, i) => {
         const isTick = line.includes("ടിക്");
         return (
-          <ScrollLine key={i} isTick={isTick}>
+          <PoemLine key={i} isTick={isTick}>
             {line}
-          </ScrollLine>
+          </PoemLine>
         );
       })}
     </div>
@@ -204,4 +192,3 @@ export function TickTickTick() {
     </section>
   );
 }
-

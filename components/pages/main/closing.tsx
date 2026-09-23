@@ -25,17 +25,17 @@ export function Closing() {
 
           <div className="mt-8 max-w-2xl space-y-5 text-[15px] leading-[1.85] text-[color:var(--muted)] sm:text-base">
             <p>
-              This year&rsquo;s magazine moved between two worlds without much warning — from an essay
+              This year&rsquo;s magazine moved between two worlds without much warning, from an essay
               on why light bends around a black hole, to a photograph of a kabaddi team catching its
               breath after a final. From a centuries-old Theyyam ritual to a robot competing in a
               national round. That was never an accident. A college is exactly this kind of place:
               too many things happening at once, all of it equally real.
             </p>
             <p>
-              &lsquo;Adrishya Samavakyam&rsquo; — the invisible equation — was the name we gave this year, but
+              &lsquo;Adrishya Samavakyam&rsquo;, the invisible equation, was the name we gave this year, but
               it was always bigger than four physics chapters. It was the unseen effort behind every
               club meeting, every practice session, every late edit. Some of it made it to these
-              pages. Most of it didn&rsquo;t, and that&rsquo;s fine — not everything needs to be written down
+              pages. Most of it didn&rsquo;t, and that&rsquo;s fine. Not everything needs to be written down
               to matter.
             </p>
           </div>
@@ -47,7 +47,7 @@ export function Closing() {
           </h2>
 
           <p className="mt-10 max-w-xl text-[15px] leading-[1.85] text-[color:var(--muted)] sm:text-base">
-            Seventeen clubs, four sporting campaigns, and a handful of essays — none of it was
+            Seventeen clubs, four sporting campaigns, and a handful of essays. None of it was
             really about the trophies or the equations. It was about a campus deciding, together,
             that this year was worth writing down. If you read this far, you were part of that too.
           </p>
@@ -60,7 +60,7 @@ export function Closing() {
           </div>
 
           <p className="mt-20 font-mono text-[10px] uppercase tracking-[0.5em] text-[color:var(--ink)]/20 sm:text-xs">
-            &mdash; Fin. &mdash;
+            Fin.
           </p>
         </div>
       </Container>

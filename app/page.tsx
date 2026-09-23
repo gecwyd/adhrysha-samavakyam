@@ -71,7 +71,6 @@ export default function Home() {
       <SecA />
       <SecB />
       <SecC />
-      <Sathva />
       <SayNoToDrugs />
       <AdrishyaBhasha />
       <CheruvayalRaman />
@@ -131,6 +130,7 @@ export default function Home() {
       <Thrive />
       <StudentProjects />
       <Sports />
+      <Sathva />
       <Closing />
     </main>
   );

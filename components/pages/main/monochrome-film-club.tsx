@@ -116,7 +116,7 @@ const FRAMES = [
 
 const SLATE_CELLS = [
   ["Prod.", "Monochrome"],
-  ["Roll", "2025—26"],
+  ["Roll", "2025/26"],
   ["Scene", "GECW"],
 ] as const;
 

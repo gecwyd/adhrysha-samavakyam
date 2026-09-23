@@ -235,7 +235,7 @@ export function BhoomithraSena() {
                 <GrowthRings className="absolute inset-0 h-full w-full text-[color:var(--accent)]" />
                 <Stamp
                   text="Bhoomithra ✦ Friend of the Earth ✦ "
-                  center="AY 25—26"
+                  center="AY 25/26"
                   className="relative mx-auto w-40 bg-[color:var(--cream)] text-[color:var(--ink)] shadow-[0_18px_30px_rgba(18,38,26,0.22)] sm:w-48"
                 />
               </div>
@@ -267,7 +267,7 @@ export function BhoomithraSena() {
           <div className="py-16 sm:py-24">
             <Reveal className="mb-14 grid items-end gap-6 sm:mb-20 md:grid-cols-[1fr_auto] md:gap-12">
               <div>
-                <Kicker>Season Log · 2025—26</Kicker>
+                <Kicker>Season Log · 2025/26</Kicker>
                 <h3 className="font-heading text-[clamp(3.5rem,11vw,8rem)] uppercase leading-[0.82] tracking-[-0.01em]">
                   Field
                   <span className="block pl-[0.1em] text-[color:var(--accent)]">Notes</span>

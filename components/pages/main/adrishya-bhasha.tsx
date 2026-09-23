@@ -495,7 +495,7 @@ export function AdrishyaBhasha() {
               "relative z-20 flex items-center justify-between px-6 pt-8 text-[9px] uppercase tracking-[0.3em] text-[#c9a56b]/70 sm:px-10 sm:pt-10"
             )}
           >
-            <span className="hidden sm:inline">Fig. 00 &mdash; Prologue</span>
+            <span className="hidden sm:inline">Fig. 00: Prologue</span>
             <span className="hidden sm:inline">04 Chapters</span>
           </motion.div>
 
@@ -553,7 +553,7 @@ export function AdrishyaBhasha() {
         <Scanlines opacity={0.03} />
         <div className="relative mx-auto max-w-5xl px-6 py-32 text-center md:px-12 md:py-48">
           <span className={cn(retroMono.className, "mb-8 inline-block rounded-sm border border-[#c9a56b]/30 px-2 py-1 text-[9px] uppercase tracking-[0.35em] text-[#c9a56b]/70")}>
-            Fig. 0 &mdash; Field Notes
+            Fig. 0: Field Notes
           </span>
           <p lang="en" className="font-heading text-[10vw] font-black leading-[0.9] tracking-tighter text-white sm:text-[8vw] md:text-[6vw]">
             <motion.span className="block" style={reduce ? undefined : { x: driftLeft }}>
@@ -578,7 +578,7 @@ export function AdrishyaBhasha() {
       {/* ───────── Article Part I ───────── */}
       <div className="relative z-20 bg-[#050505]">
         <article lang="ml" className="mx-auto max-w-5xl px-6 pb-24 md:px-12">
-          <SectionLabel title="Fig. I — The Unseen Universe" index="01" />
+          <SectionLabel title="Fig. I: The Unseen Universe" index="01" />
 
           <div className="max-w-3xl">
             <P lead>
@@ -617,7 +617,7 @@ export function AdrishyaBhasha() {
           <Sprockets className="top-3" />
           <Sprockets className="bottom-3" />
           <span className={cn(retroMono.className, "absolute bottom-6 right-6 z-20 text-[9px] uppercase tracking-[0.3em] text-[#c9a56b]/60 sm:right-10")}>
-            Fig. I.5 &mdash; Threads
+            Fig. I.5: Threads
           </span>
 
           <div className="relative z-10 mx-auto max-w-3xl px-6 py-28 text-center md:py-40">
@@ -633,7 +633,7 @@ export function AdrishyaBhasha() {
 
         {/* ───────── Article Part II ───────── */}
         <article lang="ml" className="mx-auto max-w-5xl px-6 pb-32 pt-12 md:px-12">
-          <SectionLabel title="Fig. II — Life's Own Equations" index="02" />
+          <SectionLabel title="Fig. II: Life's Own Equations" index="02" />
 
           <div className="grid items-start gap-12 md:grid-cols-12 md:gap-8">
             <div className="md:col-span-5">
@@ -673,7 +673,7 @@ export function AdrishyaBhasha() {
               another unknown opens ahead of it.
             </p>
             <p className="text-[1.4rem] font-normal leading-[1.7] text-[#c9a56b] drop-shadow-lg sm:text-[1.6rem] md:text-[2rem]">
-              This is a small attempt at that endless &lsquo;more&rsquo; &mdash;
+              This is a small attempt at that endless &lsquo;more&rsquo;.
               <br />
               the Invisible Equation.
             </p>
@@ -681,7 +681,7 @@ export function AdrishyaBhasha() {
 
           <div className="mt-16 flex flex-col items-center gap-3 md:mt-20">
             <p className={cn(retroMono.className, "max-w-xs text-[10px] leading-[1.8] tracking-[0.15em] text-[#dcd5c4]/40 sm:max-w-md sm:text-[11px]")}>
-              A note from the editor &mdash; thank you for reading this far into the unseen.
+              A note from the editor: thank you for reading this far into the unseen.
               Every equation here, seen or not, was built by hands that believed it was worth writing.
             </p>
             <p className="mt-2 font-sans text-base text-[#ece6d8]/80 sm:text-lg">
@@ -695,7 +695,7 @@ export function AdrishyaBhasha() {
           <p
             className={cn(retroMono.className, "mt-10 text-[10px] uppercase tracking-[0.5em] text-[#ece6d8]/20 sm:text-xs")}
           >
-            &mdash; Fin. &mdash;
+            Fin.
           </p>
         </div>
       </div>

@@ -56,7 +56,7 @@ const SHOTS = {
     n: 4,
     file: "last-bench-full-again.webp",
     ratio: "16:9",
-    alt: "The same classroom at dusk in warm lamp-orange light, with faint translucent silhouettes of students sitting at the desks and talking, as if memories are filling the room again — a soft double-exposure effect. The last bench in the foreground is empty and glowing. Dreamy and nostalgic, amber and dusty violet tones. No text.",
+    alt: "The same classroom at dusk in warm lamp-orange light, with faint translucent silhouettes of students sitting at the desks and talking, as if memories are filling the room again, a soft double-exposure effect. The last bench in the foreground is empty and glowing. Dreamy and nostalgic, amber and dusty violet tones. No text.",
     mock: mock("#3b2333", "#140d0a", "400,0 1200,0 1500,900 100,900"),
   },
 } satisfies Record<string, Shot>;

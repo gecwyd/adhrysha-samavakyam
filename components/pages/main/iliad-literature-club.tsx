@@ -213,7 +213,7 @@ export function IliadLiteratureClub() {
 
                 <Badge
                   text="Read ✦ Create ✦ Inspire ✦ "
-                  center="AY 25—26"
+                  center="AY 25/26"
                   className="absolute -bottom-8 -left-6 z-10 w-28 bg-[color:var(--gold)] text-[color:var(--ink)] sm:-left-16 sm:w-36"
                 />
               </div>
@@ -257,7 +257,7 @@ export function IliadLiteratureClub() {
                     >
                       <p className="font-serif text-lg italic leading-snug">“Your favourite line goes here.”</p>
                       <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.2em] text-[color:var(--accent)]">
-                        — Book · Author
+                        Book · Author
                       </p>
                     </div>
                   </div>

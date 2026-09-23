@@ -124,7 +124,7 @@ const STATS = [
 const SLATE = [
   ["Callsign", "Orion GECW"],
   ["Crew", "120"],
-  ["Orbit", "2025—26"],
+  ["Orbit", "2025/26"],
   ["Base", "GECW · Wayanad"],
 ] as const;
 
@@ -207,7 +207,7 @@ function HudFrame() {
         <MissionClock />
       </div>
       <div className="absolute bottom-3 left-4 hidden font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted)] sm:bottom-5 sm:left-16 sm:block">
-        Orbit 2025—26 · GECW
+        Orbit 2025/26 · GECW
       </div>
       <div className="absolute bottom-3 right-4 sm:bottom-5 sm:right-16">
         <SignalBars />

@@ -127,7 +127,7 @@ export function Preloader() {
 
           {!isComplete ? (
             <p className="max-w-md text-xs sm:text-sm font-mono tracking-[0.2em] uppercase text-black/50 tabular-nums">
-              Loading &mdash; {String(progress).padStart(2, "0")}%
+              Loading {String(progress).padStart(2, "0")}%
             </p>
           ) : (
             <p className="max-w-md text-sm leading-relaxed text-black/60 sm:text-base animate-in fade-in duration-500">

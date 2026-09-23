@@ -177,7 +177,7 @@ export function Aeronauts() {
 
           <RadarBadge
             text="Fly ✦ Build ✦ Soar ✦ "
-            center="AY 25—26"
+                center="AY 25/26"
             className="absolute bottom-8 right-5 hidden w-28 text-[color:var(--accent)] sm:flex sm:w-32 lg:right-16 lg:w-36"
           />
 
@@ -217,8 +217,8 @@ export function Aeronauts() {
             <div className="relative border border-[color:var(--rule)] px-6 py-10 sm:px-12 sm:py-14">
               <HudCorners className="text-[color:var(--rule)]" />
               <div className="mb-10 flex flex-wrap items-baseline justify-between gap-4 border-b border-[color:var(--rule)] pb-4 font-mono text-[9px] uppercase tracking-[0.28em] text-[color:var(--muted)]">
-                <span>Subject — Aeronauts Drone Club</span>
-                <span className="text-[color:var(--accent)]">Status — Active</span>
+                <span>Subject: Aeronauts Drone Club</span>
+                <span className="text-[color:var(--accent)]">Status: Active</span>
               </div>
               <div className="mx-auto max-w-3xl space-y-6 text-[15px] leading-[1.9] text-[color:var(--muted)] sm:text-lg">
                 {BEFORE_QUOTE.map((text, index) => (

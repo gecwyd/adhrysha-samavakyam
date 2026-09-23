@@ -33,7 +33,7 @@ const CLOSING =
 const BOOT_LINES = [
   { label: "init gbot_robotics_club.sys", status: "OK" },
   { label: "mount /arduino /sensors /motor_drivers /pcb", status: "OK" },
-  { label: "load events.log — 11 entries, 2024–26", status: "OK" },
+  { label: "load events.log: 11 entries, 2024–26", status: "OK" },
 ];
 
 const TAPE_WORDS = ["Build", "Debug", "Deploy", "Calibrate", "Iterate", "Automate", "Prototype", "Ship"];

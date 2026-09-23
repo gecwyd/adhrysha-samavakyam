@@ -63,9 +63,7 @@ const CHAPTERS: Chapter[] = [
 const CLOSING =
   "കാരണം ചില ബന്ധങ്ങൾക്ക് കിലോമീറ്ററുകൾ അളവുകോലാകില്ല. ചില ബന്ധങ്ങൾക്ക് വർഷങ്ങളും അതിരാകില്ല. ചിലത് വെറുതെ നിലനിൽക്കും: നമ്മുടെ ഓർമ്മകളിൽ, നമ്മുടെ സ്വഭാവത്തിൽ, നാം ആയിത്തീർന്ന മനുഷ്യനിൽ, നിശ്ശബ്ദമായി നെയ്തുചേർന്നുകൊണ്ട്.";
 
-/* Continuous scroll-scrubbed line: brightness and position track scroll
-   position directly (in and back out), never a one-shot viewport trigger. */
-function ScrollLine({
+function PassageText({
   children,
   className,
   style,
@@ -76,21 +74,14 @@ function ScrollLine({
   style?: CSSProperties;
   lang?: string;
 }) {
-  const reduce = useReducedMotion();
-  const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 92%", "end 30%"] });
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.18, 1, 1, 0.18]);
-  const y = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [22, 0, 0, -22]);
-
   return (
-    <motion.p
-      ref={ref}
+    <p
       lang={lang}
-      style={reduce ? style : { ...style, opacity, y }}
+      style={style}
       className={className}
     >
       {children}
-    </motion.p>
+    </p>
   );
 }
 
@@ -126,23 +117,23 @@ function ChapterBlock({ chapter }: { chapter: Chapter }) {
       <div className="space-y-8">
         {chapter.paragraphs.map((passage, index) =>
           passage.quote ? (
-            <ScrollLine
+            <PassageText
               key={index}
               lang="ml"
               style={{ ...ML, color: ACCENT }}
               className="text-2xl font-light italic leading-[1.6] sm:text-3xl"
             >
               {passage.text}
-            </ScrollLine>
+            </PassageText>
           ) : (
-            <ScrollLine
+            <PassageText
               key={index}
               lang="ml"
               style={ML}
               className="text-[1.05rem] font-light leading-[2] text-white/80 sm:text-lg"
             >
               {passage.text}
-            </ScrollLine>
+            </PassageText>
           ),
         )}
       </div>
@@ -187,9 +178,9 @@ export function QuantumEntanglementStory() {
       ))}
 
       <footer className="mx-auto max-w-2xl px-6 py-32 text-center">
-        <ScrollLine lang="ml" style={ML} className="text-2xl font-light italic leading-[1.7] sm:text-3xl">
+        <PassageText lang="ml" style={ML} className="text-2xl font-light italic leading-[1.7] sm:text-3xl">
           {CLOSING}
-        </ScrollLine>
+        </PassageText>
         <p className="mt-16 font-mono text-[10px] uppercase tracking-[0.3em] text-white/25">2025–26</p>
       </footer>
     </section>
