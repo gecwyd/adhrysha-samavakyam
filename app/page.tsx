@@ -76,18 +76,19 @@ export default function Home() {
       <SayNoToDrugs />
       <AdrishyaBhasha />
       <CheruvayalRaman />
+      <TimeDilation />
       <ShortFilm
         id="sec-h-film"
         video="time-dilation.webm"
         poster="time-dilation-poster.webp"
-        kicker="Before the Physics"
+        kicker="The Story Behind It"
         title="A Short Film"
         hook="Old rooms, old messages — a story about what time leaves behind."
+        credits="A film by Amruthesh B, S7 CSE & Alok Prasad"
         bg="#191713"
         text="#d9d4c7"
         accent="#a84e2a"
       />
-      <TimeDilation />
       <ClockEssay />
       <TickTickTick />
       <VersionZero />
@@ -97,18 +98,19 @@ export default function Home() {
       <Theyyam />
       <KaliStory />
       <RuiningRumours />
+      <Thamodwaram />
       <ShortFilm
         id="sec-q-film"
         video="black-hole.webm"
         poster="black-hole-poster.webp"
-        kicker="Before the Essay"
+        kicker="The Story Behind It"
         title="A Short Film"
         hook="A quiet look at the black holes we carry within."
+        credits="A film by Amruthesh B, S7 CSE & Alok Prasad"
         bg="#000000"
         text="#e6e0d3"
         accent="#d99065"
       />
-      <Thamodwaram />
       <SocialMedia />
       <CurseOfHope />
       <OruMudanthan />
