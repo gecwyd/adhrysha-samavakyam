@@ -1,5 +1,5 @@
-const GITHUB_RELEASE_BASE = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets"
-const GITHUB_RELEASE_V2_BASE = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.2-assets"
+const GITHUB_RELEASE_BASE = "https://github.com/gecwyd/magazine26/releases/download/v0.1-assets"
+const GITHUB_RELEASE_V2_BASE = "https://github.com/gecwyd/magazine26/releases/download/v0.2-assets"
 
 const ASSET_MAP: Record<string, string> = {
   "adrishya-bhasha-hero.webp": `${GITHUB_RELEASE_V2_BASE}/adrishya-bhasha-hero.webp`,
@@ -897,12 +897,19 @@ const ASSET_MAP: Record<string, string> = {
   "theyyam-hero-2.jpg": `${GITHUB_RELEASE_V2_BASE}/theyyam-hero-2.webp`,
   "theyyam-hero-2.png": `${GITHUB_RELEASE_V2_BASE}/theyyam-hero-2.webp`,
   "theyyam-hero-2.webp": `${GITHUB_RELEASE_V2_BASE}/theyyam-hero-2.webp`,
+  "kali-statue.webp": `${GITHUB_RELEASE_V2_BASE}/kali-statue.webp`,
+  "kali-closeup.webp": `${GITHUB_RELEASE_V2_BASE}/kali-closeup.webp`,
+  "arjun-krishna-kali.webp": `${GITHUB_RELEASE_V2_BASE}/arjun-krishna-kali.webp`,
   "cheruvayal-raman-portrait.webp": `${GITHUB_RELEASE_V2_BASE}/cheruvayal-raman-portrait.webp`,
   "cheruvayal-raman-interview.webp": `${GITHUB_RELEASE_V2_BASE}/cheruvayal-raman-interview.webp`,
   "cheruvayal-raman-speaking.webp": `${GITHUB_RELEASE_V2_BASE}/cheruvayal-raman-speaking.webp`,
   "cheruvayal-raman-fields-walk.webp": `${GITHUB_RELEASE_V2_BASE}/cheruvayal-raman-fields-walk.webp`,
   "cheruvayal-raman-honour.webp": `${GITHUB_RELEASE_V2_BASE}/cheruvayal-raman-honour.webp`,
   "cheruvayal-raman-team.webp": `${GITHUB_RELEASE_V2_BASE}/cheruvayal-raman-team.webp`,
+  "time-dilation.webm": `${GITHUB_RELEASE_V2_BASE}/time-dilation.webm`,
+  "time-dilation-poster.webp": `${GITHUB_RELEASE_V2_BASE}/time-dilation-poster.webp`,
+  "black-hole.webm": `${GITHUB_RELEASE_V2_BASE}/black-hole.webm`,
+  "black-hole-poster.webp": `${GITHUB_RELEASE_V2_BASE}/black-hole-poster.webp`,
 }
 
 export function resolveAsset(path: string): string {

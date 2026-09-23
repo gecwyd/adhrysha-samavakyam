@@ -8,7 +8,7 @@ import { UnionGallery } from "@/components/pages/main/union-gallery";
 import { preload } from "@/lib/preload";
 import { cn } from "@/lib/utils";
 
-const UNION_LOGO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/union-logo.webp";
+const UNION_LOGO_URL = "https://github.com/gecwyd/magazine26/releases/download/v0.1-assets/union-logo.webp";
 const MARQUEE_TEXT = "SATHVA · MEANS UNION · @SATHVA_COLLEGEUNION · ON INSTAGRAM · ";
 
 const EASE = [0.16, 1, 0.3, 1] as const;

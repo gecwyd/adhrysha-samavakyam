@@ -11,7 +11,7 @@ interface InstagramEmbedProps {
 function getInstagramEmbedUrl(url: string) {
   const match = url.match(/\/(p|reel|tv)\/([^/?#]+)/i);
   if (!match) return null;
-  return `https://www.instagram.com/${match[1]}/${match[2]}/embed/captioned/`;
+  return `https://www.instagram.com/${match[1]}/${match[2]}/embed/`;
 }
 
 export function InstagramEmbed({ url, caption, className }: InstagramEmbedProps) {
@@ -34,14 +34,16 @@ export function InstagramEmbed({ url, caption, className }: InstagramEmbedProps)
   }
 
   return (
-    <div className={cn("relative w-full overflow-hidden bg-white", className)}>
+    <div className={cn("relative w-full overflow-hidden bg-[#050505]", className)} style={{ paddingTop: '135%' }}>
       <iframe
         src={embedUrl}
         title={caption ? `Instagram post: ${caption}` : "Instagram post"}
         loading="lazy"
         allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
-        className="block h-[620px] w-full border-0 sm:h-[680px]"
+        scrolling="no"
+        className="absolute top-0 left-0 w-full border-0 pointer-events-auto"
+        style={{ height: 'calc(100% + 110px)' }}
       />
       <noscript>
         <a href={url} target="_blank" rel="noopener noreferrer">

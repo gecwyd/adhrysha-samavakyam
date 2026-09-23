@@ -5,6 +5,7 @@ import { SecB } from "@/components/pages/main/sec-b";
 import { SecC } from "@/components/pages/main/sec-c";
 import { SayNoToDrugs } from "@/components/pages/main/say-no-to-drugs";
 import { AdrishyaBhasha } from "@/components/pages/main/adrishya-bhasha";
+import { ShortFilm } from "@/components/pages/main/short-film";
 import { TimeDilation } from "@/components/pages/main/time-dilation";
 import { ClockEssay } from "@/components/pages/main/clock-essay";
 import { TickTickTick } from "@/components/pages/main/tick-tick-tick";
@@ -13,6 +14,7 @@ import { WritingEraAi } from "@/components/pages/main/writing-era-ai";
 import { Manam } from "@/components/pages/main/manam";
 import { ShedBeProud } from "@/components/pages/main/shed-be-proud";
 import { Theyyam } from "@/components/pages/main/theyyam";
+import { KaliStory } from "@/components/pages/main/kali-story";
 import { RuiningRumours } from "@/components/pages/main/ruining-rumours";
 import { Thamodwaram } from "@/components/pages/main/thamodwaram";
 import { SocialMedia } from "@/components/pages/main/social-media";
@@ -74,6 +76,17 @@ export default function Home() {
       <SayNoToDrugs />
       <AdrishyaBhasha />
       <CheruvayalRaman />
+      <ShortFilm
+        id="sec-h-film"
+        video="time-dilation.webm"
+        poster="time-dilation-poster.webp"
+        kicker="Before the Physics"
+        title="A Short Film"
+        hook="Old rooms, old messages — a story about what time leaves behind."
+        bg="#191713"
+        text="#d9d4c7"
+        accent="#a84e2a"
+      />
       <TimeDilation />
       <ClockEssay />
       <TickTickTick />
@@ -82,7 +95,19 @@ export default function Home() {
       <Manam />
       <ShedBeProud />
       <Theyyam />
+      <KaliStory />
       <RuiningRumours />
+      <ShortFilm
+        id="sec-q-film"
+        video="black-hole.webm"
+        poster="black-hole-poster.webp"
+        kicker="Before the Essay"
+        title="A Short Film"
+        hook="A quiet look at the black holes we carry within."
+        bg="#000000"
+        text="#e6e0d3"
+        accent="#d99065"
+      />
       <Thamodwaram />
       <SocialMedia />
       <CurseOfHope />

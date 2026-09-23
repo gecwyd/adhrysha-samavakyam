@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { InstagramEmbed } from "@/components/ui/instagram-embed";
 import { cn } from "@/lib/utils";
@@ -95,129 +95,183 @@ const GROUP_COLORS: Record<GalleryItem["group"], string> = {
 };
 
 export function UnionGallery() {
-  const reduce = useReducedMotion();
   const [filter, setFilter] = useState<Filter>("All");
-  const [selectedCode, setSelectedCode] = useState(GALLERY_ITEMS[0].code);
+  const [activeEmbed, setActiveEmbed] = useState<string | null>(null);
+  const [resetKeys, setResetKeys] = useState<Record<string, number>>({});
 
   const visibleItems = useMemo(
     () => (filter === "All" ? GALLERY_ITEMS : GALLERY_ITEMS.filter((item) => item.kind === filter)),
     [filter]
   );
 
-  const selected = GALLERY_ITEMS.find((item) => item.code === selectedCode) ?? visibleItems[0];
-  const selectedIndex = visibleItems.findIndex((item) => item.code === selected.code);
-
-  function move(direction: -1 | 1) {
-    const current = Math.max(0, selectedIndex);
-    const next = (current + direction + visibleItems.length) % visibleItems.length;
-    setSelectedCode(visibleItems[next].code);
-  }
-
-  function changeFilter(next: Filter) {
-    setFilter(next);
-    const first = next === "All" ? GALLERY_ITEMS[0] : GALLERY_ITEMS.find((item) => item.kind === next);
-    if (first) setSelectedCode(first.code);
-  }
-
-  const selectedUrl = `https://www.instagram.com/${selected.kind === "Reel" ? "reel" : "p"}/${selected.code}/`;
+  useEffect(() => {
+    let lastActive = document.activeElement;
+    
+    const interval = setInterval(() => {
+      const currentActive = document.activeElement;
+      
+      if (currentActive !== lastActive) {
+        lastActive = currentActive;
+        
+        if (currentActive && currentActive.tagName === 'IFRAME') {
+          const src = currentActive.getAttribute('src');
+          if (src) {
+            const match = src.match(/\/(p|reel|tv)\/([^/?#]+)/i);
+            if (match && match[2]) {
+              const clickedCode = match[2];
+              
+              setActiveEmbed((prev) => {
+                // If we focused a new iframe, reset the previous one to pause it
+                if (prev && prev !== clickedCode) {
+                  setResetKeys((keys) => ({
+                    ...keys,
+                    [prev]: (keys[prev] || 0) + 1
+                  }));
+                }
+                return clickedCode;
+              });
+            }
+          }
+        }
+      }
+    }, 250);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <section className="relative overflow-hidden bg-black py-24 text-[#d9d4c7] sm:py-32">
-      <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.5)_1px,transparent_1px)] [background-size:64px_64px]" />
-
-      <div className="relative mx-auto max-w-7xl px-6 sm:px-12">
-        <div className="grid gap-8 border-b border-white/15 pb-12 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div>
-            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.35em] text-[#d9d4c7]/40">Captured by the campus</p>
-            <h3 className="font-heading text-6xl uppercase leading-[0.82] tracking-tight sm:text-8xl">
-              Union<br />Gallery
-            </h3>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {FILTERS.map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => changeFilter(item)}
-                className={cn(
-                  "rounded-full border px-4 py-2 font-mono text-[9px] uppercase tracking-[0.2em] transition-colors",
-                  filter === item ? "border-[#d9d4c7] bg-[#d9d4c7] text-black" : "border-white/20 text-white/45 hover:border-white/60 hover:text-white"
-                )}
-              >
-                {item} · {item === "All" ? GALLERY_ITEMS.length : GALLERY_ITEMS.filter((entry) => entry.kind === item).length}
-              </button>
-            ))}
-          </div>
+    <section id="sec-union-gallery" className="relative w-full bg-black text-white selection:bg-[#ff4500] selection:text-white pb-24">
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      
+      {/* Maximalist Header */}
+      <div className="px-5 sm:px-10 lg:px-16 pt-16 sm:pt-24 pb-12 sm:pb-16 relative overflow-hidden">
+        {/* Giant background text for maximalism */}
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-full overflow-hidden whitespace-nowrap opacity-[0.03] pointer-events-none select-none">
+          <h2 className="font-heading text-[35vw] leading-none tracking-tighter">UNION GALLERY</h2>
         </div>
-
-        <div className="grid gap-12 pt-12 lg:grid-cols-[minmax(360px,0.82fr)_minmax(0,1.18fr)] lg:items-start">
-          <div className="lg:sticky lg:top-6">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selected.code}
-                initial={reduce ? undefined : { opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduce ? undefined : { opacity: 0, y: -10 }}
-                transition={{ duration: 0.35 }}
-                className="border border-white/15 bg-[#111] p-1"
-              >
-                <InstagramEmbed url={selectedUrl} caption={selected.title} />
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="border-x border-b border-white/15 bg-[#0b0b0b] p-5">
-              <div className="flex items-start justify-between gap-5">
-                <div>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-white/35">{selected.date} · {selected.kind} · @{selected.account}</p>
-                  <h4 className="mt-2 font-heading text-3xl uppercase leading-none">{selected.title}</h4>
-                </div>
-                <span className="mt-1 h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: GROUP_COLORS[selected.group] }} />
-              </div>
-              <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-                <button type="button" onClick={() => move(-1)} className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/45 hover:text-white">&larr; Prev</button>
-                <span className="font-mono text-[9px] tabular-nums tracking-[0.2em] text-white/30">{String(Math.max(0, selectedIndex) + 1).padStart(2, "0")} / {String(visibleItems.length).padStart(2, "0")}</span>
-                <button type="button" onClick={() => move(1)} className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/45 hover:text-white">Next &rarr;</button>
-              </div>
-            </div>
+        
+        <div className="relative flex flex-col xl:flex-row xl:items-end xl:justify-between gap-8 z-10">
+          <div>
+            <p className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase text-white/40 mb-3 sm:mb-5">
+              Captured by the campus · 2025–26
+            </p>
+            <h2 className="font-heading text-[18vw] sm:text-[12vw] lg:text-[10vw] font-light uppercase leading-none tracking-tight text-transparent" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.7)', WebkitTextFillColor: 'transparent' }}>
+              UNION
+            </h2>
+            <h2 className="font-heading text-[18vw] sm:text-[12vw] lg:text-[10vw] font-light uppercase leading-none tracking-tight text-[#ff4500] -mt-2 sm:-mt-4">
+              GALLERY
+            </h2>
           </div>
 
-          <div className="grid grid-cols-2 gap-px bg-white/10 sm:grid-cols-3">
-            {visibleItems.map((item, index) => {
-              const active = item.code === selected.code;
-              return (
-                <motion.button
-                  key={item.code}
+          <div className="flex flex-col gap-5 pb-2">
+            <div className="flex flex-wrap gap-2 xl:justify-end">
+              {FILTERS.map((item) => (
+                <button
+                  key={item}
                   type="button"
-                  onClick={() => setSelectedCode(item.code)}
-                  initial={reduce ? undefined : { opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: Math.min((index % 9) * 0.025, 0.2) }}
+                  onClick={() => setFilter(item)}
                   className={cn(
-                    "group relative min-h-44 overflow-hidden bg-[#111] p-4 text-left transition-colors sm:min-h-52 sm:p-5",
-                    active && "bg-[#d9d4c7] text-black"
+                    "rounded-full px-5 py-2.5 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all border",
+                    filter === item 
+                      ? "border-[#ff4500] bg-[#ff4500] text-white shadow-[0_0_20px_rgba(255,69,0,0.4)]" 
+                      : "border-white/20 text-white/50 hover:border-white/80 hover:text-white bg-black/50 backdrop-blur-sm"
                   )}
                 >
-                  <span className="absolute -right-2 -top-5 font-heading text-8xl tabular-nums text-white/[0.035] group-hover:text-white/[0.07]">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div className="relative flex h-full flex-col justify-between">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className={cn("font-mono text-[8px] uppercase tracking-[0.2em]", active ? "text-black/45" : "text-white/35")}>{item.date}</span>
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: GROUP_COLORS[item.group] }} />
+                  {item} <span className="ml-2 opacity-50">{(item === "All" ? GALLERY_ITEMS : GALLERY_ITEMS.filter((entry) => entry.kind === item)).length}</span>
+                </button>
+              ))}
+            </div>
+            <p className="font-mono text-[9px] sm:text-[10px] text-white/40 xl:text-right uppercase tracking-widest">
+              Explore our social footprint
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Masonry Grid */}
+      <div className="px-5 sm:px-10 lg:px-16 mx-auto">
+        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 sm:gap-6">
+          {visibleItems.map((item, index) => {
+            const selectedUrl = `https://www.instagram.com/${item.kind === "Reel" ? "reel" : "p"}/${item.code}/`;
+            const itemResetKey = resetKeys[item.code] || 0;
+            
+            return (
+              <div
+                key={item.code}
+                className="break-inside-avoid mb-6 group relative"
+              >
+                {/* Customized Brutalist Browser Frame */}
+                <div className="border-[1.5px] border-white/20 bg-[#0f0f0f] rounded-xl overflow-hidden transition-all duration-300 group-hover:border-[#ff4500] group-hover:shadow-[8px_8px_0_0_rgba(255,69,0,0.8)] sm:group-hover:-translate-y-1 sm:group-hover:-translate-x-1">
+                  
+                  {/* Frame Header (Browser-like) */}
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-[#1a1a1a]">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-red-500 transition-colors duration-300" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-amber-400 transition-colors duration-300" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-green-500 transition-colors duration-300" />
                     </div>
-                    <div>
-                      <p className={cn("mb-2 font-mono text-[8px] uppercase tracking-[0.18em]", active ? "text-black/45" : "text-white/30")}>{item.kind} · {item.group}</p>
-                      <h5 className="font-heading text-xl uppercase leading-[0.95] sm:text-2xl">{item.title}</h5>
-                      <p className={cn("mt-3 truncate font-mono text-[8px] tracking-[0.12em]", active ? "text-black/40" : "text-white/25")}>@{item.account}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30 truncate max-w-[120px]">
+                        instagram.com/{item.account}
+                      </span>
                     </div>
                   </div>
-                </motion.button>
-              );
-            })}
-          </div>
+
+                  {/* Top Metadata Tab */}
+                  <div className="flex items-center justify-between px-4 py-3 bg-[#111]">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 shrink-0 rounded bg-[#ff4500] flex items-center justify-center font-heading text-xl text-white">
+                        {String(index + 1).padStart(2, '0')}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-heading text-lg uppercase leading-none tracking-tight text-white mb-1 truncate">
+                          {item.title}
+                        </h4>
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: GROUP_COLORS[item.group] }} />
+                          <p className="font-mono text-[9px] text-white/50 uppercase tracking-[0.2em] truncate">
+                            {item.group}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="shrink-0 ml-3">
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-[#ff4500] border border-[#ff4500]/30 px-2 py-1 rounded-sm">
+                        {item.kind}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* The actual iframe, embedded cleanly without captions */}
+                  <div className="bg-[#050505] border-t border-white/10">
+                    <div className="relative overflow-hidden pointer-events-auto">
+                      {/* Negative margins can slightly crop the iframe if needed, but removing /captioned/ does the heavy lifting */}
+                      <InstagramEmbed 
+                        key={`${item.code}-${itemResetKey}`}
+                        url={selectedUrl} 
+                        caption={item.title} 
+                        className="bg-transparent" 
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Footer metadata */}
+                  <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a1a] border-t border-white/10">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">
+                      {item.date}
+                    </p>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">
+                      GECW
+                    </p>
+                  </div>
+                  
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
+

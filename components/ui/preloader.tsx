@@ -6,7 +6,7 @@ import { usePreloadStore, preload } from "@/lib/preload"
 import { usePathname } from "next/navigation"
 import { DriveImage } from "@/components/ui/drive-image"
 
-const UNION_LOGO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/union-logo.webp"
+const UNION_LOGO_URL = "https://github.com/gecwyd/magazine26/releases/download/v0.1-assets/union-logo.webp"
 
 const WAVE = [0.35, 0.7, 0.45, 1, 0.6, 0.85, 0.5, 0.75, 0.4, 0.9, 0.55, 0.7, 0.35]
 

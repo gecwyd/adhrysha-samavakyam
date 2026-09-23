@@ -13,6 +13,7 @@ import { WritingEraAi } from "@/components/pages/main/writing-era-ai";
 import { Manam } from "@/components/pages/main/manam";
 import { ShedBeProud } from "@/components/pages/main/shed-be-proud";
 import { Theyyam } from "@/components/pages/main/theyyam";
+import { KaliStory } from "@/components/pages/main/kali-story";
 import { RuiningRumours } from "@/components/pages/main/ruining-rumours";
 import { Thamodwaram } from "@/components/pages/main/thamodwaram";
 import { SocialMedia } from "@/components/pages/main/social-media";
@@ -132,6 +133,7 @@ export default function TestPage() {
       <Manam />
       <ShedBeProud />
       <Theyyam />
+      <KaliStory />
       <RuiningRumours />
       <Thamodwaram />
       <SocialMedia />

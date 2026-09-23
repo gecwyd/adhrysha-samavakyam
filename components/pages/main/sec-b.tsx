@@ -7,7 +7,7 @@ import { DriveImage } from "@/components/ui/drive-image"
 import { cn } from "@/lib/utils"
 import { preload } from "@/lib/preload"
 
-const UNION_LOGO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/union-logo.webp"
+const UNION_LOGO_URL = "https://github.com/gecwyd/magazine26/releases/download/v0.1-assets/union-logo.webp"
 const LETTERS = ["S", "A", "T", "H", "V", "A"]
 const MARQUEE_TEXT = "SATHVA · COLLEGE UNION · GECWYD · 2025–26 · "
 
