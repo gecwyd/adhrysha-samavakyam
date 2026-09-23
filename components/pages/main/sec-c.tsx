@@ -20,7 +20,7 @@ const DIGNITARIES: DignitaryItem[] = [
   {
     id: "vds",
     name: "Shri. V. D. Satheesan",
-    title: "Leader of Opposition, Kerala",
+    title: "Chief Minister, Kerala",
     message: "Technical education empowers our youth to innovate and lead. The vibrant energy and creative spirit of Government Engineering College Wayanad are truly commendable.",
     image: resolveAsset("vds.webp"),
     initials: "VDS",
