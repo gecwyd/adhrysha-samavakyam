@@ -8,7 +8,9 @@ import { preload } from "@/lib/preload"
 
 const UNION_LOGO_URL = "https://github.com/gecwyd/adhrysha-samavakyam/releases/download/v0.1-assets/union-logo.webp"
 
-export interface ComingSoonProps extends React.HTMLAttributes<HTMLElement> { }
+export interface ComingSoonProps extends React.HTMLAttributes<HTMLElement> {
+    timeLeft?: { h: number; m: number; s: number } | null;
+}
 
 export function ComingSoon({ className, ...props }: ComingSoonProps) {
     return (
@@ -79,27 +81,48 @@ export function ComingSoon({ className, ...props }: ComingSoonProps) {
                         className="mt-6 sm:mt-8 relative flex items-center justify-center select-none"
                     >
                         <div className="relative p-1.5 sm:p-2 rounded-full border border-black/15 bg-black/[0.02]">
-                            <svg
-                                viewBox="0 0 120 120"
-                                className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 animate-[spin_20s_linear_infinite] select-none pointer-events-none"
-                            >
-                                <path
-                                    id="coming-soon-seal-path"
-                                    d="M 60,60 m -42,0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0"
-                                    fill="none"
-                                />
-                                <text className="text-[9px] uppercase font-heading tracking-[0.26em] fill-black/85">
-                                    <textPath href="#coming-soon-seal-path" startOffset="0%">
-                                        ✦ COMING SOON ✦ FIRST WEB MAGAZINE ✦
-                                    </textPath>
-                                </text>
-                            </svg>
-                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="font-heading text-lg sm:text-xl font-black text-black leading-none">26</span>
-                                <span className="text-[0.42rem] sm:text-[0.48rem] tracking-[0.25em] uppercase font-sans text-black/60 mt-0.5 font-bold pl-[0.25em]">
-                                    ISSUE 01
-                                </span>
-                            </div>
+                            {props.timeLeft ? (
+                                <div className="flex items-center gap-4 sm:gap-6 font-mono text-2xl sm:text-4xl px-8 py-6">
+                                    <div className="flex flex-col items-center">
+                                        <span className="font-heading font-black">{String(props.timeLeft.h).padStart(2, '0')}</span>
+                                        <span className="text-[0.45rem] tracking-[0.2em] uppercase mt-1 opacity-60">Hours</span>
+                                    </div>
+                                    <span className="opacity-30 mt-1 mb-3">:</span>
+                                    <div className="flex flex-col items-center">
+                                        <span className="font-heading font-black">{String(props.timeLeft.m).padStart(2, '0')}</span>
+                                        <span className="text-[0.45rem] tracking-[0.2em] uppercase mt-1 opacity-60">Mins</span>
+                                    </div>
+                                    <span className="opacity-30 mt-1 mb-3">:</span>
+                                    <div className="flex flex-col items-center">
+                                        <span className="font-heading font-black">{String(props.timeLeft.s).padStart(2, '0')}</span>
+                                        <span className="text-[0.45rem] tracking-[0.2em] uppercase mt-1 opacity-60">Secs</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <svg
+                                        viewBox="0 0 120 120"
+                                        className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 animate-[spin_20s_linear_infinite] select-none pointer-events-none"
+                                    >
+                                        <path
+                                            id="coming-soon-seal-path"
+                                            d="M 60,60 m -42,0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0"
+                                            fill="none"
+                                        />
+                                        <text className="text-[9px] uppercase font-heading tracking-[0.26em] fill-black/85">
+                                            <textPath href="#coming-soon-seal-path" startOffset="0%">
+                                                ✦ COMING SOON ✦ FIRST WEB MAGAZINE ✦
+                                            </textPath>
+                                        </text>
+                                    </svg>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span className="font-heading text-lg sm:text-xl font-black text-black leading-none">26</span>
+                                        <span className="text-[0.42rem] sm:text-[0.48rem] tracking-[0.25em] uppercase font-sans text-black/60 mt-0.5 font-bold pl-[0.25em]">
+                                            ISSUE 01
+                                        </span>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </motion.div>
                 </div>

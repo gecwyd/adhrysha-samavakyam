@@ -1,3 +1,4 @@
+import { ReleaseGate } from "@/components/pages/main/release-gate";
 import { ComingSoon } from "@/components/pages/main/coming-soon";
 import { SecA } from "@/components/pages/main/sec-a";
 import { SecB } from "@/components/pages/main/sec-b";
@@ -62,81 +63,85 @@ import { Sports } from "@/components/pages/main/sports";
 import { CheruvayalRaman } from "@/components/pages/main/cheruvayal-raman";
 import { NonTeachingStaff } from "@/components/pages/main/non-teaching-staff";
 import { Closing } from "@/components/pages/main/closing";
+import { Sathva } from "@/components/pages/main/sathva";
 
 export default function Home() {
+  const magazine = (
+    <main className="w-full min-h-screen flex flex-col bg-[#d9d4c7] overflow-x-clip">
+      <SecA />
+      <SecB />
+      <SecC />
+      <Sathva />
+      <SayNoToDrugs />
+      <AdrishyaBhasha />
+      <CheruvayalRaman />
+      <TimeDilation />
+      <ClockEssay />
+      <TickTickTick />
+      <VersionZero />
+      <WritingEraAi />
+      <Manam />
+      <ShedBeProud />
+      <Theyyam />
+      <RuiningRumours />
+      <Thamodwaram />
+      <SocialMedia />
+      <CurseOfHope />
+      <OruMudanthan />
+      <StitchedWings />
+      <Dowry />
+      <HumanityBeyondWar />
+      <Waterlines />
+      <Iruttu />
+      <Nanmayude />
+      <TheGirlWhoDances />
+      <ShadowOfWar />
+      <Wormhole />
+      <WormholeStory />
+      <WormholeEssay />
+      <MistyPathsStory />
+      <MistyPaths />
+      <LastBench />
+      <RootsAndWings />
+      <ChipHappens />
+      <QuantumEntanglement />
+      <QuantumEntanglementStory />
+      <InTheirImage />
+      <SeedsOfLight />
+      <FatherPoem />
+      <BloodlessReligion />
+      <LastTree />
+      <PromiseWeMustKeep />
+      <ArtworksGallery />
+      <NonTeachingStaff />
+      <Decibel />
+      <DrawingClub />
+      <IliadLiteratureClub />
+      <MonochromeFilmClub />
+      <Nss />
+      <Ieee />
+      <Iste />
+      <Exorque />
+      <Sae />
+      <Gbot />
+      <Orion />
+      <Aeronauts />
+      <Iedc />
+      <BhoomithraSena />
+      <Thrive />
+      <StudentProjects />
+      <Sports />
+      <Closing />
+    </main>
+  );
+
   if (process.env.NODE_ENV === "development") {
-    return (
-      <main className="w-full min-h-screen flex flex-col bg-[#d9d4c7] overflow-x-clip">
-        <SecA />
-        <SecB />
-        <SecC />
-        <SayNoToDrugs />
-        <AdrishyaBhasha />
-        <CheruvayalRaman />
-        <TimeDilation />
-        <ClockEssay />
-        <TickTickTick />
-        <VersionZero />
-        <WritingEraAi />
-        <Manam />
-        <ShedBeProud />
-        <Theyyam />
-        <RuiningRumours />
-        <Thamodwaram />
-        <SocialMedia />
-        <CurseOfHope />
-        <OruMudanthan />
-        <StitchedWings />
-        <Dowry />
-        <HumanityBeyondWar />
-        <Waterlines />
-        <Iruttu />
-        <Nanmayude />
-        <TheGirlWhoDances />
-        <ShadowOfWar />
-        <Wormhole />
-        <WormholeStory />
-        <WormholeEssay />
-        <MistyPathsStory />
-        <MistyPaths />
-        <LastBench />
-        <RootsAndWings />
-        <ChipHappens />
-        <QuantumEntanglement />
-        <QuantumEntanglementStory />
-        <InTheirImage />
-        <SeedsOfLight />
-        <FatherPoem />
-        <BloodlessReligion />
-        <LastTree />
-        <PromiseWeMustKeep />
-        <ArtworksGallery />
-        <NonTeachingStaff />
-        <Decibel />
-        <DrawingClub />
-        <IliadLiteratureClub />
-        <MonochromeFilmClub />
-        <Nss />
-        <Ieee />
-        <Iste />
-        <Exorque />
-        <Sae />
-        <Gbot />
-        <Orion />
-        <Aeronauts />
-        <Iedc />
-        <BhoomithraSena />
-        <Thrive />
-        <StudentProjects />
-        <Sports />
-        <Closing />
-      </main>
-    );
+    return magazine;
   }
 
   return (
-    <main className="w-full min-h-screen flex flex-col bg-[#d9d4c7]">
-      <ComingSoon />
-    </main>
+    <ReleaseGate>
+      {magazine}
+    </ReleaseGate>
   );
 }
